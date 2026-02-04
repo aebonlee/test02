@@ -1,0 +1,241 @@
+{
+  "task_id": "NEXT_STEPS",
+  "created_at": "2025-12-03T03:01:00Z",
+  "status": "pending_review",
+  "title": "앞으로 할 일 - 검토 및 다음 단계",
+
+  "summary": "User Flow 정리 및 Mockup 검증 완료. 내일 검토 후 다음 단계 진행",
+
+  "completed_today": [
+    {
+      "task": "User Flows 폴더 정리",
+      "details": [
+        "비어있는 폴더 삭제 (5_Books_Learning, 6_AI_QA, 7_AI_Integration, 8_Support, 5_Project_Development)",
+        "Home Screen User Guide를 1_Signup 폴더로 이동",
+        "최종 5개 User Flow로 정리 완료"
+      ],
+      "status": "✅ 완료"
+    },
+    {
+      "task": "User Flow #5: Development Process 기획 및 작성",
+      "details": [
+        "프로젝트 등록 이후 전체 개발 프로세스 플로우 작성",
+        "좌측 사이드바 프로세스 구조 반영 (☆, ○, S1-S5)",
+        "Order Sheet 템플릿 연계 시스템 설계",
+        "Workspace UI 스펙 정의",
+        "템플릿 자동 로드 로직 설계"
+      ],
+      "status": "✅ 초안 완료"
+    },
+    {
+      "task": "Order Sheet 템플릿 정리",
+      "details": [
+        "루트의 Order_Sheet_템플릿 폴더를 5_Development_Process로 이동",
+        "총 9개 템플릿 정리 (특별단계 2개, 준비단계 4개, 실행단계 3개)",
+        "템플릿 매핑 테이블 작성"
+      ],
+      "status": "✅ 완료"
+    },
+    {
+      "task": "기획 문서 검증 (Planning Documents Verification)",
+      "details": [
+        "563개 요구사항 100% 구현 확인",
+        "8개 User Flow 검증",
+        "11개 Home Screen 영역 검증",
+        "5개 Admin 섹션 검증",
+        "PLANNING_DOCUMENTS_VERIFICATION.md 작성 완료"
+      ],
+      "status": "✅ 완료"
+    }
+  ],
+
+  "tomorrow_review": {
+    "priority": "high",
+    "tasks": [
+      {
+        "order": 1,
+        "task": "Development Process (User Flow #5) 검토",
+        "file": "P2_프로젝트_기획/1-2_User_Flows/5_Development_Process/flow.md",
+        "checklist": [
+          "프로세스 구조가 좌측 사이드바와 일치하는가?",
+          "3단계 분류 (☆, ○, S1-S5)가 명확한가?",
+          "Order Sheet 템플릿 매핑이 정확한가?",
+          "UI Flow가 자연스러운가?",
+          "Workspace 동작 로직이 적절한가?",
+          "예외 처리가 충분한가?",
+          "누락된 단계나 기능이 있는가?"
+        ],
+        "notes": "초안 상태이므로 사용자 피드백 반영 필요"
+      },
+      {
+        "order": 2,
+        "task": "Order Sheet 템플릿 검토",
+        "folder": "P2_프로젝트_기획/1-2_User_Flows/5_Development_Process/Order_Sheet_템플릿/",
+        "checklist": [
+          "현재 템플릿 (9개) 내용 확인",
+          "템플릿 품질 및 완성도 검토",
+          "추가 필요 템플릿 파악 (Architecture, UI/UX, DB Design, API Design)",
+          "템플릿 형식 통일성 확인",
+          "프로세스 항목과 템플릿 1:1 매핑 검증"
+        ],
+        "current_templates": [
+          "특별단계_☆/SAL_GRID_생성.md",
+          "특별단계_☆/디렉토리_구조_생성.md",
+          "준비단계_○/사업계획/Market_Analysis.md",
+          "준비단계_○/사업계획/Vision_Mission.md",
+          "준비단계_○/프로젝트기획/Project_Plan.md",
+          "준비단계_○/프로젝트기획/Requirements.md",
+          "실행단계/S1_프로토타입_Backend.md",
+          "실행단계/S1_프로토타입_Frontend.md",
+          "실행단계/일반_작업요청.md"
+        ],
+        "missing_templates": [
+          "준비단계_○/프로젝트기획/Architecture.md",
+          "준비단계_○/프로젝트기획/UI_UX.md",
+          "준비단계_○/프로젝트기획/DB_Design.md",
+          "준비단계_○/프로젝트기획/API_Design.md"
+        ]
+      },
+      {
+        "order": 3,
+        "task": "Mockup 파일 검토",
+        "files": [
+          {
+            "name": "home_screen_complete_mockup.html",
+            "path": "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/",
+            "lines": 5253,
+            "status": "완성"
+          },
+          {
+            "name": "admin_dashboard_complete_mockup.html",
+            "path": "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/",
+            "lines": 5065,
+            "status": "완성"
+          }
+        ],
+        "checklist": [
+          "Development Process Flow 반영 확인",
+          "Order Sheet 템플릿 연계 기능 확인",
+          "좌측 사이드바 프로세스 영역 동작 확인",
+          "Workspace 템플릿 로드 기능 확인",
+          "템플릿 리셋/발행 버튼 동작 확인",
+          "프로세스 상태 관리 (⚪🔵✅🔴) 확인"
+        ],
+        "verification_report": "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/PLANNING_DOCUMENTS_VERIFICATION.md (563개 요구사항 100% 검증 완료)"
+      }
+    ]
+  },
+
+  "next_steps_after_review": {
+    "phase": "검토 완료 후 진행",
+    "tasks": [
+      {
+        "task": "Development Process Flow 수정",
+        "condition": "검토 결과 수정 사항 있을 경우",
+        "actions": [
+          "사용자 피드백 반영",
+          "프로세스 구조 조정",
+          "UI Flow 개선",
+          "템플릿 매핑 수정"
+        ]
+      },
+      {
+        "task": "누락된 Order Sheet 템플릿 작성",
+        "templates_to_create": [
+          "Architecture.md (시스템 아키텍처 설계)",
+          "UI_UX.md (와이어프레임 및 디자인)",
+          "DB_Design.md (데이터베이스 스키마 설계)",
+          "API_Design.md (API 엔드포인트 설계)"
+        ],
+        "priority": "medium"
+      },
+      {
+        "task": "Mockup 업데이트 (필요시)",
+        "condition": "Development Process Flow 확정 후",
+        "actions": [
+          "템플릿 로드 로직 구현",
+          "프로세스 항목 클릭 핸들러 구현",
+          "Workspace 템플릿 렌더링 추가",
+          "상태 관리 시스템 통합",
+          "템플릿 리셋 기능 구현"
+        ]
+      },
+      {
+        "task": "UI 스펙 문서 작성",
+        "file": "5_Development_Process/ui_specs.md",
+        "content": [
+          "Workspace 상세 UI 스펙",
+          "템플릿 로드 화면 스펙",
+          "프로세스 항목 클릭 인터랙션",
+          "상태 변경 애니메이션",
+          "Order Sheet 편집기 스펙"
+        ],
+        "priority": "high"
+      },
+      {
+        "task": "프로토타입 제작 단계 진입 준비",
+        "phase": "S1. 프로토타입 제작",
+        "prerequisites": [
+          "모든 기획 문서 확정",
+          "Mockup 최종 승인",
+          "Order Sheet 템플릿 완성",
+          "Development Process Flow 확정"
+        ],
+        "next_actions": [
+          "Frontend 프로토타입 제작",
+          "Backend 프로토타입 제작",
+          "Dashboard 기본 기능 구현",
+          "Order Sheet 시스템 구현"
+        ]
+      }
+    ]
+  },
+
+  "current_project_structure": {
+    "user_flows": {
+      "path": "P2_프로젝트_기획/1-2_User_Flows/",
+      "total": 5,
+      "flows": [
+        "1_Signup (회원가입 + 홈 화면 가이드)",
+        "2_Project_Registration (프로젝트 등록 + 사용법 안내)",
+        "3_Subscription (구독 관리)",
+        "4_Credit_Purchase (크레딧 충전)",
+        "5_Development_Process (개발 프로세스 전체 + Order Sheet 템플릿)"
+      ]
+    },
+    "mockups": {
+      "path": "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/",
+      "files": [
+        "home_screen_complete_mockup.html (5,253 lines)",
+        "admin_dashboard_complete_mockup.html (5,065 lines)",
+        "VERIFICATION_REPORT.md",
+        "PLANNING_DOCUMENTS_VERIFICATION.md"
+      ]
+    },
+    "order_sheet_templates": {
+      "path": "P2_프로젝트_기획/1-2_User_Flows/5_Development_Process/Order_Sheet_템플릿/",
+      "total": 9,
+      "categories": {
+        "특별단계": 2,
+        "준비단계_사업계획": 2,
+        "준비단계_프로젝트기획": 2,
+        "실행단계": 3
+      }
+    }
+  },
+
+  "important_notes": [
+    "User Flow #5 (Development Process)는 초안 상태로 사용자 검토 필요",
+    "Order Sheet 템플릿 4개 추가 작성 필요 (Architecture, UI/UX, DB Design, API Design)",
+    "Mockup은 기존 기획 문서 100% 반영 완료, Development Process Flow 추가 반영 검토 필요",
+    "모든 기획 문서 확정 후 S1. 프로토타입 제작 단계 진입 가능"
+  ],
+
+  "files_for_tomorrow_review": [
+    "P2_프로젝트_기획/1-2_User_Flows/5_Development_Process/flow.md",
+    "P2_프로젝트_기획/1-2_User_Flows/5_Development_Process/Order_Sheet_템플릿/ (전체 폴더)",
+    "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/home_screen_complete_mockup.html",
+    "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/admin_dashboard_complete_mockup.html",
+    "P2_프로젝트_기획/1-6_UI_UX_Mockup/Mockups/PLANNING_DOCUMENTS_VERIFICATION.md"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "testDate": "2025-12-02T08:07:18.852Z",
+  "supabaseUrl": "https://zwjmfewyshhwpgwdtrus.supabase.co",
+  "tests": [
+    {
+      "name": "초기 데이터 조회",
+      "status": "PASS",
+      "details": "75개 FAQ 확인",
+      "timestamp": "2025-12-02T08:07:19.582Z"
+    },
+    {
+      "name": "INSERT (anon 역할)",
+      "status": "PASS",
+      "details": "RLS 정책으로 차단됨 (예상된 동작)",
+      "timestamp": "2025-12-02T08:07:19.922Z"
+    },
+    {
+      "name": "SELECT (전체)",
+      "status": "PASS",
+      "details": "75개 FAQ 조회",
+      "timestamp": "2025-12-02T08:07:20.048Z"
+    },
+    {
+      "name": "SELECT (depth1 필터)",
+      "status": "PASS",
+      "details": "25개 FAQ 조회",
+      "timestamp": "2025-12-02T08:07:20.172Z"
+    },
+    {
+      "name": "SELECT (텍스트 검색)",
+      "status": "PASS",
+      "details": "3개 FAQ 발견",
+      "timestamp": "2025-12-02T08:07:20.299Z"
+    },
+    {
+      "name": "UPDATE (anon 역할)",
+      "status": "FAIL",
+      "details": "RLS 정책이 작동하지 않음!",
+      "timestamp": "2025-12-02T08:07:20.441Z"
+    },
+    {
+      "name": "DELETE (anon 역할)",
+      "status": "FAIL",
+      "details": "RLS 정책이 작동하지 않음!",
+      "timestamp": "2025-12-02T08:07:20.794Z"
+    },
+    {
+      "name": "인덱스 성능",
+      "status": "PASS",
+      "details": "조회 시간: 136ms",
+      "timestamp": "2025-12-02T08:07:20.930Z"
+    },
+    {
+      "name": "데이터 무결성",
+      "status": "PASS",
+      "details": "모든 필수 필드 채워짐",
+      "timestamp": "2025-12-02T08:07:21.063Z"
+    },
+    {
+      "name": "최종 데이터 조회",
+      "status": "PASS",
+      "details": "75개 FAQ (변경 없음)",
+      "timestamp": "2025-12-02T08:07:21.210Z"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 8,
+    "failed": 2
+  }
+}

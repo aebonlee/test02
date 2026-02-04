@@ -1,0 +1,49 @@
+{
+  "report_name": "배포 기능 테스트 및 3D 뷰 수정",
+  "date": "2026-01-03",
+  "status": "completed",
+  "summary": "아젠다 #4 배포 후 알림 시스템 및 3D 뷰 기능 테스트 완료",
+  "notification_tests": {
+    "welcome": {
+      "icon": "🎉",
+      "result": "success",
+      "api_response": "201 Created"
+    },
+    "sunny_answer": {
+      "icon": "☀️",
+      "result": "success",
+      "api_response": "201 Created"
+    },
+    "inquiry_answer": {
+      "icon": "📞",
+      "result": "success",
+      "api_response": "201 Created"
+    }
+  },
+  "test_cleanup": "테스트 알림 삭제 완료",
+  "3d_view_fix": {
+    "issues_found": [
+      {
+        "problem": "3D 뷰에 샘플 블록만 표시",
+        "cause": "window.allTasks가 비어있음",
+        "solution": "openGridFullscreen()에 데이터 로드 추가"
+      },
+      {
+        "problem": "뷰 전환 시 블록 미갱신",
+        "cause": "switchView()에서 재생성 안 함",
+        "solution": "3D 전환 시 create3DBlocks() 호출 추가"
+      }
+    ],
+    "modified_functions": [
+      "openGridFullscreen() - async로 변경, Supabase에서 태스크 데이터 로드",
+      "switchView() - 3D 전환 시 블록 재생성"
+    ],
+    "commit": "d0af91e",
+    "commit_message": "fix: 3D 뷰 전환 시 실제 태스크 데이터 로드"
+  },
+  "deployment_verification": {
+    "async_function_openGridFullscreen": "deployed",
+    "3d_data_loading_log": "deployed",
+    "production_url": "https://www.ssalworks.ai.kr"
+  }
+}

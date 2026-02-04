@@ -1,0 +1,204 @@
+{
+  "task_id": "S2BA3",
+  "task_name": "구독 관리 API",
+  "stage": "S2",
+  "area": "BA",
+  "status": "완료",
+  "completion_date": "2025-12-14",
+
+  "summary": {
+    "description": "구독 신청/상태 조회/해지 Serverless API 구현",
+    "files_created": 3,
+    "total_lines": 464,
+    "location_s2": "S2_개발-1차/Backend_API/api/subscription/",
+    "location_production": "Production/Backend_API/api/subscription/"
+  },
+
+  "implemented_apis": [
+    {
+      "api": "구독 상태 조회",
+      "file": "status.js",
+      "endpoint": "GET /api/subscription/status",
+      "lines": 122,
+      "features": [
+        "Bearer 토큰 인증",
+        "사용자 구독 정보 조회",
+        "구독 플랜 정보 포함 (JOIN)",
+        "구독 없는 경우 처리",
+        "에러 핸들링 (401, 405, 500)"
+      ]
+    },
+    {
+      "api": "구독 신청",
+      "file": "create.js",
+      "endpoint": "POST /api/subscription/create",
+      "lines": 188,
+      "features": [
+        "Bearer 토큰 인증",
+        "plan_id 검증",
+        "기존 구독 중복 체크 (pending, active)",
+        "구독 플랜 존재 확인",
+        "구독 생성 (초기 상태: pending)",
+        "users 테이블 subscription_status 업데이트",
+        "에러 핸들링 (400, 401, 404, 405, 409, 500)"
+      ]
+    },
+    {
+      "api": "구독 해지",
+      "file": "cancel.js",
+      "endpoint": "POST /api/subscription/cancel",
+      "lines": 154,
+      "features": [
+        "Bearer 토큰 인증",
+        "활성 구독 확인",
+        "구독 상태 'cancelled'로 변경",
+        "cancelled_at 타임스탬프 기록",
+        "users 테이블 subscription_status 업데이트",
+        "에러 핸들링 (401, 404, 405, 500)"
+      ]
+    }
+  ],
+
+  "technical_details": {
+    "framework": "Vercel Serverless Functions",
+    "database": "Supabase",
+    "auth": "Supabase Auth (Bearer Token)",
+    "client": "@supabase/supabase-js",
+    "service_role_key": "SUPABASE_SERVICE_ROLE_KEY (환경변수)"
+  },
+
+  "database_tables": {
+    "subscriptions": {
+      "columns": [
+        "id",
+        "user_id",
+        "plan_id",
+        "status (pending, active, cancelled, expired)",
+        "start_date",
+        "end_date",
+        "cancelled_at",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    "subscription_plans": {
+      "relation": "subscriptions.plan_id → subscription_plans.id",
+      "usage": "조회 시 JOIN으로 플랜 정보 포함"
+    },
+    "users": {
+      "columns": [
+        "subscription_status"
+      ],
+      "usage": "구독 생성/해지 시 자동 업데이트"
+    }
+  },
+
+  "api_responses": {
+    "status_success": {
+      "code": 200,
+      "body": {
+        "subscription": {
+          "id": "string",
+          "user_id": "string",
+          "plan_id": "string",
+          "status": "string",
+          "start_date": "string (ISO 8601)",
+          "end_date": "string | null",
+          "cancelled_at": "string | null",
+          "created_at": "string (ISO 8601)",
+          "updated_at": "string (ISO 8601)",
+          "plan": "object (subscription_plans 정보)"
+        }
+      }
+    },
+    "status_no_subscription": {
+      "code": 200,
+      "body": {
+        "subscription": null,
+        "status": "none",
+        "message": "No active subscription found"
+      }
+    },
+    "create_success": {
+      "code": 201,
+      "body": {
+        "subscription": "object",
+        "message": "Subscription created successfully"
+      }
+    },
+    "cancel_success": {
+      "code": 200,
+      "body": {
+        "subscription": "object",
+        "message": "Subscription cancelled successfully"
+      }
+    }
+  },
+
+  "error_codes": {
+    "AUTH_001": "No token provided (401)",
+    "AUTH_002": "Invalid or expired token (401)",
+    "METHOD_NOT_ALLOWED": "잘못된 HTTP 메서드 (405)",
+    "VALIDATION_ERROR": "필수 파라미터 누락 (400)",
+    "SUBSCRIPTION_EXISTS": "이미 활성/대기 중인 구독 존재 (409)",
+    "PLAN_NOT_FOUND": "구독 플랜을 찾을 수 없음 (404)",
+    "NO_ACTIVE_SUBSCRIPTION": "해지할 활성 구독이 없음 (404)",
+    "DB_ERROR": "데이터베이스 오류 (500)",
+    "INTERNAL_ERROR": "예상치 못한 오류 (500)"
+  },
+
+  "security_features": [
+    "Bearer Token 인증 필수",
+    "Supabase Service Role Key 사용 (서버 측)",
+    "사용자 토큰 검증 (getUser)",
+    "사용자별 데이터 격리 (user_id 필터링)",
+    "HTTP 메서드 검증",
+    "입력 데이터 검증"
+  ],
+
+  "completion_checklist": {
+    "구독 상태 조회 API 구현": true,
+    "구독 신청 API 구현": true,
+    "구독 해지 API 구현": true,
+    "인증 검증 구현": true,
+    "Production 폴더에 복사": true,
+    "Task ID 주석 포함": true,
+    "에러 처리 구현": true,
+    "JSON 응답 형식": true
+  },
+
+  "deployment_notes": {
+    "vercel_config": "S1_개발_준비/Frontend/vercel.json에 이미 설정됨",
+    "env_variables": [
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY"
+    ],
+    "endpoints": [
+      "GET /api/subscription/status",
+      "POST /api/subscription/create",
+      "POST /api/subscription/cancel"
+    ]
+  },
+
+  "next_steps": [
+    "결제 API와 연동하여 pending → active 상태 전환 구현",
+    "구독 갱신 Cron Job 구현 (이미 vercel.json에 정의됨)",
+    "구독 만료 처리 로직 추가",
+    "이메일 알림 연동 (구독 생성/해지 시)"
+  ],
+
+  "related_tasks": {
+    "S2BA1": "Google OAuth API",
+    "S2BA2": "Resend 이메일 서비스",
+    "S4BA1": "결제 API (토스 페이먼트)",
+    "S4BA2": "결제 웹훅"
+  },
+
+  "verification": {
+    "files_identical": true,
+    "s2_production_sync": true,
+    "task_id_present": true,
+    "total_files": 3,
+    "total_lines": 464
+  }
+}

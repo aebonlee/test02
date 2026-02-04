@@ -1,0 +1,135 @@
+{
+  "report_type": "Policy_Document_Update",
+  "report_date": "2025-12-25",
+  "status": "Completed",
+  "summary": "SSAL Works 정책 변경에 따른 전체 문서 일괄 수정 완료",
+
+  "policy_changes": {
+    "credit_balance": {
+      "before": 5000,
+      "after": 50000,
+      "description": "웰컴 크레딧 ₩50,000"
+    },
+    "free_period": {
+      "before": "첫 달 (30일)",
+      "after": "1~3개월 (90일)",
+      "description": "무료 기간 3개월로 확대"
+    },
+    "platform_fee_start_date": {
+      "before": "NOW() + INTERVAL '30 days'",
+      "after": "NOW() + INTERVAL '90 days'",
+      "description": "플랫폼 이용료 시작일 90일로 변경"
+    },
+    "payment_start": {
+      "before": "다음 달부터",
+      "after": "4개월차부터",
+      "description": "결제 시작 시점 변경"
+    },
+    "payment_service_name": {
+      "before": "토스 페이먼트",
+      "after": "토스페이먼츠",
+      "description": "공식 명칭으로 통일"
+    }
+  },
+
+  "confirmed_policy": {
+    "installation_fee": "₩3,000,000 (무통장 입금)",
+    "monthly_fee": "₩50,000 (4개월차부터 자동결제)",
+    "free_period": "3개월 (1~3개월)",
+    "welcome_credit": "₩50,000 (설치비 납부 시 지급)",
+    "credit_charging": "토스페이먼츠 (API 원가 + 30% 마진)",
+    "bonus_discount": "없음"
+  },
+
+  "modified_files": {
+    "user_flows": [
+      {
+        "path": "P2_프로젝트_기획/User_Flows/1_Signup/flow.md",
+        "changes": ["웰컴 크레딧 주석 추가", "버전 1.1"]
+      },
+      {
+        "path": "P2_프로젝트_기획/User_Flows/2_Project_Registration/flow.md",
+        "changes": ["credit_balance 50000", "INTERVAL '90 days'", "버전 1.1"]
+      },
+      {
+        "path": "P2_프로젝트_기획/User_Flows/3_Subscription/flow.md",
+        "changes": ["1~3개월은 무료입니다!", "결제일 2026-04-01", "버전 1.1"]
+      },
+      {
+        "path": "P2_프로젝트_기획/User_Flows/3_Subscription/ui_specs.md",
+        "changes": ["1~3개월은 무료입니다! (3곳)", "🎁 무료 (1~3개월)"]
+      }
+    ],
+    "email_templates": [
+      {
+        "path": "Production/api/Backend_APIs/lib/email-service.js",
+        "changes": ["day7-reminder: 3개월 무료!", "₩50,000 웰컴 크레딧"]
+      }
+    ],
+    "frontend_pages": [
+      {
+        "path": "Production/pages/subscription/payment-method.html",
+        "changes": ["1~3개월은 무료입니다!", "4개월차부터 자동 결제"]
+      },
+      {
+        "path": "P3_프로토타입_제작/Frontend/Prototype/pages/subscription/payment-method.html",
+        "changes": ["Production과 동기화"]
+      }
+    ],
+    "terminology_unified": {
+      "pattern": "토스 페이먼트 → 토스페이먼츠",
+      "file_count": 27,
+      "affected_folders": [
+        "S0_Project-SAL-Grid_생성/sal-grid/",
+        "P0_작업_디렉토리_구조_생성/",
+        "P2_프로젝트_기획/Service_Introduction/",
+        "Production/"
+      ]
+    },
+    "planning_documents": [
+      {
+        "path": "S0_Project-SAL-Grid_생성/sal-grid/task-instructions/S4BA6_instruction.md",
+        "changes": ["이메일 템플릿 예시 3개월 무료 반영"]
+      },
+      {
+        "path": "P2_프로젝트_기획/문서_업데이트_검토_결과.md",
+        "changes": ["1~3개월 무료 (3곳)"]
+      },
+      {
+        "path": "P1_사업계획/BusinessPlan/AI-GEN_입력사항_정리.md",
+        "changes": ["무료기간 3개월", "웰컴크레딧 ₩50,000"]
+      }
+    ]
+  },
+
+  "git_commits": [
+    {
+      "hash": "46bff87",
+      "message": "fix: 전체 문서 \"첫 달 무료\" → \"3개월 무료\" 정책 반영",
+      "files_changed": 15
+    }
+  ],
+
+  "skipped_files": {
+    "reason": "히스토리 보존 (사용자 요청)",
+    "folder": "Human_ClaudeCode_Bridge/Reports/",
+    "files": [
+      "agenda6_implementation_completed.json",
+      "agenda6_verification_summary.md",
+      "agenda6_verification_report.json",
+      "agenda6_implementation_draft.md",
+      "agenda_reconstruction_2025-12-03.md",
+      "Task_Instruction_수정작업_대기목록.json",
+      "S4BA6_email_templates_completed.json"
+    ]
+  },
+
+  "verification": {
+    "grep_check": "PASSED",
+    "remaining_issues": "없음 (Reports 폴더 제외)",
+    "production_sync": "완료"
+  },
+
+  "generated_by": "Claude Code",
+  "generated_at": "2025-12-25T00:00:00+09:00"
+}

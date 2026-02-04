@@ -1,0 +1,44 @@
+{
+  "order_id": "ORDER-S4-20251220-001",
+  "created_at": "2025-12-20T00:00:00Z",
+  "stage": "S4",
+  "stage_name": "개발 3차 (QA & Optimization)",
+  "version": "3.5",
+  "purpose": "S4 Stage 전체 작업 실행 지시",
+  "payment_system": {
+    "installation_fee": {
+      "amount": 3000000,
+      "method": "무통장 입금"
+    },
+    "initial_credit": {
+      "amount": 50000,
+      "condition": "설치비 확인 시 자동 지급"
+    },
+    "free_period": {
+      "months": 3,
+      "description": "1~3개월차"
+    },
+    "monthly_fee": {
+      "amount": 50000,
+      "method": "토스 페이먼트",
+      "starts_from": "4개월차"
+    },
+    "credit_charge": {
+      "amounts": [10000, 20000, 30000, 50000],
+      "method": "토스 페이먼트"
+    }
+  },
+  "execution_steps": [
+    "Step 1: SAL Grid 확인 (Supabase project_sal_grid)",
+    "Step 2: Task 실행 순서 결정 (dependencies)",
+    "Step 3: 각 Task 실행 (task_agent 서브에이전트)",
+    "Step 4: 검증 (verification_agent 서브에이전트)",
+    "Step 5: 결과 JSON 파일 저장",
+    "Step 6: Supabase 동기화",
+    "Step 7: 결과물 파일 저장",
+    "Step 8: 다음 Task 진행",
+    "Step 9: Stage Gate",
+    "Step 10: PO 기능 테스트 요청"
+  ],
+  "status": "received"
+}

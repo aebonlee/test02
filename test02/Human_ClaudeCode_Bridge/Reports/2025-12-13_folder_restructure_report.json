@@ -1,0 +1,221 @@
+{
+  "report_id": "2025-12-13_folder_restructure",
+  "report_type": "작업 완료 보고서",
+  "generated_at": "2025-12-13T00:00:00Z",
+  "generated_by": "Claude Code (Opus 4.5)",
+  "commit_hash": "a0264ed",
+  "summary": {
+    "title": "폴더 구조 대규모 개편 - P0/S0 특별단계 추가, 부수적_고유기능 폴더 생성",
+    "total_files_changed": 392,
+    "lines_inserted": 71117,
+    "lines_deleted": 4902
+  },
+  "tasks": [
+    {
+      "task_id": "T1",
+      "task_name": "Development_Process_Monitor 폴더 정리",
+      "description": "불필요/유효하지 않은 파일 삭제",
+      "status": "완료",
+      "deleted_files": [
+        {
+          "file": "server.log",
+          "location": "Development_Process_Monitor/",
+          "reason": "불필요한 로그"
+        },
+        {
+          "file": "watcher.log",
+          "location": "Development_Process_Monitor/",
+          "reason": "불필요한 로그"
+        },
+        {
+          "file": "website_sidebar_process_structure.md",
+          "location": "Development_Process_Monitor/",
+          "reason": "오래된 문서"
+        },
+        {
+          "file": "website_sidebar_structure_FINAL.md",
+          "location": "Development_Process_Monitor/",
+          "reason": "오래된 문서"
+        },
+        {
+          "file": "sidebar_process_structure_CORRECTED.md",
+          "location": "Development_Process_Monitor/sidebar_generation/",
+          "reason": "오래된 문서"
+        }
+      ],
+      "saved_space_kb": 972
+    },
+    {
+      "task_id": "T2",
+      "task_name": "P0 폴더 구조 생성",
+      "description": "특별단계 P0 폴더 생성 및 핵심 문서 이동",
+      "status": "완료",
+      "created_folder": "P0_작업_디렉토리_구조_생성/",
+      "moved_files": [
+        {
+          "original": "PROJECT_DIRECTORY_STRUCTURE.md (루트)",
+          "new_location": "P0_작업_디렉토리_구조_생성/Project_Directory_Structure.md"
+        },
+        {
+          "original": "PROJECT_STATUS.md (루트)",
+          "new_location": "P0_작업_디렉토리_구조_생성/Project_Status.md"
+        }
+      ],
+      "naming_change": "ALL CAPS → Mixed Case"
+    },
+    {
+      "task_id": "T3",
+      "task_name": "S0 폴더 구조 변경",
+      "description": "Project-SSAL-Grid 폴더명 변경",
+      "status": "완료",
+      "folder_rename": {
+        "original": "Project-SSAL-Grid/",
+        "new_name": "S0_Project-SSAL-Grid_생성/"
+      },
+      "preserved_structure": [
+        "manual/",
+        "ssal-grid/",
+        "supabase/",
+        "viewer/"
+      ]
+    },
+    {
+      "task_id": "T4",
+      "task_name": "부수적_고유기능 폴더 생성",
+      "description": "SSALWorks 전용 기능 폴더 생성 및 파일 이동",
+      "status": "완료",
+      "created_folder": "부수적_고유기능/",
+      "sub_folders": [
+        "AI_Link/",
+        "학습용_Books/",
+        "콘텐츠_변환_자동화_scripts/"
+      ],
+      "moved_items": [
+        {
+          "original": "AI_Link/ (루트)",
+          "new_location": "부수적_고유기능/AI_Link/"
+        },
+        {
+          "original": "학습용_Books/ (루트)",
+          "new_location": "부수적_고유기능/학습용_Books/"
+        },
+        {
+          "original": "scripts/ (루트)",
+          "new_location": "부수적_고유기능/콘텐츠_변환_자동화_scripts/"
+        }
+      ]
+    },
+    {
+      "task_id": "T5",
+      "task_name": "sidebar_structure.json 업데이트",
+      "description": "P0, S0 항목 추가",
+      "status": "완료",
+      "modified_file": "Development_Process_Monitor/sidebar_generation/sidebar_structure.json",
+      "added_entries": [
+        {
+          "id": "S0_Project-SSAL-Grid_생성",
+          "name_ko": "Project SSAL Grid 생성"
+        },
+        {
+          "id": "P0_작업_디렉토리_구조_생성",
+          "name_ko": "작업 디렉토리 구조 생성",
+          "categories": [
+            { "id": "Project_Directory_Structure", "name_ko": "디렉토리 구조" },
+            { "id": "Project_Status", "name_ko": "프로젝트 상태" }
+          ]
+        }
+      ]
+    },
+    {
+      "task_id": "T6",
+      "task_name": "사이드바 HTML 업데이트",
+      "description": "P0, S0 사이드바 항목 추가 및 스타일 적용",
+      "status": "완료",
+      "modified_files": [
+        "Production/Frontend/index.html",
+        "P3_프로토타입_제작/Frontend/Prototype/index.html"
+      ],
+      "changes": [
+        "P0 항목 추가 (펼침 가능, 하위 항목 포함)",
+        "S0 항목 추가 (별표 아이콘 제거)",
+        "하위 항목 글자 크기 규칙 준수"
+      ]
+    },
+    {
+      "task_id": "T7",
+      "task_name": "CLAUDE.md 업데이트",
+      "description": "파일 경로 업데이트 + 폴더 생성 금지 규칙 강화",
+      "status": "완료",
+      "modified_file": ".claude/CLAUDE.md",
+      "path_updates": [
+        {
+          "old": "PROJECT_STATUS.md",
+          "new": "P0_작업_디렉토리_구조_생성/Project_Status.md"
+        },
+        {
+          "old": "PROJECT_DIRECTORY_STRUCTURE.md",
+          "new": "P0_작업_디렉토리_구조_생성/Project_Directory_Structure.md"
+        }
+      ],
+      "new_rules_added": {
+        "title": "새 폴더 생성 절대 금지 (2025-12-13 확정)",
+        "rules": [
+          "⛔ 절대 금지: 새 폴더 생성",
+          "⛔ 절대 금지: 폴더 구조 변경",
+          "⛔ 절대 금지: 폴더 이름 변경"
+        ]
+      }
+    },
+    {
+      "task_id": "T8",
+      "task_name": "사이드바 동기화 스크립트 생성",
+      "description": "sidebar_structure.json → HTML 자동 동기화 스크립트 작성",
+      "status": "완료",
+      "created_files": [
+        "Development_Process_Monitor/sidebar_generation/update_sidebar_html.js",
+        "Development_Process_Monitor/sidebar_generation/README.md"
+      ],
+      "functionality": [
+        "sidebar_structure.json 읽기",
+        "S1-S5 Stage의 Area 목록 추출",
+        "Production/Frontend/index.html의 해당 섹션 자동 교체"
+      ]
+    }
+  ],
+  "statistics": {
+    "folders_created": 4,
+    "files_moved": 5,
+    "files_modified": 6,
+    "files_deleted": 5,
+    "files_created": 2
+  },
+  "final_folder_structure": {
+    "special_stages": [
+      "P0_작업_디렉토리_구조_생성/",
+      "S0_Project-SSAL-Grid_생성/"
+    ],
+    "preliminary_stages": [
+      "P1_사업계획/",
+      "P2_프로젝트_기획/",
+      "P3_프로토타입_제작/"
+    ],
+    "execution_stages": [
+      "S1_개발_준비/",
+      "S2_개발-1차/",
+      "S3_개발-2차/",
+      "S4_개발-3차/",
+      "S5_운영/"
+    ],
+    "additional_folders": [
+      "Production/",
+      "부수적_고유기능/",
+      "Web_ClaudeCode_Bridge/",
+      "Development_Process_Monitor/",
+      "참고자료/"
+    ]
+  },
+  "notes": [
+    "푸시는 아직 진행하지 않음 (사용자 지시에 따라 나중에 진행)",
+    "서브모듈(dotfiles)에 수정 내용 있으나 메인 커밋에 미포함"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "report_type": "error_guide",
+  "created_at": "2026-01-05",
+  "title": "Google OAuth 403 disallowed_useragent 에러 해결 가이드",
+  "feature": "Google 로그인",
+  "status": "reference_document",
+
+  "error_info": {
+    "error_code": "403",
+    "error_type": "disallowed_useragent",
+    "error_message_ko": "액세스 차단됨: SSAL Works의 요청이 Google 정책을 준수하지 않습니다",
+    "error_message_en": "Access blocked: The request doesn't comply with Google's 'Secure Browser' policy"
+  },
+
+  "root_cause": {
+    "description": "사용자가 앱 내 WebView 또는 임베디드 브라우저에서 Google 로그인을 시도할 때 발생",
+    "google_policy": "Google은 보안상의 이유로 WebView, 임베디드 브라우저에서의 OAuth 로그인을 차단함",
+    "common_scenarios": [
+      "카카오톡 앱 내 브라우저에서 링크 열기",
+      "네이버 앱 내 브라우저에서 링크 열기",
+      "Facebook/Instagram 앱 내 브라우저",
+      "LINE 앱 내 브라우저",
+      "기타 앱의 인앱 브라우저(WebView)"
+    ]
+  },
+
+  "solution": {
+    "type": "user_guidance",
+    "is_code_issue": false,
+    "description": "코드 수정이 아닌 사용자 접속 환경 변경으로 해결",
+
+    "user_instructions": {
+      "method_1": {
+        "name": "외부 브라우저로 열기",
+        "steps": [
+          "앱 내 브라우저 우측 상단 '...' 또는 메뉴 버튼 클릭",
+          "'기본 브라우저로 열기' 또는 'Chrome으로 열기' 선택",
+          "일반 브라우저에서 페이지가 열리면 Google 로그인 진행"
+        ]
+      },
+      "method_2": {
+        "name": "직접 브라우저 접속",
+        "steps": [
+          "Chrome, Safari 등 일반 웹브라우저 앱 실행",
+          "주소창에 www.ssalworks.ai.kr 직접 입력",
+          "Google 로그인 진행"
+        ]
+      },
+      "method_3": {
+        "name": "링크 복사 후 브라우저에서 열기",
+        "steps": [
+          "앱 내에서 링크 길게 눌러 복사",
+          "Chrome/Safari 열기",
+          "주소창에 붙여넣기 후 이동"
+        ]
+      }
+    }
+  },
+
+  "affected_apps": [
+    {
+      "app": "카카오톡",
+      "solution": "우측 상단 ... → Safari/Chrome으로 열기"
+    },
+    {
+      "app": "네이버",
+      "solution": "하단 메뉴 → 다른 브라우저로 열기"
+    },
+    {
+      "app": "Facebook",
+      "solution": "우측 하단 ... → 브라우저에서 열기"
+    },
+    {
+      "app": "Instagram",
+      "solution": "우측 상단 ... → 브라우저에서 열기"
+    },
+    {
+      "app": "LINE",
+      "solution": "우측 상단 메뉴 → 기본 브라우저로 열기"
+    }
+  ],
+
+  "customer_support_template": {
+    "korean": "안녕하세요, Google 로그인 시 '액세스 차단됨' 오류가 발생하셨군요.\n\n이 오류는 카카오톡, 네이버 등 앱 내 브라우저에서 접속할 때 Google 보안 정책에 의해 발생합니다.\n\n해결 방법:\n1. 현재 화면 우측 상단 '...' 메뉴를 누르세요\n2. 'Chrome으로 열기' 또는 '기본 브라우저로 열기'를 선택하세요\n3. 일반 브라우저에서 다시 Google 로그인을 시도해주세요\n\n또는 Chrome/Safari 앱을 직접 열어서 www.ssalworks.ai.kr 로 접속해주세요.\n\n감사합니다.",
+    "english": "Hello, we see you encountered an 'Access Blocked' error during Google login.\n\nThis error occurs due to Google's security policy when accessing from in-app browsers (KakaoTalk, Naver, etc.).\n\nSolution:\n1. Tap '...' menu at the top right of your screen\n2. Select 'Open in Chrome' or 'Open in default browser'\n3. Try Google login again in the regular browser\n\nAlternatively, open Chrome/Safari directly and go to www.ssalworks.ai.kr\n\nThank you."
+  },
+
+  "technical_notes": {
+    "google_documentation": "https://developers.google.com/identity/protocols/oauth2/policies",
+    "reason": "Google은 WebView에서의 OAuth를 차단하는 이유로 피싱 방지, 사용자 자격 증명 보호를 명시함",
+    "cannot_bypass": "이 정책은 코드로 우회할 수 없으며, 사용자가 일반 브라우저를 사용해야만 해결됨"
+  },
+
+  "prevention": [
+    "사용자에게 일반 브라우저 사용 권장 안내문 추가 가능",
+    "로그인 페이지에 '카카오톡/네이버 앱에서 접속 시 외부 브라우저 사용' 안내 표시 고려",
+    "FAQ에 해당 에러 해결 방법 추가"
+  ],
+
+  "related_files": [
+    "pages/auth/google-login.html",
+    "api/Security/google-callback.js",
+    "index.html (Google 로그인 버튼)"
+  ]
+}

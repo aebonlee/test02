@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>ORDER SHEET v5.4</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #fff;
+            color: #333;
+            line-height: 1.8;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            margin: 30px 0 20px 0;
+            border-left: 5px solid #e94560;
+        }
+        h3 {
+            color: #e94560;
+            margin: 25px 0 15px 0;
+        }
+        .part-header {
+            background: #e94560;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 40px 0 30px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .meta-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+        .meta-table td:first-child {
+            background: #f9f9f9;
+            font-weight: bold;
+            width: 150px;
+        }
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .step-box {
+            border: 2px solid #ddd;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .step-title {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+        .step-title span {
+            background: #e94560;
+            padding: 3px 12px;
+            border-radius: 15px;
+            margin-right: 10px;
+        }
+        .step-content {
+            padding: 20px;
+        }
+        .output {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            font-family: monospace;
+            border-radius: 3px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #f5f5f5;
+        }
+        .area-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .area-item {
+            background: #f9f9f9;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .area-item strong {
+            color: #e94560;
+            font-size: 1.2em;
+        }
+        .example {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>ORDER SHEET v5.4<br><small style="color:#666;font-size:0.5em;">AI 작업 지시서 - S1~S5 공통 적용</small></h1>
+
+<!-- ORDER SHEET -->
+<h2>ORDER_SHEET</h2>
+<table class="meta-table">
+    <tr><td>order_id</td><td>(자동 생성)</td></tr>
+    <tr><td>created_at</td><td>(자동 생성)</td></tr>
+    <tr><td>version</td><td>5.4</td></tr>
+    <tr><td>stage</td><td>S{N}</td></tr>
+    <tr><td>stage_name</td><td>개발 준비 | 개발 1차 | 개발 2차 | 개발 3차 | 개발 마무리</td></tr>
+    <tr><td>purpose</td><td>{stage_name} 전체 Task 실행 및 검증</td></tr>
+</table>
+
+<!-- PART A -->
+<div class="part-header">PART A: 표준 내용</div>
+
+<h2>A1. AI 준수 사항</h2>
+<ol>
+    <li><strong>이 Order Sheet를 100% 이해할 때까지 작업 시작 금지</strong></li>
+    <li><strong>4개 소스(Order Sheet / Task Instruction / Task Plan / SAL Grid) 일치 확인 전 작업 금지</strong></li>
+    <li><strong>규칙 파일(.claude/rules/) 확인 전 파일 생성/저장 금지</strong></li>
+    <li><strong>불명확한 점은 추측 금지, 반드시 질문</strong></li>
+    <li><strong>6단계 작업 순서 (A2 참조) 건너뛰거나 변경 금지</strong></li>
+    <li><strong>거짓 기록 절대 금지</strong></li>
+</ol>
+
+<h2>A2. AI 작업 순서 (6단계)</h2>
+
+<div class="step-box">
+    <div class="step-title"><span>1</span> Order Sheet 완전 이해</div>
+    <div class="step-content">
+        <p><strong>목적:</strong> Order Sheet의 모든 내용을 100% 파악</p>
+        <p><strong>체크리스트:</strong></p>
+        <ul>
+            <li>1-1. ORDER_SHEET 확인 → Stage, 목적 파악</li>
+            <li>1-2. PART_B 특별 지시사항 확인</li>
+            <li>1-3. PART_B 참고사항 확인</li>
+        </ul>
+        <div class="output">출력: 'Order Sheet 확인 완료. Stage: S{N}, Task: {N}개'</div>
+    </div>
+</div>
+
+<div class="step-box">
+    <div class="step-title"><span>2</span> 4개 소스 일관성 검증</div>
+    <div class="step-content">
+        <p><strong>목적:</strong> Order Sheet, Task Instruction, Task Plan, SAL Grid 일치 확인</p>
+        <p><strong>4개 소스:</strong></p>
+        <table>
+            <tr><td>소스 1</td><td>Order Sheet (이 파일)</td></tr>
+            <tr><td>소스 2</td><td>Task Instruction (A5 참조)</td></tr>
+            <tr><td>소스 3</td><td>Task Plan (A5 참조)</td></tr>
+            <tr><td>소스 4</td><td>SAL Grid (A5 참조)</td></tr>
+        </table>
+        <p><strong>체크리스트:</strong></p>
+        <ul>
+            <li>2-1. Task 개수 일치?</li>
+            <li>2-2. Task ID 일치?</li>
+            <li>2-3. Task Name 일치?</li>
+            <li>2-4. Dependencies 일치?</li>
+            <li>2-5. Instruction 파일 존재?</li>
+        </ul>
+        <div class="warning"><strong>불일치 시:</strong> PO에게 보고 후 수정 지시 대기</div>
+        <div class="output">출력: '일관성 검증 완료. 불일치: {0/N}개'</div>
+    </div>
+</div>
+
+<div class="step-box">
+    <div class="step-title"><span>3</span> 작업 규칙 확인</div>
+    <div class="step-content">
+        <p><strong>규칙 파일 위치:</strong> <span class="code">.claude/rules/</span></p>
+        <table>
+            <tr><th>파일명</th><th>용도</th></tr>
+            <tr><td>01_file-naming.md</td><td>파일 생성 시</td></tr>
+            <tr style="background:#fff3e0;"><td><strong>02_save-location.md</strong></td><td><strong>파일 저장 시 (필독!)</strong></td></tr>
+            <tr><td>03_area-stage.md</td><td>폴더 선택 시</td></tr>
+            <tr><td>04_grid-writing.md</td><td>SAL Grid 기록 시</td></tr>
+            <tr style="background:#fff3e0;"><td><strong>05_execution-process.md</strong></td><td><strong>Task 실행 시</strong></td></tr>
+            <tr><td>06_verification.md</td><td>검증 시</td></tr>
+            <tr><td>07_task-crud.md</td><td>Task 추가/삭제/수정 시</td></tr>
+        </table>
+        <div class="output">출력: '규칙 확인 완료'</div>
+    </div>
+</div>
+
+<div class="step-box">
+    <div class="step-title"><span>4</span> 문의사항 질문</div>
+    <div class="step-content">
+        <p><strong>질문해야 할 상황:</strong></p>
+        <ul>
+            <li>Task Instruction이 불명확할 때</li>
+            <li>여러 해석이 가능할 때</li>
+            <li>기술적 결정이 필요할 때</li>
+            <li>파일 저장 위치가 불분명할 때</li>
+        </ul>
+        <p><strong>질문 형식:</strong></p>
+        <pre style="background:#f5f5f5;padding:15px;">[{Task ID}] 질문: {내용}
+옵션 A: {옵션1}
+옵션 B: {옵션2}</pre>
+        <div class="warning"><strong>금지:</strong> 추측 진행, 임의 결정, 애매하면 일단 진행</div>
+        <div class="output">출력: 질문 목록 또는 '질문 없음'</div>
+    </div>
+</div>
+
+<div class="step-box">
+    <div class="step-title"><span>5</span> 실행</div>
+    <div class="step-content">
+        <p><strong>실행 순서:</strong></p>
+        <ol>
+            <li>5-1. Dependencies 기반 Task 순서 결정 (SAL Grid 참조)</li>
+            <li>5-2. 각 Task: 작업 → 검증 → SAL Grid에 기록 → 파일 저장</li>
+            <li>5-3. Stage Gate 검증</li>
+        </ol>
+        <p><strong>Task별 체크리스트:</strong></p>
+        <ul>
+            <li>Task Instruction (A5 참조) 읽기</li>
+            <li>작업 수행</li>
+            <li>검증 수행 (Verification Instruction, A5 참조)</li>
+            <li>SAL Grid에 기록 (A3 참조)</li>
+            <li>파일 저장 (A4 참조)</li>
+        </ul>
+        <div class="output">출력: 각 Task SAL Grid에 기록</div>
+    </div>
+</div>
+
+<div class="step-box">
+    <div class="step-title"><span>6</span> Stage 완료 기록</div>
+    <div class="step-content">
+        <p><strong>목적:</strong> Stage 전체 작업 결과를 SAL Grid에 기록</p>
+        <p><strong>기록 항목:</strong></p>
+        <ul>
+            <li>완료된 Task 목록</li>
+            <li>생성/수정된 파일 목록</li>
+            <li>검증 결과</li>
+            <li>특이사항</li>
+        </ul>
+        <div class="output">출력: SAL Grid에서 확인 가능</div>
+    </div>
+</div>
+
+<h2>A3. SAL Grid 기록 규칙</h2>
+<p>Task 완료 시 SAL Grid에 기록할 필드:</p>
+<table>
+    <tr><th>필드</th><th>값</th></tr>
+    <tr><td>task_progress</td><td>100</td></tr>
+    <tr><td>task_status</td><td>Completed</td></tr>
+    <tr><td>generated_files</td><td>[파일 경로 목록]</td></tr>
+    <tr><td>test</td><td>{unit_test, integration_test}</td></tr>
+    <tr><td>build</td><td>{lint, compile}</td></tr>
+    <tr><td>integration_verification</td><td>{data_flow, cross_task_connection}</td></tr>
+    <tr><td>blockers</td><td>{status: 'No Blockers'}</td></tr>
+    <tr><td>comprehensive_verification</td><td>종합 결과</td></tr>
+    <tr><td>verification_status</td><td>Verified</td></tr>
+</table>
+<div class="warning"><strong>완료 조건:</strong> 위 필드 모두 채워야 task_status=Completed 가능</div>
+
+<h2>A4. 파일 저장 규칙</h2>
+<ol>
+    <li><strong>규칙 1:</strong> S{N}_{Stage명}/{Area}/ 폴더에 저장</li>
+    <li><strong>규칙 2:</strong> F, BA, D 코드는 Production/ 폴더에도 저장</li>
+    <li><strong>규칙 3:</strong> 저장 전 02_save-location.md 반드시 확인</li>
+</ol>
+
+<h3>Area 매핑</h3>
+<div class="area-grid">
+    <div class="area-item"><strong>M</strong><br>Documentation</div>
+    <div class="area-item"><strong>U</strong><br>Design</div>
+    <div class="area-item"><strong>F</strong><br>Frontend</div>
+    <div class="area-item"><strong>BI</strong><br>Backend_Infra</div>
+    <div class="area-item"><strong>BA</strong><br>Backend_APIs</div>
+    <div class="area-item"><strong>D</strong><br>Database</div>
+    <div class="area-item"><strong>S</strong><br>Security</div>
+    <div class="area-item"><strong>T</strong><br>Testing</div>
+    <div class="area-item"><strong>O</strong><br>DevOps</div>
+    <div class="area-item"><strong>E</strong><br>External</div>
+    <div class="area-item"><strong>C</strong><br>Content</div>
+</div>
+
+<h2>A5. 참조 문서</h2>
+<table>
+    <tr><td>규칙 파일</td><td>.claude/rules/</td></tr>
+    <tr><td>Task_Plan</td><td>S0_Project-SAL-Grid_생성/sal-grid/SSALWORKS_TASK_PLAN.md</td></tr>
+    <tr><td>Task_Instruction</td><td>S0_Project-SAL-Grid_생성/sal-grid/task-instructions/</td></tr>
+    <tr><td>Verification_Instruction</td><td>S0_Project-SAL-Grid_생성/sal-grid/verification-instructions/</td></tr>
+    <tr><td>Grid_Manual</td><td>S0_Project-SAL-Grid_생성/manual/PROJECT_SAL_GRID_MANUAL.md</td></tr>
+    <tr><td>SAL_Grid</td><td>Supabase project_sal_grid 테이블</td></tr>
+</table>
+
+<!-- PART B -->
+<div class="part-header">PART B: 프로젝트별 추가 내용</div>
+
+<p><em>프로젝트별로 추가할 내용을 아래에 기재하여 주세요. Task 목록은 ORDER_SHEET의 stage에 해당하는 SAL Grid 전체 Task입니다.</em></p>
+
+<h2>B1. 특별 지시사항</h2>
+<p>이번 Order에만 적용되는 특별한 지시 (없으면 빈 배열)</p>
+<pre style="background:#f5f5f5;padding:15px;">{ "items": [] }</pre>
+<p><strong>예시:</strong></p>
+<div class="example">'S2F1 작업 시 기존 login.html 수정 말고 새로 작성'</div>
+<div class="example">'S3BA1 완료 후 반드시 API 문서 업데이트'</div>
+<div class="example">'S4T1 테스트는 Chrome, Safari 두 브라우저에서 수행'</div>
+
+<h2>B2. 참고사항</h2>
+<p>AI가 작업과 관련하여 알아야 할 배경 정보 등 참고사항 (없으면 빈 배열)</p>
+<pre style="background:#f5f5f5;padding:15px;">{ "items": [] }</pre>
+<p><strong>예시:</strong></p>
+<div class="example">'이전 세션에서 S2BA1 API 응답 형식 변경함'</div>
+<div class="example">'Supabase RLS가 개발 모드'</div>
+<div class="example">'토스 페이먼트 테스트 키가 .env에 설정됨'</div>
+
+<hr style="margin:40px 0;">
+<p style="text-align:center;color:#666;">ORDER SHEET v5.4 - SSALWorks Project</p>
+
+</body>
+</html>

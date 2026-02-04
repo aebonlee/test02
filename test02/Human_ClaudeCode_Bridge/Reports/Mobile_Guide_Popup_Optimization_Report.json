@@ -1,0 +1,112 @@
+{
+  "report_id": "MOBILE_GUIDE_POPUP_OPT_20251231",
+  "title": "좌측 사이드바 모바일 반응형 개선",
+  "date": "2025-12-31",
+  "status": "completed",
+  "commit": "49ff7a3",
+
+  "summary": {
+    "objective": "좌측 사이드바에서 열리는 팝업들의 모바일 UX 개선",
+    "issues_found": 4,
+    "fixes_applied": 7,
+    "test_result": "passed"
+  },
+
+  "issues": [
+    {
+      "id": 1,
+      "description": "가이드 팝업 열릴 때 사이드바가 열린 상태로 남아서 팝업 내용이 가려짐",
+      "severity": "high",
+      "status": "fixed"
+    },
+    {
+      "id": 2,
+      "description": "팝업 내용 폰트 크기(11px)가 모바일에서 작음",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "id": 3,
+      "description": "버튼 터치 영역이 Apple 권장 크기(44px) 미달",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "id": 4,
+      "description": "CSS !important 과다 사용 (inline style 때문에 필요했음)",
+      "severity": "low",
+      "status": "fixed"
+    }
+  ],
+
+  "fixes": [
+    {
+      "id": 1,
+      "description": "사이드바 자동 닫기",
+      "location": "openGuideModalFromUrl(), openGuideModalWithConfirm()",
+      "code_added": "좌측 사이드바 자동 닫기 코드 (5줄)"
+    },
+    {
+      "id": 2,
+      "description": "폰트 크기 증가",
+      "location": "#guidePopupContent CSS",
+      "change": "11px → 13px"
+    },
+    {
+      "id": 3,
+      "description": "제목 크기 설정",
+      "location": "#guidePopupContent h1/h2/h3 CSS",
+      "change": "→ 16px"
+    },
+    {
+      "id": 4,
+      "description": "버튼 터치 영역 확대",
+      "location": "#guidePopupContent button CSS",
+      "change": "min-height: 44px"
+    },
+    {
+      "id": 5,
+      "description": "패딩 최적화",
+      "location": "#guidePopupContent CSS",
+      "change": "20px → 16px"
+    },
+    {
+      "id": 6,
+      "description": "헤더 최적화",
+      "location": "#guidePopupHeader, #guidePopupTitle CSS",
+      "change": "패딩/폰트 사이즈 조정"
+    },
+    {
+      "id": 7,
+      "description": "CSS 리팩토링 (!important 제거)",
+      "location": "index.html CSS 섹션",
+      "change": "inline styles → CSS 스타일시트 이동, 모바일 미디어 쿼리에서 !important 제거"
+    }
+  ],
+
+  "files_modified": [
+    {
+      "path": "index.html",
+      "lines": ["2331-2385 (기본 CSS)", "2904-2931 (모바일 CSS)", "6104-6109", "6228-6233", "10811 (HTML)"],
+      "type": "JavaScript + CSS + HTML"
+    }
+  ],
+
+  "test_results": {
+    "sidebar_auto_close": "passed",
+    "popup_readability": "passed",
+    "touch_targets": "passed",
+    "css_important_removed": "passed",
+    "device_tested": "iPhone 12 (390x844)",
+    "test_tool": "Playwright"
+  },
+
+  "verification_status": "completed",
+  "uiux_review": {
+    "date": "2025-12-31",
+    "agent": "UI/UX Specialist",
+    "issues_identified": 1,
+    "issues_resolved": 1,
+    "final_verdict": "approved"
+  }
+}

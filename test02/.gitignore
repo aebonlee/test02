@@ -1,0 +1,105 @@
+﻿# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+__tests__/
+e2e/
+
+# Next.js / Build
+.next/
+out/
+build/
+dist/
+
+# Environment Variables
+.env
+.env.local
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+.temp/
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+
+# Supabase
+.supabase/
+
+# Vercel
+.vercel/
+
+# Docker
+.dockerignore
+
+# PROJECT GRID 留ㅻ돱??(鍮꾨? ?명븯??
+**/PROJECT_GRID_留ㅻ돱??.md
+**/PROJECT_GRID_MANUAL*.md
+
+# PROJECT GRID ?꾩뭅?대툕 (援щ쾭??蹂닿?)
+**/2_媛쒕컻以鍮?2-4_Project_Grid/archive/
+
+# Claude Code
+claude_code/
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+
+# Windows special files
+nul
+NUL
+AI_Link/README.md
+.vercel
+Web_ClaudeCode_Bridge/
+
+
+# Archives
+*.zip
+# Dev Package 템플릿은 배포에 필요하므로 예외
+!assets/dev-package/Project_Dev_Package_Template.zip
+test-results/

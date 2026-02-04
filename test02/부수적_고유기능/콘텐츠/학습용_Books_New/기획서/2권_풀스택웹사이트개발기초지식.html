@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2권: 풀스택 웹사이트 개발 기초지식</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            padding: 40px 30px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: #0066cc;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #e67700;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .stage {
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        .stage-header {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .stage-content {
+            padding: 10px 15px;
+        }
+        .episode {
+            padding: 6px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+        .episode:last-child { border-bottom: none; }
+        .episode-num {
+            min-width: 40px;
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .episode-title {
+            flex: 1;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            margin-left: 6px;
+            color: #fff;
+        }
+        .tag-new { background: #40c057; }
+        .tag-edit { background: #fab005; color: #212529; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📗 2권: 풀스택 웹사이트 개발 기초지식</h1>
+        <div class="subtitle">총 27편 (9단계)</div>
+
+        <div class="stage">
+            <div class="stage-header">1단계: 웹개발 이해 (2편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">1편</span><span class="episode-title">웹개발 핵심 개념 & 용어</span></div>
+                <div class="episode"><span class="episode-num">2편</span><span class="episode-title">웹사이트 작동 원리와 구조</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">2단계: 개발 환경 구축 (2편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">3편</span><span class="episode-title">명령줄(CLI)와 개발환경 설정</span></div>
+                <div class="episode"><span class="episode-num">4편</span><span class="episode-title">코드 에디터와 IDE</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">3단계: 웹 기술 핵심 (4편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">5편</span><span class="episode-title">HTML</span></div>
+                <div class="episode"><span class="episode-num">6편</span><span class="episode-title">CSS와 Tailwind CSS</span><span class="tag tag-edit">수정</span></div>
+                <div class="episode"><span class="episode-num">7편</span><span class="episode-title">JavaScript</span></div>
+                <div class="episode"><span class="episode-num">8편</span><span class="episode-title">TypeScript 기초</span><span class="tag tag-new">신규</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">4단계: 프레임워크와 도구 (5편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">9편</span><span class="episode-title">Git과 GitHub</span></div>
+                <div class="episode"><span class="episode-num">10편</span><span class="episode-title">React 기초</span><span class="tag tag-edit">수정</span></div>
+                <div class="episode"><span class="episode-num">11편</span><span class="episode-title">Next.js 완전 가이드</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">12편</span><span class="episode-title">패키지 관리와 코드 품질</span><span class="tag tag-edit">수정</span></div>
+                <div class="episode"><span class="episode-num">13편</span><span class="episode-title">백엔드 기초와 Node.js</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">5단계: 데이터와 통신 (3편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">14편</span><span class="episode-title">데이터베이스 기초</span></div>
+                <div class="episode"><span class="episode-num">15편</span><span class="episode-title">데이터베이스 실무</span></div>
+                <div class="episode"><span class="episode-num">16편</span><span class="episode-title">API와 서버 통신</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">6단계: 테스트와 품질 (2편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">17편</span><span class="episode-title">테스트 자동화</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">18편</span><span class="episode-title">웹 보안과 성능 최적화</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">7단계: 배포와 운영 (3편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">19편</span><span class="episode-title">도메인과 호스팅</span></div>
+                <div class="episode"><span class="episode-num">20편</span><span class="episode-title">CI/CD와 DevOps 기초</span><span class="tag tag-edit">수정</span></div>
+                <div class="episode"><span class="episode-num">21편</span><span class="episode-title">SEO와 웹 접근성</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">8단계: 실전 서비스 연동 (5편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">22편</span><span class="episode-title">Supabase 완전 활용</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">23편</span><span class="episode-title">Supabase Auth와 인증</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">24편</span><span class="episode-title">폼 처리와 데이터 검증</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">25편</span><span class="episode-title">실시간 통신</span><span class="tag tag-new">신규</span></div>
+                <div class="episode"><span class="episode-num">26편</span><span class="episode-title">외부 서비스 연동 실전</span><span class="tag tag-new">신규</span></div>
+            </div>
+        </div>
+
+        <div class="stage">
+            <div class="stage-header">9단계: 고급 주제 (1편)</div>
+            <div class="stage-content">
+                <div class="episode"><span class="episode-num">27편</span><span class="episode-title">마크다운 렌더링과 콘텐츠</span><span class="tag tag-new">신규</span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

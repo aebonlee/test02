@@ -1,0 +1,84 @@
+{
+  "report_title": "예시 프로젝트 연결하기 오류수정 내역",
+  "report_date": "2025-12-31",
+  "status": "완료",
+  "summary": "예시 프로젝트 → 서약서 → Google Drive 연결 흐름에서 발생한 오류들을 수정하여 PC/모바일 모두 정상 작동하도록 함",
+
+  "issues_fixed": [
+    {
+      "issue_id": 1,
+      "issue_title": "사용자 정보를 확인할 수 없습니다 에러",
+      "symptom": "[확인] 버튼 클릭 시 '사용자 정보를 확인할 수 없습니다' 알림 표시",
+      "root_cause": "코드에서 존재하지 않는 컬럼명 사용 (full_name, builder_account_id)",
+      "solution": "실제 DB 컬럼명으로 수정 (real_name, builder_id)",
+      "files_modified": [
+        {
+          "file": "index.html",
+          "changes": [
+            "Line 6395: .select('full_name, builder_account_id') → .select('real_name, builder_id')",
+            "Line 6449: userData?.full_name → userData?.real_name",
+            "Line 6450: userData?.builder_account_id → userData?.builder_id",
+            "Line 6474: .select('full_name, builder_account_id') → .select('real_name, builder_id')",
+            "Line 6478: userData?.full_name → userData?.real_name",
+            "Line 6479: userData?.builder_account_id → userData?.builder_id"
+          ]
+        }
+      ],
+      "commit": "61ea9a0 - fix: users 테이블 컬럼명 수정"
+    },
+    {
+      "issue_id": 2,
+      "issue_title": "RLS 정책 미적용",
+      "symptom": "컬럼명 수정 후에도 동일 에러 지속",
+      "root_cause": "users 테이블에 RLS 정책이 없어서 로그인한 사용자가 자신의 데이터를 조회할 수 없음",
+      "solution": "Supabase에 RLS 정책 추가",
+      "sql_executed": "CREATE POLICY \"Users can read own data\" ON public.users FOR SELECT TO authenticated USING (auth.uid() = id);"
+    },
+    {
+      "issue_id": 3,
+      "issue_title": "모바일에서 서약서 모달 안 보임",
+      "symptom": "모바일에서 서약서 제목, 내용, 동의 버튼 모두 안 보임",
+      "root_cause": "popup-modal-box CSS에 max-height 제한 없어서 모달이 화면을 벗어남",
+      "solution": "max-height: 90vh, overflow-y: auto 추가",
+      "files_modified": [
+        {
+          "file": "index.html",
+          "changes": [
+            "Line 2413: max-height: 90vh 추가",
+            "Line 2414: overflow-y: auto 추가"
+          ]
+        }
+      ],
+      "commit": "43e5881 - fix: 모바일에서 모달이 화면 벗어나는 문제 수정"
+    }
+  ],
+
+  "test_results": {
+    "pc": "성공",
+    "mobile": "성공",
+    "test_account": "wksun999@naver.com",
+    "test_flow": "예시 프로젝트 버튼 → [확인] → 서약서 모달 → 서약 완료 → Google Drive 연결"
+  },
+
+  "commits": [
+    {
+      "hash": "61ea9a0",
+      "message": "fix: users 테이블 컬럼명 수정 (full_name→real_name, builder_account_id→builder_id)"
+    },
+    {
+      "hash": "43e5881",
+      "message": "fix: 모바일에서 모달이 화면 벗어나는 문제 수정 (max-height, overflow-y 추가)"
+    }
+  ],
+
+  "related_functions": [
+    "handleSSALWorksClick()",
+    "openAgreementModal()",
+    "submitAgreement()"
+  ],
+
+  "related_tables": [
+    "users",
+    "download_agreements"
+  ]
+}

@@ -1,0 +1,23 @@
+                // Perplexity API 호출
+                const response = await fetch('http://localhost:3030/perplexity/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    workspace.value = `📝 질문: ${question}\n\n`;
+                    workspace.value += `🔮 Perplexity의 답변:\n\n`;
+                    workspace.value += `${result.answer}\n\n`;
+                    workspace.value += `---\n`;
+                    workspace.value += `시간: ${new Date(result.timestamp).toLocaleString('ko-KR')}`;
+
+                    // 질문창 초기화
+                    document.getElementById('perplexityQuestion').value = '';
+                } else {
+                    workspace.value = `❌ 오류 발생\n\n${result.error}\n\n`;
+                    workspace.value += `Perplexity API 키가 설정되지 않았거나 오류가 발생했습니다.\n`;
+                    workspace.value += `.env 파일에 PERPLEXITY_API_KEY를 설정해주세요.`;
+                }

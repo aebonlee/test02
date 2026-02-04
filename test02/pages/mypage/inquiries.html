@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 문의 내역 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-icon { font-size: 32px; margin-bottom: 8px; }
+        .stat-value { font-size: 24px; font-weight: 700; }
+        .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-title { font-size: 18px; font-weight: 600; }
+
+        /* Inquiry List */
+        .inquiry-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .inquiry-item {
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .inquiry-item:hover {
+            background: white;
+            border-color: var(--primary);
+        }
+
+        .inquiry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .inquiry-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            flex: 1;
+        }
+
+        .inquiry-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .inquiry-status.pending {
+            background: #FEF3C7;
+            color: var(--secondary-dark);
+        }
+
+        .inquiry-status.in_progress {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .inquiry-status.answered {
+            background: #D1FAE5;
+            color: #047857;
+        }
+
+        .inquiry-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .inquiry-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .inquiry-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Inquiry Detail Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            flex: 1;
+            padding-right: 16px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+
+        .modal-close:hover { color: var(--gray-900); }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .detail-content {
+            padding: 14px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .answer-section {
+            background: #EFF6FF;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .answer-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .answer-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--gray-700);
+            white-space: pre-wrap;
+        }
+
+        /* New Inquiry Button */
+        .btn-new-inquiry {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-new-inquiry:hover { background: var(--primary-dark); }
+
+        /* Loading & Toast */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.error { background: var(--danger); }
+        .toast.success { background: var(--success); }
+        .toast.info { background: var(--primary); }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 12px;
+                height: 56px;
+            }
+            .nav-logo-text { font-size: 18px; }
+            .close-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            .container { padding: 16px 12px; }
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            .card { padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 12px; }
+            .stat-icon { font-size: 24px; }
+            .stat-value { font-size: 18px; }
+            .modal-content { padding: 20px; }
+        }
+
+        /* Dashboard Grid with Sidebar */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            height: fit-content;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .menu-title {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-500);
+            border-bottom: 1px solid var(--gray-100);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 8px 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid var(--gray-50);
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .menu-link:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background: rgba(44, 74, 138, 0.08);
+            color: var(--primary);
+            font-weight: 600;
+            border-left: 3px solid var(--primary);
+        }
+
+        .main-content-area { min-width: 0; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <div class="nav-links">
+            <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+        </div>
+    </nav>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <a href="index.html">My Page</a>
+            <span>›</span>
+            <span>내 문의 내역</span>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar Menu -->
+            <aside class="sidebar">
+                <div class="menu-card">
+                    <div class="menu-title">메뉴</div>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a href="profile.html" class="menu-link">내 프로필</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="subscription.html" class="menu-link">서비스 이용 현황</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="downloads.html" class="menu-link">파일 다운로드</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="credit.html" class="menu-link">크레딧 관리</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="security.html" class="menu-link">보안 설정</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="inquiries.html" class="menu-link active">내 문의 내역</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content-area">
+                <h1 class="page-title">내 문의 내역</h1>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📩</div>
+                        <div class="stat-value" id="totalInquiries">0</div>
+                        <div class="stat-label">전체 문의</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-value" id="pendingInquiries" style="color: var(--warning);">0</div>
+                        <div class="stat-label">답변 대기</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="answeredInquiries" style="color: var(--success);">0</div>
+                        <div class="stat-label">답변 완료</div>
+                    </div>
+                </div>
+
+                <!-- Inquiry List Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">문의 목록</h3>
+                        <a href="../../index.html#contact" class="btn-new-inquiry">+ 새 문의하기</a>
+                    </div>
+                    <div class="inquiry-list" id="inquiryList">
+                        <div class="inquiry-empty">
+                            <div class="inquiry-empty-icon">📭</div>
+                            <p>문의 내역을 불러오는 중...</p>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /main-content-area -->
+        </div><!-- /dashboard-grid -->
+    </div><!-- /container -->
+
+    <!-- Inquiry Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">문의 상세</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== Supabase 설정 ==========
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== 전역 변수 ==========
+        let currentUser = null;
+        let userInquiries = [];
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        // ========== 인증 확인 ==========
+        async function checkAuth() {
+            showLoading();
+
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+                if (error || !session) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+
+                currentUser = session.user;
+                await loadInquiries();
+
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = '../auth/login.html';
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 문의 내역 로드 ==========
+        async function loadInquiries() {
+            try {
+                // 사용자 이메일로 문의 내역 조회
+                const { data, error } = await supabaseClient
+                    .from('inquiries')
+                    .select('*')
+                    .eq('email', currentUser.email)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                userInquiries = data || [];
+                renderStats();
+                renderInquiryList();
+
+            } catch (error) {
+                console.error('Failed to load inquiries:', error);
+                showToast('문의 내역을 불러오는데 실패했습니다.', 'error');
+            }
+        }
+
+        // ========== 통계 렌더링 ==========
+        function renderStats() {
+            const total = userInquiries.length;
+            const pending = userInquiries.filter(i => i.status === 'pending' || i.status === 'in_progress').length;
+            const answered = userInquiries.filter(i => i.status === 'answered').length;
+
+            document.getElementById('totalInquiries').textContent = total;
+            document.getElementById('pendingInquiries').textContent = pending;
+            document.getElementById('answeredInquiries').textContent = answered;
+        }
+
+        // ========== 문의 목록 렌더링 ==========
+        function renderInquiryList() {
+            const container = document.getElementById('inquiryList');
+
+            if (userInquiries.length === 0) {
+                container.innerHTML = `
+                    <div class="inquiry-empty">
+                        <div class="inquiry-empty-icon">📭</div>
+                        <p>아직 문의 내역이 없습니다.</p>
+                        <p style="font-size: 13px; margin-top: 8px;">궁금한 점이 있으시면 언제든 문의해주세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userInquiries.map(inquiry => {
+                const statusText = {
+                    'pending': '답변 대기',
+                    'in_progress': '처리 중',
+                    'answered': '답변 완료'
+                }[inquiry.status] || inquiry.status;
+
+                const typeText = {
+                    'general': '일반 문의',
+                    'technical': '기술 문의',
+                    'billing': '결제 문의',
+                    'partnership': '제휴 문의'
+                }[inquiry.inquiry_type] || inquiry.inquiry_type;
+
+                return `
+                    <div class="inquiry-item" onclick="showInquiryDetail('${inquiry.id}')">
+                        <div class="inquiry-header">
+                            <div class="inquiry-title">${sanitize(inquiry.title)}</div>
+                            <span class="inquiry-status ${inquiry.status}">${statusText}</span>
+                        </div>
+                        <div class="inquiry-meta">
+                            <span>${typeText}</span>
+                            <span>${formatDate(inquiry.created_at)}</span>
+                            ${inquiry.answered_at ? `<span style="color: var(--success);">답변일: ${formatDate(inquiry.answered_at)}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== 문의 상세 보기 ==========
+        function showInquiryDetail(inquiryId) {
+            const inquiry = userInquiries.find(i => i.id === inquiryId);
+            if (!inquiry) return;
+
+            document.getElementById('modalTitle').textContent = sanitize(inquiry.title);
+
+            const typeText = {
+                'general': '일반 문의',
+                'technical': '기술 문의',
+                'billing': '결제 문의',
+                'partnership': '제휴 문의'
+            }[inquiry.inquiry_type] || inquiry.inquiry_type;
+
+            const statusText = {
+                'pending': '답변 대기',
+                'in_progress': '처리 중',
+                'answered': '답변 완료'
+            }[inquiry.status] || inquiry.status;
+
+            let answerSection = '';
+            if (inquiry.status === 'answered' && inquiry.answer) {
+                answerSection = `
+                    <div class="answer-section">
+                        <div class="answer-header">
+                            <span>💬</span>
+                            <span>관리자 답변</span>
+                            <span style="font-weight: normal; font-size: 12px; color: var(--gray-500); margin-left: auto;">${formatDateTime(inquiry.answered_at)}</span>
+                        </div>
+                        <div class="answer-content">${sanitize(inquiry.answer)}</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalBody').innerHTML = `
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <span class="inquiry-status ${inquiry.status}">${statusText}</span>
+                    <span style="font-size: 13px; color: var(--gray-500);">${typeText}</span>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">문의 일시</div>
+                    <div class="detail-content">${formatDateTime(inquiry.created_at)}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">문의 내용</div>
+                    <div class="detail-content">${sanitize(inquiry.content)}</div>
+                </div>
+
+                ${answerSection}
+            `;
+
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ========== 유틸리티 함수 ==========
+        function sanitize(str) {
+            if (!str) return '';
+            return DOMPurify.sanitize(str);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

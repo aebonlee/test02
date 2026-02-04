@@ -1,0 +1,268 @@
+{
+  "task_id": "AGENDA-3-FAQ",
+  "task_name": "FAQ 시스템 구현 (Agenda #3)",
+  "status": "완료 - 검증 대기",
+  "completion_date": "2025-12-02",
+  "executor": "Claude Code (Session 2025-12-02)",
+
+  "summary": {
+    "description": "FAQ 시스템 구현 완료 (3단계 계층 구조, 학습용 콘텐츠와 동일한 패턴)",
+    "total_files_created": 3,
+    "total_files_modified": 2,
+    "database_tables": 1,
+    "sample_data_count": 75
+  },
+
+  "completed_tasks": [
+    {
+      "task": "기존 FAQ 파일 삭제 (잘못된 구조)",
+      "status": "완료",
+      "description": "2단계 구조로 잘못 작성된 파일 삭제"
+    },
+    {
+      "task": "새 FAQ DB 스키마 생성 (3단계 구조)",
+      "status": "완료",
+      "files": ["P3_프로토타입_제작/Database/09_create_faqs.sql"],
+      "description": "depth1, depth2, depth3, answer 구조로 생성"
+    },
+    {
+      "task": "FAQ RLS 정책 설정",
+      "status": "완료",
+      "files": ["P3_프로토타입_제작/Database/10_faqs_rls.sql"],
+      "description": "public read, authenticated write"
+    },
+    {
+      "task": "FAQ 샘플 데이터 생성",
+      "status": "완료",
+      "files": ["P3_프로토타입_제작/Database/11_faqs_sample_data.sql"],
+      "description": "75개 샘플 FAQ (3×5×5 구조)"
+    },
+    {
+      "task": "Admin Dashboard FAQ 관리",
+      "status": "완료",
+      "files": ["P3_프로토타입_제작/Frontend/Prototype/admin-dashboard_prototype.html"],
+      "description": "학습용 콘텐츠 패턴 복사, 트리 구조, CRUD 기능"
+    },
+    {
+      "task": "Frontend FAQ 섹션 Supabase 연결",
+      "status": "완료",
+      "files": ["P3_프로토타입_제작/Frontend/Prototype/prototype_index_최종개선.html"],
+      "description": "동적 로딩, 트리 렌더링, 답변 모달"
+    }
+  ],
+
+  "files_created": [
+    {
+      "path": "P3_프로토타입_제작/Database/09_create_faqs.sql",
+      "purpose": "FAQ 테이블 생성 (3단계 계층 구조)",
+      "key_features": [
+        "depth1, depth2, depth3 (3단계 계층)",
+        "answer (HTML 가능)",
+        "updated_at 자동 업데이트 트리거",
+        "인덱스 최적화 (depth1, depth1+depth2, 전체 텍스트 검색)"
+      ]
+    },
+    {
+      "path": "P3_프로토타입_제작/Database/10_faqs_rls.sql",
+      "purpose": "FAQ 테이블 RLS 정책",
+      "policies": [
+        "faqs_select_all: 모두 조회 가능",
+        "faqs_insert_authenticated: 인증된 사용자만 추가",
+        "faqs_update_authenticated: 인증된 사용자만 수정",
+        "faqs_delete_authenticated: 인증된 사용자만 삭제"
+      ]
+    },
+    {
+      "path": "P3_프로토타입_제작/Database/11_faqs_sample_data.sql",
+      "purpose": "FAQ 샘플 데이터 (75개)",
+      "structure": {
+        "depth1_count": 3,
+        "depth1_list": ["로그인/회원가입", "Order 작성", "AI 기능"],
+        "depth2_per_depth1": 5,
+        "depth3_per_depth2": 5,
+        "total": 75
+      },
+      "sample_topics": [
+        "로그인/회원가입 > 계정 관리, 회원가입, 보안 설정, 소셜 로그인, 계정 복구",
+        "Order 작성 > 작성 가이드, Order 보내기, 템플릿 관리, Order 히스토리, 첨부 파일",
+        "AI 기능 > Perplexity 사용법, ChatGPT 사용법, Gemini 사용법, AI 비교, API 설정"
+      ]
+    }
+  ],
+
+  "files_modified": [
+    {
+      "path": "P3_프로토타입_제작/Frontend/Prototype/admin-dashboard_prototype.html",
+      "modifications": [
+        {
+          "section": "FAQ 섹션 HTML (lines 1877-1914)",
+          "changes": "학습용 콘텐츠와 동일한 트리 구조로 교체"
+        },
+        {
+          "section": "FAQ 모달 (lines 3179-3255)",
+          "changes": "3개 모달 추가 (depth1, depth2, depth3 with answer)"
+        },
+        {
+          "section": "JavaScript 함수 (lines 4827-5130)",
+          "changes": "loadFaqContents, renderFaqTree, saveFaqDepth1/2/3, editFaqDepth3, deleteFaqDepth3"
+        },
+        {
+          "section": "showSection 함수 (line 3532)",
+          "changes": "FAQ 섹션 전환 시 loadFaqContents() 호출"
+        }
+      ]
+    },
+    {
+      "path": "P3_프로토타입_제작/Frontend/Prototype/prototype_index_최종개선.html",
+      "modifications": [
+        {
+          "section": "FAQ 섹션 HTML (lines 3179-3689)",
+          "changes": "정적 FAQ를 동적 컨테이너로 교체 (faqContainer, faqLoading)"
+        },
+        {
+          "section": "JavaScript 함수 (lines 8459-8670)",
+          "changes": "loadAndRenderFaqs, renderFaqTree, showFaqAnswer 추가"
+        },
+        {
+          "section": "initSupabase 함수 (line 7995)",
+          "changes": "loadAndRenderFaqs() 호출 추가"
+        }
+      ]
+    }
+  ],
+
+  "technical_implementation": {
+    "database": {
+      "table_name": "faqs",
+      "structure": "3-level hierarchy (depth1, depth2, depth3)",
+      "answer_field": "TEXT with HTML support (DOMPurify sanitization)",
+      "indexes": [
+        "idx_faqs_depth1",
+        "idx_faqs_depth1_depth2",
+        "idx_faqs_search (GIN full-text)",
+        "idx_faqs_created_at"
+      ],
+      "triggers": "auto-update updated_at",
+      "rls": "enabled (public read, authenticated write)"
+    },
+    "admin_dashboard": {
+      "ui": "Tree structure (학습용 콘텐츠와 동일)",
+      "features": [
+        "3-level CRUD operations",
+        "Expand/collapse tree",
+        "3 separate modals (depth1, depth2, depth3)",
+        "Answer field with HTML support",
+        "DOMPurify sanitization"
+      ],
+      "statistics": "depth1, depth2, depth3 counts"
+    },
+    "frontend": {
+      "data_loading": "Supabase REST API (loadAndRenderFaqs)",
+      "rendering": "Dynamic tree generation (renderFaqTree)",
+      "answer_display": "Modal with DOMPurify sanitization",
+      "styling": "Gradient header, scrollable content, hover effects",
+      "error_handling": "Loading state, error messages"
+    }
+  },
+
+  "verification_checklist": [
+    {
+      "category": "Database",
+      "items": [
+        "Supabase에서 09_create_faqs.sql 실행 확인",
+        "Supabase에서 10_faqs_rls.sql 실행 확인",
+        "Supabase에서 11_faqs_sample_data.sql 실행 확인",
+        "faqs 테이블 생성 확인 (SELECT * FROM faqs LIMIT 5)",
+        "75개 샘플 데이터 확인 (SELECT COUNT(*) FROM faqs)",
+        "RLS 정책 확인 (anon 역할로 SELECT 가능, INSERT 불가)",
+        "인덱스 생성 확인"
+      ]
+    },
+    {
+      "category": "Admin Dashboard",
+      "items": [
+        "admin-dashboard_prototype.html 열기",
+        "FAQ 관리 섹션 접근",
+        "3단계 트리 구조 표시 확인",
+        "대분류 3개 표시 확인 (로그인/회원가입, Order 작성, AI 기능)",
+        "트리 펼치기/접기 동작 확인",
+        "depth1 추가 모달 열기 및 저장 테스트",
+        "depth2 추가 모달 열기 및 저장 테스트",
+        "depth3 추가 모달 열기 및 저장 테스트 (answer 필드 포함)",
+        "depth3 수정 테스트",
+        "depth3 삭제 테스트",
+        "통계 카운트 업데이트 확인"
+      ]
+    },
+    {
+      "category": "Frontend",
+      "items": [
+        "prototype_index_최종개선.html 열기",
+        "FAQ 섹션으로 스크롤",
+        "로딩 메시지 표시 확인",
+        "FAQ 트리 동적 렌더링 확인",
+        "3개 대분류 표시 확인 (로그인/회원가입, Order 작성, AI 기능)",
+        "대분류 펼치기 → 5개 중분류 표시 확인",
+        "중분류 펼치기 → 5개 소분류(질문) 표시 확인",
+        "소분류(질문) 클릭 → 답변 모달 열림 확인",
+        "모달 헤더에 breadcrumb 표시 확인 (depth1 > depth2)",
+        "모달 본문에 HTML 렌더링 확인 (<p>, <ul>, <ol>, <strong> 등)",
+        "모달 닫기 버튼 동작 확인",
+        "모달 외부 클릭 시 닫힘 확인",
+        "콘솔에 '✅ FAQ 로드 성공: 75개' 메시지 확인"
+      ]
+    },
+    {
+      "category": "Security",
+      "items": [
+        "DOMPurify로 HTML 정화 확인 (XSS 방지)",
+        "RLS 정책으로 권한 분리 확인",
+        "SQL injection 방지 (Supabase parameterized queries)"
+      ]
+    },
+    {
+      "category": "Code Quality",
+      "items": [
+        "함수명이 명확한가 (loadAndRenderFaqs, renderFaqTree, showFaqAnswer)",
+        "주석이 충분한가",
+        "에러 핸들링이 적절한가",
+        "코드 중복이 없는가 (학습용 콘텐츠 패턴 재사용)"
+      ]
+    }
+  ],
+
+  "known_issues": [],
+
+  "next_steps": [
+    {
+      "step": 1,
+      "task": "Supabase에서 SQL 파일 실행",
+      "files": [
+        "09_create_faqs.sql",
+        "10_faqs_rls.sql",
+        "11_faqs_sample_data.sql"
+      ],
+      "method": "Supabase Dashboard → SQL Editor → 파일 내용 복사 → 실행"
+    },
+    {
+      "step": 2,
+      "task": "검증 에이전트 투입",
+      "agent": "test-engineer or code-reviewer",
+      "verification_scope": "모든 verification_checklist 항목 검증"
+    },
+    {
+      "step": 3,
+      "task": "검증 결과 보고",
+      "output": "outbox에 verification_report.json 생성"
+    }
+  ],
+
+  "notes": [
+    "학습용 콘텐츠(Agenda #2)와 동일한 패턴으로 구현하여 일관성 유지",
+    "depth3 = 질문, answer = 답변 (학습용 콘텐츠의 url 대신 answer 사용)",
+    "Admin Dashboard와 Frontend 모두 Supabase 연동 완료",
+    "DOMPurify를 사용하여 XSS 공격 방지",
+    "모달 디자인은 공지사항 모달과 유사하지만 FAQ 특성에 맞게 커스터마이즈",
+    "75개 샘플 데이터로 실전 사용 가능한 수준"
+  ]
+}

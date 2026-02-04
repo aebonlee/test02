@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT SAL GRID - 표준 디렉토리 구조 - SSALWorks 매뉴얼</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #10B981;
+            --secondary: #F59E0B;
+            --tertiary: #2C4A8A;
+            --tertiary-dark: #1F3563;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2C4A8A 0%, #1F3563 100%);
+            color: white;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header-title { font-size: 20px; font-weight: 700; }
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.3); border-color: white; }
+
+        /* Main Content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Markdown Styles */
+        .markdown-body h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--tertiary);
+            margin: 40px 0 20px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        .markdown-body h1:first-child { margin-top: 0; }
+        .markdown-body h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 48px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .markdown-body h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 32px 0 16px;
+        }
+        .markdown-body h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 24px 0 12px;
+        }
+        .markdown-body p { margin-bottom: 16px; color: var(--text-dark); }
+        .markdown-body blockquote {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .markdown-body blockquote p { margin: 0; font-style: italic; }
+        .markdown-body pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .markdown-body code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #e83e8c;
+        }
+        .markdown-body pre code { background: none; padding: 0; color: inherit; }
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .markdown-body th, .markdown-body td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        .markdown-body th { background: #f1f3f5; color: var(--text-dark); font-weight: 600; }
+        .markdown-body tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-body tr:hover { background: #e9ecef; }
+        .markdown-body ul, .markdown-body ol { margin: 16px 0; padding-left: 24px; }
+        .markdown-body li { margin-bottom: 8px; }
+        .markdown-body hr { border: none; border-top: 2px solid var(--border-color); margin: 40px 0; }
+        .markdown-body a { color: var(--tertiary); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        .markdown-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+        /* Print */
+        @media print {
+            .header { display: none; }
+            .main-content { padding: 0; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">PROJECT SAL GRID - 표준 디렉토리 구조</div>
+        <a href="javascript:history.back()" class="close-btn">← 뒤로 가기</a>
+    </header>
+    <main class="main-content">
+        <article class="markdown-body">
+            <h1>PROJECT SAL GRID - 표준 디렉토리 구조</h1>
+<blockquote>
+<p><strong>작성일</strong>: 2025-11-23
+<strong>수정일</strong>: 2025-11-26<br><strong>버전</strong>: v2.0 (6×11 매트릭스 적용)<br><strong>용도</strong>: SSALWorks 프로젝트의 표준 폴더 구조 정의</p>
+</blockquote>
+<hr>
+<h2>📋 목차</h2>
+<ol>
+<li><a href="#1-%EA%B0%9C%EC%9A%94">개요</a></li>
+<li><a href="#2-%EC%A0%84%EC%B2%B4-%EA%B5%AC%EC%A1%B0">전체 구조</a></li>
+<li><a href="#3-%EB%A3%A8%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EC%84%A4%EB%AA%85">루트 파일 설명</a></li>
+<li><a href="#4-stage-%ED%8F%B4%EB%8D%94-%EC%A4%80%EB%B9%84--1-6">Stage 폴더 (준비 + 1-6)</a></li>
+<li><a href="#5-claude-%ED%8F%B4%EB%8D%94">claude/ 폴더</a></li>
+<li><a href="#6-web_claude-code_bridge-%ED%8F%B4%EB%8D%94">web_claude-code_bridge/ 폴더</a></li>
+<li><a href="#7-project-ssal-grid-%ED%8F%B4%EB%8D%94">project-ssal-grid/ 폴더</a></li>
+<li><a href="#8-%ED%8C%8C%EC%9D%BC-%EB%AA%85%EB%AA%85-%EA%B7%9C%EC%B9%99">파일 명명 규칙</a></li>
+<li><a href="#9-%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD">주의사항</a></li>
+</ol>
+<hr>
+<h2>1. 개요</h2>
+<p><strong>Standard Project Directory Structure</strong>는 SSALWorks 프로젝트의 표준 폴더 구조입니다.</p>
+<p><strong>목적:</strong></p>
+<ul>
+<li>일관된 프로젝트 구조</li>
+<li>파일 위치 예측 가능</li>
+<li>협업 효율성 향상</li>
+<li>Claude와의 원활한 작업</li>
+</ul>
+<hr>
+<h2>2. 전체 구조</h2>
+<pre><code>project-root/
+├── README.md
+├── PROJECT_STATUS.md
+├── PROJECT_DIRECTORY_STRUCTURE.md
+│
+├── .gitignore                        # Git 제외 파일 목록
+├── .env                              # 환경 변수 (gitignore)
+├── .env.example                      # 환경 변수 예시
+│
+├── package.json                      # 프로젝트 의존성
+├── package-lock.json                 # 의존성 버전 잠금
+├── tsconfig.json                     # TypeScript 설정
+├── next.config.js                    # Next.js 설정 (Next.js 사용 시)
+│
+├── node_modules/                     # npm 패키지 (gitignore)
+├── .next/                            # Next.js 빌드 캐시 (gitignore)
+├── dist/                             # 빌드 결과물 (gitignore)
+│
+├── 참고자료/                         # 프로젝트 참고 자료
+│
+├── P1_사업계획/                        # Business Plan (GRID 범위 외)
+├── P2_프로젝트_기획/                   # Planning (GRID 범위 외)
+├── P3_프로토타입_제작/                 # Prototype (Stage 1)
+├── S1_개발_준비/                       # Development Preparation (Stage 2)
+├── 3_개발_1차/                        # Development Phase 1 (Stage 3)
+├── 4_개발_2차/                        # Development Phase 2 (Stage 4)
+├── 5_개발_3차/                        # Development Phase 3 (Stage 5)
+├── S5_운영/                            # Operations (Stage 6)
+│
+├── claude/                            # Claude 작업 폴더
+│   └── claude.md
+│
+├── Web_ClaudeCode_Bridge/            # Web ↔ Claude Code 브릿지
+│   ├── inbox/                        # Project Owner → Claude
+│   └── outbox/                       # Claude → Project Owner
+│
+├── Development_Process_Monitor/            # SSALWorks 사이드바 프로세스 도구
+│   ├── progress_data/                # 진행 상황 데이터 (JSON)
+│   └── sidebar_generation/           # 사이드바 생성 스크립트
+│
+└── project-ssal-grid/                # PROJECT SAL GRID 관리
+    ├── manual/                       # 매뉴얼
+    │   └── references/               # 참고자료
+    ├── supabase/                     # 스키마 + SQL
+    ├── task-instructions/            # Task Instructions
+    ├── verification-instructions/    # Verification Instructions
+    └── viewer/                       # 뷰어
+        └── viewer.html              # HTML 뷰어 (Supabase 직접 연동)
+</code></pre>
+<hr>
+<h2>3. 루트 파일 및 폴더 설명</h2>
+<h3>프로젝트 문서</h3>
+<p><strong>README.md</strong></p>
+<pre><code class="language-markdown"># 프로젝트명
+
+프로젝트 개요 및 소개
+
+## 디렉토리 구조
+PROJECT_DIRECTORY_STRUCTURE.md 참고
+
+## 프로젝트 상태
+PROJECT_STATUS.md 참고
+</code></pre>
+<p><strong>PROJECT_STATUS.md</strong></p>
+<pre><code class="language-markdown"># Project Status
+
+- **Current Stage**: Stage 1 (프로토타입 제작)
+- **Progress**: 35%
+- **Last Updated**: 2025-11-26
+
+## Completed Stages
+- ✅ 프로젝트 기획 (2025-11-15 완료) ← GRID 범위 외
+
+## Current Tasks
+- 🔄 S2F3: 로그인 페이지 (In Progress)
+- 🔄 S2B2: 인증 API (In Progress)
+
+## Blocked Tasks
+- ⏸️ S2F5: 대시보드 (의존성: S2B3)
+</code></pre>
+<p><strong>PROJECT_DIRECTORY_STRUCTURE.md</strong></p>
+<ul>
+<li>이 문서의 전체 내용</li>
+<li>각 폴더의 역할 설명</li>
+<li>프로젝트 루트에 위치</li>
+</ul>
+<hr>
+<h3>개발 환경 설정 파일</h3>
+<p><strong>.gitignore</strong></p>
+<pre><code># 의존성
+node_modules/
+venv/
+__pycache__/
+
+# 환경 변수
+.env
+.env.local
+
+# 빌드 결과물
+dist/
+build/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# 로그
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+</code></pre>
+<p><strong>.env (gitignore 대상)</strong></p>
+<pre><code>SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_anon_key
+OPENAI_API_KEY=your_openai_key
+</code></pre>
+<p><strong>.env.example (Git 추적)</strong></p>
+<pre><code>SUPABASE_URL=
+SUPABASE_ANON_KEY=
+OPENAI_API_KEY=
+</code></pre>
+<p><strong>package.json</strong></p>
+<ul>
+<li>프로젝트 의존성 패키지 목록</li>
+<li>스크립트 명령어 정의</li>
+<li>npm/yarn으로 자동 생성</li>
+</ul>
+<p><strong>package-lock.json / yarn.lock</strong></p>
+<ul>
+<li>의존성 정확한 버전 잠금</li>
+<li>재현 가능한 빌드 보장</li>
+</ul>
+<p><strong>tsconfig.json</strong></p>
+<ul>
+<li>TypeScript 컴파일러 설정</li>
+<li>타입 체크 옵션</li>
+</ul>
+<p><strong>next.config.js / vite.config.js 등</strong></p>
+<ul>
+<li>프레임워크별 설정 파일</li>
+<li>프로젝트 기술 스택에 따라 달라짐</li>
+</ul>
+<hr>
+<h3>빌드 및 캐시 폴더 (gitignore 대상)</h3>
+<p><strong>node_modules/</strong></p>
+<ul>
+<li>npm/yarn으로 설치된 패키지</li>
+<li><code>npm install</code> 또는 <code>yarn install</code>로 생성</li>
+<li>Git 추적하지 않음 (용량 매우 큼)</li>
+</ul>
+<p><strong>.next/</strong></p>
+<ul>
+<li>Next.js 빌드 캐시 및 출력 (Next.js 사용 시)</li>
+<li>Git 추적하지 않음</li>
+</ul>
+<p><strong>dist/ 또는 build/</strong></p>
+<ul>
+<li>프로덕션 빌드 결과물</li>
+<li>Git 추적하지 않음</li>
+</ul>
+<hr>
+<h3>참고자료/ 폴더</h3>
+<p><strong>용도:</strong></p>
+<ul>
+<li>프로젝트 진행에 필요한 참고 자료 보관</li>
+<li>디자인 에셋, 문서, 가이드라인 등</li>
+</ul>
+<p><strong>포함되는 내용 예시:</strong></p>
+<pre><code>참고자료/
+├── 디자인_가이드라인.pdf
+├── API_문서/
+├── 경쟁사_분석_자료/
+├── 사용자_리서치_결과/
+└── 외부_라이브러리_문서/
+</code></pre>
+<p><strong>특징:</strong></p>
+<ul>
+<li>Stage 폴더가 아닌 프로젝트 전반에 걸쳐 참고하는 자료</li>
+<li>프로젝트 외부에서 받은 문서, 이미지 등</li>
+<li>Git 추적 여부는 파일 크기/성격에 따라 결정</li>
+</ul>
+<hr>
+<h2>4. Stage 폴더 (준비 + 1-6)</h2>
+<h3>명명 규칙</h3>
+<pre><code>{번호}_{한글명}/
+</code></pre>
+<h3>Stage별 폴더 구조 (Area 기반)</h3>
+<p>각 Stage는 <strong>해당 단계에서 실제로 사용되는 Area만</strong> 포함합니다.</p>
+<p><strong>Area 약어:</strong></p>
+<pre><code>M  - Documentation (문서화)
+U  - Design (UI/UX 디자인)
+F  - Frontend (프론트엔드)
+BI - Backend Infrastructure (백엔드 기반)
+BA - Backend APIs (백엔드 API)
+D  - Database (데이터베이스)
+S  - Security (보안/인증/인가)
+T  - Testing (테스트)
+O  - DevOps (운영/배포)
+E  - External (외부 연동)
+C  - Content System (콘텐츠 시스템)
+</code></pre>
+<hr>
+<h3>Stage별 주요 산출물</h3>
+<p><strong>P1_사업계획:</strong></p>
+<pre><code>P1_사업계획/
+└── (Area 배정 없음 - 자유 형식의 사업계획 문서 보관)
+</code></pre>
+<p><strong>1_기획 (Planning):</strong></p>
+<pre><code>1_기획/
+├── M/  ⭐⭐⭐ 모든 기획 문서
+│   ├── requirements.md (요구사항 정의)
+│   ├── screen_structure.md (화면 구조, 페이지 목록)
+│   ├── erd.md (ERD, 데이터 모델링)
+│   ├── table_schemas.md (테이블 구조)
+│   ├── external_services.md (외부 서비스 조사, API 선정)
+│   ├── content_strategy.md (콘텐츠 전략)
+│   ├── PROJECT_SAL_GRID.csv (Grid 생성 결과)
+│   └── grid_summary.md
+│
+└── U/  ⭐⭐⭐ 목업 디자인
+    │    🔴 매우 중요! Grid 생성 전 필수 완성
+    ├── wireframes/
+    ├── mockups/
+    ├── user_flow.md
+    └── components/
+</code></pre>
+<p><strong>핵심:</strong> M (요구사항 정의) → U (목업 디자인 완성 🔴) → M (ERD) → M (Grid 생성) 순서!</p>
+<hr>
+<p><strong>2_프로토타입_제작 (Prototype):</strong></p>
+<pre><code>2_프로토타입_제작/
+├── M/  프로토타입 설명서, 데모 시나리오
+├── U/  디자인 시스템 초안, UI 컴포넌트 디자인
+├── F/  주요 화면 프로토타입, 인터랙션 구현 (Supabase Client로 DB 직접 접근)
+└── D/  Supabase 테이블에 시드 데이터
+</code></pre>
+<p>⚠️ <strong>주의:</strong> JSON 목데이터 사용 금지! 처음부터 Supabase 사용 (전환 시 에러 방지)</p>
+<p><strong>3_개발_준비 (Development Preparation):</strong></p>
+<pre><code>3_개발_준비/
+├── M/  개발 가이드, 프로젝트 구조 설정, 라이브러리 선정, 테스트/배포 계획 문서
+├── BI/ Supabase 클라이언트, 미들웨어, 공통 유틸
+├── D/  마이그레이션 파일, 스키마 확정, 시드 데이터, RLS 정책
+└── S/  인증 구조, 환경변수 설정
+</code></pre>
+<p><strong>4_개발 (Production Development):</strong></p>
+<pre><code>4_개발/
+├── M/  API 문서, 사용자 가이드, README
+├── U/  세부 UI/UX 완성, 애니메이션, 반응형
+├── F/  모든 페이지 구현, 상태 관리, 최적화
+├── BI/ 에러 핸들링, 로깅, 성능 모니터링, 캐싱
+├── BA/ 모든 API 구현, 비즈니스 로직, 최적화
+├── D/  모든 테이블, 관계 설정, 인덱스, 쿼리 최적화
+├── S/  전체 인증/인가, RLS 완성, 보안 점검
+├── T/  유닛/통합/E2E 테스트 전체 작성
+├── O/  프로덕션 배포, 모니터링, 로깅
+├── E/  모든 외부 서비스 연동, Webhook
+└── C/  콘텐츠 생성 엔진 완성, AI 통합
+</code></pre>
+<p><strong>5_운영 (Operations):</strong></p>
+<pre><code>5_운영/
+├── M/  운영 매뉴얼, 장애 대응 가이드, 업데이트 로그
+├── F/  버그 수정, 성능 개선, 신규 기능
+├── BA/ 버그 수정, 성능 개선, API 추가
+├── D/  데이터 백업, 스키마 변경, 성능 튜닝
+├── S/  보안 패치, 취약점 점검, 권한 관리
+├── T/  회귀 테스트, 신규 기능 테스트
+├── O/  모니터링, 스케일링, 장애 대응, 배포
+├── E/  외부 서비스 업데이트, API 버전 관리
+└── C/  콘텐츠 업데이트, 알고리즘 개선
+</code></pre>
+<p><strong>주의:</strong> 프로젝트 특성에 따라 필요없는 Area는 생략 가능합니다.</p>
+<hr>
+<h2>5. claude/ 폴더</h2>
+<h3>claude.md</h3>
+<pre><code class="language-markdown"># Claude 작업 메모
+
+## 현재 작업
+- Task S2F3 진행 중
+
+## 완료 작업
+- S1M1: 프로젝트 계획서 작성
+- S1M2: 기술 스택 문서화
+
+## 다음 작업
+- S2F4: 회원가입 페이지
+
+## 참고사항
+- Supabase RLS 정책 주의
+- Tailwind v3 사용
+</code></pre>
+<h3>역할</h3>
+<ul>
+<li>Claude의 작업 메모</li>
+<li>세션 간 컨텍스트 유지</li>
+<li>작업 기록</li>
+<li>임시 메모</li>
+</ul>
+<hr>
+<h2>6. web_claude-code_bridge/ 폴더</h2>
+<h3>Inbox/Outbox System</h3>
+<p><strong>inbox/ (수신함)</strong></p>
+<pre><code>inbox/
+├── 20251123_143000_stage_start.json
+├── 20251123_150000_gate_rejection.json
+└── 20251123_160000_ad_hoc.json
+</code></pre>
+<p><strong>outbox/ (발신함)</strong></p>
+<pre><code>outbox/
+├── 20251123_145000_progress.json
+├── 20251123_155000_completion.json
+└── 20251123_165000_question.json
+</code></pre>
+<h3>파일 명명 규칙</h3>
+<pre><code>형식: {YYYYMMDD}_{HHMMSS}_{type}.json
+
+예시:
+- 20251123_143000_stage_start.json
+- 20251123_150000_gate_rejection.json
+- 20251123_160000_ad_hoc.json
+</code></pre>
+<h3>역할</h3>
+<p><strong>inbox/:</strong></p>
+<ul>
+<li>Project Owner → Claude</li>
+<li>Order Sheet 전달</li>
+<li>작업 지시</li>
+</ul>
+<p><strong>outbox/:</strong></p>
+<ul>
+<li>Claude → Project Owner</li>
+<li>작업 완료 보고</li>
+<li>질문/요청</li>
+</ul>
+<hr>
+<h2>7. project-ssal-grid/ 폴더</h2>
+<h3>구조</h3>
+<pre><code>project-ssal-grid/
+├── manual/
+│   ├── PROJECT_SAL_GRID_생성_가이드.md
+│   └── PROJECT_DIRECTORY_STRUCTURE.md
+│
+├── supabase/
+│   ├── schema.sql
+│   ├── migrations/
+│   └── rls_policies.sql
+│
+├── task-instructions/
+│   ├── S1M1_instruction.md
+│   ├── S2F3_instruction.md
+│   └── ...
+│
+├── verification-instructions/
+│   ├── S1M1_verification.md
+│   ├── S2F3_verification.md
+│   └── ...
+│
+└── viewer/
+    └── viewer.html              # Supabase 직접 연동 (변환기 불필요)
+</code></pre>
+<h3>각 폴더 역할</h3>
+<p><strong>manual/</strong></p>
+<ul>
+<li>PROJECT SAL GRID 생성 가이드</li>
+<li>디렉토리 구조 문서</li>
+<li>사용법 문서</li>
+<li>매뉴얼</li>
+</ul>
+<p><strong>supabase/</strong></p>
+<ul>
+<li>데이터베이스 스키마</li>
+<li>마이그레이션 파일</li>
+<li>RLS 정책</li>
+<li>트리거/함수</li>
+</ul>
+<p><strong>task-instructions/</strong></p>
+<ul>
+<li>각 Task의 작업 지시서</li>
+<li><code>{TaskID}_instruction.md</code> 형식</li>
+<li>Claude가 Task 실행 시 참고</li>
+<li>작업 목표 및 지시사항</li>
+</ul>
+<p><strong>verification-instructions/</strong></p>
+<ul>
+<li>각 Task의 검증 지시서</li>
+<li><code>{TaskID}_verification.md</code> 형식</li>
+<li>verification_agent가 검증 시 사용</li>
+<li>체크리스트 및 합격 기준</li>
+</ul>
+<p><strong>viewer/</strong></p>
+<ul>
+<li>HTML 뷰어</li>
+<li>Grid 시각화</li>
+<li>진행 상황 모니터링</li>
+<li>CSV → HTML 변환기</li>
+</ul>
+<hr>
+<h2>8. 파일 명명 규칙</h2>
+<h3>Task Instruction</h3>
+<pre><code>형식: {TaskID}_instruction.md
+예시: S2F3_instruction.md
+</code></pre>
+<h3>Verification Instruction</h3>
+<pre><code>형식: {TaskID}_verification.md
+예시: S2F3_verification.md
+</code></pre>
+<h3>코드 파일</h3>
+<pre><code>형식: {TaskID}_{설명}.{확장자}
+
+예시:
+- S2B5_auth_api.py
+- S2F3_login_component.tsx
+- S2D1_users_table.sql
+</code></pre>
+<h3>테스트 파일</h3>
+<pre><code>형식: {TaskID}_{테스트대상}_test.{확장자}
+
+예시:
+- S2B5_auth_test.spec.ts (단위 테스트)
+- S2B5_login_integration_test.ts (통합 테스트)
+- S3T1_e2e_test.ts (E2E 테스트)
+</code></pre>
+<h3>Inbox/Outbox 파일</h3>
+<pre><code>형식: {YYYYMMDD}_{HHMMSS}_{type}.json
+
+예시:
+- 20251123_143000_stage_start.json
+- 20251123_145000_progress.json
+</code></pre>
+<hr>
+<h2>9. 주의사항</h2>
+<h3>필수 파일</h3>
+<p>프로젝트 시작 시 반드시 생성:</p>
+<ul>
+<li>✅ README.md (루트)</li>
+<li>✅ PROJECT_STATUS.md (루트)</li>
+<li>✅ PROJECT_DIRECTORY_STRUCTURE.md (루트)</li>
+<li>✅ claude.md (claude/ 폴더)</li>
+</ul>
+<h3>폴더 생성 시기</h3>
+<p><strong>즉시 생성:</strong></p>
+<ul>
+<li>준비 폴더 + Stage 1-6 폴더 (프로젝트 시작 시)</li>
+<li>claude/ 폴더</li>
+<li>web_claude-code_bridge/inbox/</li>
+<li>web_claude-code_bridge/outbox/</li>
+<li>project-ssal-grid/manual/</li>
+<li>project-ssal-grid/supabase/</li>
+<li>project-ssal-grid/viewer/</li>
+</ul>
+<p><strong>작업 중 생성:</strong></p>
+<ul>
+<li>task-instructions/ (Task 생성 시 파일 추가)</li>
+<li>verification-instructions/ (Task 생성 시 파일 추가)</li>
+</ul>
+<h3>버전 관리</h3>
+<p><strong>Git 추적 대상:</strong></p>
+<ul>
+<li>모든 폴더 구조</li>
+<li>모든 문서 파일</li>
+<li>모든 코드 파일</li>
+<li>Inbox/Outbox JSON 파일 (선택적)</li>
+</ul>
+<p><strong>.gitignore 추가:</strong></p>
+<pre><code># 의존성
+node_modules/
+venv/
+__pycache__/
+
+# 환경 변수
+.env
+.env.local
+
+# 빌드 결과물
+dist/
+build/
+.next/
+
+# IDE
+.vscode/
+.idea/
+
+# 로그
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+</code></pre>
+<h3>권장 사항</h3>
+<p><strong>폴더 구조 유지:</strong></p>
+<ul>
+<li>표준 구조를 최대한 준수</li>
+<li>필요 시 하위 폴더 추가 가능</li>
+<li>임의로 폴더명 변경 금지</li>
+</ul>
+<p><strong>문서화:</strong></p>
+<ul>
+<li>각 Stage 폴더에 README.md 추가 권장</li>
+<li>중요한 결정사항은 문서로 기록</li>
+<li>변경 이력은 Git 커밋 메시지로</li>
+</ul>
+<p><strong>백업:</strong></p>
+<ul>
+<li>정기적인 Git 커밋</li>
+<li>중요 시점에 태그 생성</li>
+<li>Supabase 데이터베이스 백업</li>
+</ul>
+<hr>
+<h2>10. 프로젝트 초기 설정 체크리스트</h2>
+<h3>1단계: 루트 파일 생성</h3>
+<ul>
+<li><input disabled="" type="checkbox"> README.md</li>
+<li><input disabled="" type="checkbox"> PROJECT_STATUS.md</li>
+<li><input disabled="" type="checkbox"> PROJECT_DIRECTORY_STRUCTURE.md (이 문서 복사)</li>
+</ul>
+<h3>2단계: Stage 폴더 생성</h3>
+<p><strong>GRID 범위 외 (Preparation):</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> P1_사업계획/ (자유 형식)</li>
+<li><input disabled="" type="checkbox"> P2_프로젝트_기획/M/ U/</li>
+</ul>
+<p><strong>Stage 1: 프로토타입 제작</strong> (4개 Area)</p>
+<ul>
+<li><input disabled="" type="checkbox"> P3_프로토타입_제작/M/ U/ F/ D/</li>
+</ul>
+<p><strong>Stage 2: 개발 준비</strong> (6+ Area)</p>
+<ul>
+<li><input disabled="" type="checkbox"> S1_개발_준비/M/ BI/ D/ S/ T/ O/</li>
+</ul>
+<p><strong>Stage 3/4/5: 개발 1차/2차/3차</strong> (11개 Area)</p>
+<ul>
+<li><input disabled="" type="checkbox"> 3_개발_1차/M/ U/ F/ BI/ BA/ D/ S/ T/ O/ E/ C/</li>
+<li><input disabled="" type="checkbox"> 4_개발_2차/M/ U/ F/ BI/ BA/ D/ S/ T/ O/ E/ C/</li>
+<li><input disabled="" type="checkbox"> 5_개발_3차/M/ U/ F/ BI/ BA/ D/ S/ T/ O/ E/ C/</li>
+</ul>
+<p><strong>Stage 6: 운영</strong> (9개 Area)</p>
+<ul>
+<li><input disabled="" type="checkbox"> S5_운영/M/ F/ BA/ D/ S/ T/ O/ E/ C/</li>
+</ul>
+<h3>3단계: 작업 폴더 생성</h3>
+<ul>
+<li><input disabled="" type="checkbox"> claude/</li>
+<li><input disabled="" type="checkbox"> claude/claude.md</li>
+<li><input disabled="" type="checkbox"> web_claude-code_bridge/inbox/</li>
+<li><input disabled="" type="checkbox"> web_claude-code_bridge/outbox/</li>
+</ul>
+<h3>4단계: Grid 관리 폴더 생성</h3>
+<ul>
+<li><input disabled="" type="checkbox"> project-ssal-grid/manual/</li>
+<li><input disabled="" type="checkbox"> project-ssal-grid/supabase/</li>
+<li><input disabled="" type="checkbox"> project-ssal-grid/task-instructions/</li>
+<li><input disabled="" type="checkbox"> project-ssal-grid/verification-instructions/</li>
+<li><input disabled="" type="checkbox"> project-ssal-grid/viewer/</li>
+</ul>
+<h3>5단계: Git 설정</h3>
+<ul>
+<li><input disabled="" type="checkbox"> .gitignore 생성</li>
+<li><input disabled="" type="checkbox"> Git 저장소 초기화</li>
+<li><input disabled="" type="checkbox"> 첫 커밋</li>
+</ul>
+<hr>
+<p><strong>문서 끝</strong></p>
+<p>이 문서는 SSALWorks 프로젝트의 표준 디렉토리 구조를 정의합니다. 모든 프로젝트는 이 구조를 기본으로 시작해야 합니다. 🌾</p>
+
+        </article>
+    </main>
+</body>
+</html>

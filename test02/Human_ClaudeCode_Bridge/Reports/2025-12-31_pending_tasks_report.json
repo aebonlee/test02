@@ -1,0 +1,119 @@
+{
+  "report_date": "2025-12-31",
+  "report_title": "프로젝트 진행률 및 Viewer 수정 작업 - 대기 중인 작업",
+  "status": "pending",
+
+  "completed_today": {
+    "description": "오늘 완료된 작업",
+    "items": [
+      {
+        "task": "SSAL Works Progress DB 방식 구현",
+        "details": [
+          "project_id 기반 진행률 조회 구현",
+          "loadProjectProgress() 함수 수정 - 이메일 기반 → project_id 기반",
+          "upload-progress.js 수정 - .ssal-project.json에서 project_id 읽기",
+          ".ssal-project.json 설정 파일 생성 (project_id: 2512000002TH-P001)"
+        ],
+        "files_modified": [
+          "C:\\!SSAL_Works_Private\\index.html",
+          "C:\\!SSAL_Works_Private\\scripts\\upload-progress.js",
+          "C:\\!SSAL_Works_Private\\.ssal-project.json"
+        ],
+        "status": "completed"
+      }
+    ]
+  },
+
+  "pending_tasks": {
+    "description": "남은 작업 4가지",
+    "items": [
+      {
+        "id": 1,
+        "task": "Dev Package - Viewer 폴더 구조 수정",
+        "description": "in_progress/completed 폴더 구조 적용",
+        "details": [
+          "data/ 폴더 구조 변경: completed/, in_progress/ 분리",
+          "viewer_csv.html 수정: in_progress/ 폴더만 읽도록 경로 변경",
+          "프로젝트 완료 시 completed/로 이동하는 가이드 추가"
+        ],
+        "target_files": [
+          "공개_전환_업무/Project_Dev_Package/S0_Project-SAL-Grid_생성/viewer/viewer_csv.html",
+          "공개_전환_업무/Project_Dev_Package/S0_Project-SAL-Grid_생성/method/csv/data/"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "task": "SSAL Works - CSV 방식 문서/코드 수정",
+        "description": "CSV 방식 사용 시 폴더 구조 반영",
+        "details": [
+          "CSV Method 관련 문서에 in_progress/completed 구조 설명 추가",
+          "CSV viewer가 in_progress 폴더만 읽도록 수정"
+        ],
+        "target_files": [
+          "S0_Project-SAL-Grid_생성/CSV_Method/",
+          ".claude/rules/07_task-crud.md"
+        ],
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "task": "Progress DB 방식 - Dev Package 반영",
+        "description": "SSAL Works에서 완료한 DB 방식 progress를 Dev Package 문서에 반영",
+        "details": [
+          "DB 방식 progress 구현 가이드 추가 (선택사항으로)",
+          ".ssal-project.json 설정 파일 사용법 문서화",
+          "upload-progress.js 사용법 문서화"
+        ],
+        "target_files": [
+          "공개_전환_업무/Project_Dev_Package/S0_Project-SAL-Grid_생성/manual/"
+        ],
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "task": "Dev Package 전체 반영 및 테스트",
+        "description": "위 변경사항들을 Dev Package에 통합 반영",
+        "details": [
+          "폴더 구조 변경 적용",
+          "Viewer 코드 수정",
+          "문서 업데이트",
+          "테스트 수행"
+        ],
+        "priority": "high"
+      }
+    ]
+  },
+
+  "key_decisions": {
+    "description": "오늘 결정된 핵심 사항",
+    "items": [
+      {
+        "topic": "프로젝트 데이터 폴더 구조",
+        "decision": "in_progress/ 와 completed/ 폴더로 분리",
+        "reason": "여러 프로젝트 관리 시 진행 중인 프로젝트만 Viewer에 표시"
+      },
+      {
+        "topic": "Dev Package와 독립적 기획",
+        "decision": "프로젝트 관리 구조는 Dev Package 설치 여부와 무관하게 작동",
+        "reason": "사용자가 Dev Package를 새로 설치하든 기존 것을 쓰든 동일하게 작동해야 함"
+      },
+      {
+        "topic": "CSV vs DB 방식",
+        "decision": "일반 사용자는 CSV 방식, SSAL Works 내부는 DB 방식",
+        "reason": "일반 사용자는 Supabase 없이 로컬에서 작업"
+      }
+    ]
+  },
+
+  "folder_structure_design": {
+    "description": "새로운 데이터 폴더 구조 (적용 예정)",
+    "structure": {
+      "data/": {
+        "completed/": "완료된 프로젝트 CSV 파일들",
+        "in_progress/": "진행 중인 프로젝트 CSV (Viewer가 이 폴더만 읽음)"
+      }
+    },
+    "viewer_behavior": "Viewer는 항상 in_progress/ 폴더의 CSV만 로드"
+  }
+}

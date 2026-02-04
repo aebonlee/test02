@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page - SSAL Works</title>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- DOMPurify for XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <!-- 공통 모듈 (중복 제거) -->
+    <script defer src="/assets/js/supabase-init.js"></script>
+    <script defer src="/assets/js/utils/date-utils.js"></script>
+    <script defer src="/assets/js/components/loading.js"></script>
+    <script defer src="/assets/js/components/toast.js"></script>
+
+    <style>
+        :root {
+            /* Primary Theme - Navy Blue */
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+
+            /* Secondary Theme - Amber Gold */
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+
+            /* Accent - Emerald Green */
+            --accent: #10B981;
+            --accent-dark: #059669;
+
+            /* Status Colors */
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+
+            /* Gray Scale */
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+
+            /* Background */
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        /* Navigation */
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            display: inline-block;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-link.active {
+            color: white;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--gray-900);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .menu-title {
+            padding: 16px 20px;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--gray-50);
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .menu-link:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background: rgba(44, 74, 138, 0.05);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .btn-edit {
+            padding: 8px 16px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        /* Profile Card */
+        .profile-header {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .profile-info h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .profile-info .user-id {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-free {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-paused {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-item {
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            margin-bottom: 8px;
+        }
+
+        .skeleton-title {
+            height: 24px;
+            width: 60%;
+            margin-bottom: 12px;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Smooth Section Transitions */
+        .section {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card hover effect */
+        .card {
+            transition: box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .stat-value.credit {
+            color: var(--secondary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 74, 138, 0.1);
+        }
+
+        .form-input:disabled {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        /* Edit Mode */
+        .edit-mode .view-only {
+            display: none;
+        }
+
+        .view-mode .edit-only {
+            display: none;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Mobile Responsive - Navigation */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 12px;
+                height: 56px;
+            }
+
+            .nav-logo-text {
+                font-size: 18px;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .close-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .container {
+                padding: 16px 12px;
+            }
+
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .btn-edit {
+                min-height: 44px;
+                font-size: 14px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-icon {
+                font-size: 28px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <div class="nav-links">
+            <button class="close-btn" onclick="logout()" title="로그아웃">🚪 로그아웃</button>
+            <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+        </div>
+    </nav>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1 class="page-title">My Page</h1>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar Menu -->
+            <aside class="sidebar">
+                <div class="menu-card">
+                    <div class="menu-title">메뉴</div>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a href="#profile" class="menu-link active" data-section="profile">
+                                <span class="menu-icon"></span>
+                                내 프로필
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#subscription" class="menu-link" data-section="subscription">
+                                <span class="menu-icon"></span>
+                                서비스 이용 현황
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#resources" class="menu-link" data-section="resources">
+                                <span class="menu-icon"></span>
+                                파일 다운로드
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#credit" class="menu-link" data-section="credit">
+                                <span class="menu-icon"></span>
+                                크레딧 관리
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#security" class="menu-link" data-section="security">
+                                <span class="menu-icon"></span>
+                                보안 설정
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="inquiries.html" class="menu-link">
+                                <span class="menu-icon"></span>
+                                내 문의 내역
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Profile Section -->
+                <section class="section active" id="profileSection">
+                    <div class="card view-mode" id="profileCard">
+                        <div class="card-header">
+                            <h3 class="card-title">프로필 정보</h3>
+                            <button class="btn-edit view-only" onclick="toggleEditMode()">수정하기</button>
+                        </div>
+
+                        <!-- Profile Header -->
+                        <div class="profile-header">
+                            <div class="profile-avatar" id="profileAvatar">-</div>
+                            <div class="profile-info">
+                                <h2 id="profileName">-</h2>
+                                <div class="user-id" id="profileUserId">회원 ID: -</div>
+                                <span class="profile-badge badge-free" id="profileBadge">무료</span>
+                            </div>
+                        </div>
+
+                        <!-- View Mode -->
+                        <div class="info-grid view-only">
+                            <div class="info-item">
+                                <div class="info-label">이메일</div>
+                                <div class="info-value" id="viewEmail">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">닉네임</div>
+                                <div class="info-value" id="viewNickname">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">실명</div>
+                                <div class="info-value" id="viewRealName">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">연락처</div>
+                                <div class="info-value" id="viewPhone">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">가입일</div>
+                                <div class="info-value" id="viewCreatedAt">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">마케팅 수신 동의</div>
+                                <div class="info-value" id="viewMarketing">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Mode -->
+                        <form class="edit-only" id="profileForm" onsubmit="saveProfile(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">이메일</label>
+                                    <input type="email" class="form-input" id="editEmail" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">회원 ID</label>
+                                    <input type="text" class="form-input" id="editUserId" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">닉네임</label>
+                                    <input type="text" class="form-input" id="editNickname" maxlength="20" placeholder="닉네임 (2-20자)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">실명</label>
+                                    <input type="text" class="form-input" id="editRealName" maxlength="50" placeholder="실명">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">연락처</label>
+                                    <input type="tel" class="form-input" id="editPhone" placeholder="010-0000-0000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">마케팅 수신 동의</label>
+                                    <select class="form-input" id="editMarketing">
+                                        <option value="true">동의함</option>
+                                        <option value="false">동의 안함</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-edit btn-secondary" onclick="toggleEditMode()">취소</button>
+                                <button type="submit" class="btn-edit">저장하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Subscription Section (서비스 이용 현황) -->
+                <section class="section" id="subscriptionSection">
+                    <!-- 서비스 이용 현황 메인 카드 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">서비스 이용 현황</h3>
+                        </div>
+
+                        <!-- 1. 서비스 상태 -->
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--gray-50); border-radius: 8px; margin-bottom: 20px;">
+                            <div style="font-size: 28px;">📋</div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; color: var(--gray-500); margin-bottom: 4px;">서비스 상태</div>
+                                <div style="font-weight: 600; font-size: 18px;">
+                                    <span class="profile-badge" id="serviceStatusBadge" style="font-size: 14px;">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. 빌더 계정 개설비 섹션 -->
+                        <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 12px; color: var(--gray-700);">🏠 빌더 계정 개설비</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div class="info-item">
+                                    <div class="info-label">납부 상태</div>
+                                    <div class="info-value" id="installFeeStatusMain">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">납부일</div>
+                                    <div class="info-value" id="installFeePaidDate">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 이용료 섹션 -->
+                        <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 12px; color: var(--gray-700);">📅 월 이용료</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div class="info-item">
+                                    <div class="info-label">무료 이용 기간</div>
+                                    <div class="info-value" id="freePeriodRemaining">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">다음 결제일</div>
+                                    <div class="info-value" id="nextPayDate">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. 크레딧 섹션 -->
+                        <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 12px; color: var(--gray-700);">💰 크레딧</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="info-item" style="flex: 1;">
+                                    <div class="info-label">현재 잔액</div>
+                                    <div class="info-value" style="color: var(--secondary); font-size: 20px; font-weight: 700;" id="subCreditBalance">₩0</div>
+                                </div>
+                                <a href="credit.html" class="btn-edit" style="text-decoration: none; background: #2C4A8A;">
+                                    💰 크레딧 충전
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- 5. 결제수단 관리 (마지막) -->
+                        <div style="padding-top: 16px; border-top: 1px solid var(--gray-100);">
+                            <a href="subscription.html" class="btn-edit btn-secondary" style="text-decoration: none; text-align: center; display: block; width: 100%;">
+                                💳 결제수단 관리
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 요금 안내 -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">이용 요금 안내</h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">🏠</div>
+                                    <div>
+                                        <div style="font-weight: 600;">빌더 계정 개설비</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">1회 (무통장 입금)</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-weight: 700; color: var(--primary);">₩3,000,000</div>
+                                    <div style="font-size: 12px; color: var(--gray-500);">(부가세 별도)</div>
+                                    <div style="font-size: 11px; color: var(--primary); font-weight: 500;">입금액: 3,300,000원</div>
+                                    <div style="font-size: 12px; color: var(--gray-500);" id="installFeeStatus">미납</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">📅</div>
+                                    <div>
+                                        <div style="font-weight: 600;">월 이용료</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">4개월차부터 (토스페이먼츠)</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--primary);">₩50,000/월</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">🎁</div>
+                                    <div>
+                                        <div style="font-weight: 600;">초기 크레딧</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">빌더 계정 개설비 확인 시 자동 지급</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--success);">₩50,000</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="font-size: 24px;">⏰</div>
+                                    <div>
+                                        <div style="font-weight: 600;">무료 이용 기간</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">빌더 계정 개설비 확인 후 1~3개월차</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--accent);">3개월</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 결제 수단 -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">등록된 결제 수단</h3>
+                            <a href="subscription.html" class="btn-edit btn-secondary" style="text-decoration: none; font-size: 14px;">변경하기</a>
+                        </div>
+                        <div id="paymentMethodDisplay">
+                            <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="font-size: 32px;">💳</div>
+                                <div>
+                                    <div style="font-weight: 600;" id="paymentMethodName">등록된 결제 수단이 없습니다</div>
+                                    <div style="font-size: 14px; color: var(--gray-500);" id="paymentMethodDetail">결제 수단을 등록해주세요</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 최근 결제 내역 -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">최근 결제 내역</h3>
+                            <a href="subscription.html" style="font-size: 14px; color: var(--primary);">전체 보기 →</a>
+                        </div>
+                        <div id="billingHistoryList" style="max-height: 300px; overflow-y: auto;">
+                            <div style="color: var(--gray-500); text-align: center; padding: 40px;">
+                                로딩 중...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Credit Section -->
+                <section class="section" id="creditSection">
+                    <div class="stats-grid" style="margin-bottom: 24px; grid-template-columns: repeat(4, 1fr);">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-value credit" id="creditBalance">₩0</div>
+                            <div class="stat-label">현재 크레딧</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="creditUsed">₩0</div>
+                            <div class="stat-label">이번 달 사용</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-value" style="color: var(--success);" id="creditCharged">₩0</div>
+                            <div class="stat-label">총 충전액</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🤖</div>
+                            <div class="stat-value" id="aiUsageCount">0회</div>
+                            <div class="stat-label">AI 사용 횟수</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Service Prices -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">AI 서비스 가격표</h3>
+                        </div>
+                        <div id="aiPriceList" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #74AA9C; display: flex; align-items: center; justify-content: center; font-size: 18px;">🤖</div>
+                                    <div>
+                                        <div style="font-weight: 600;">ChatGPT</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">GPT-4 기반 코드 작성</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--secondary);">₩100/회</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #4285F4; display: flex; align-items: center; justify-content: center; font-size: 18px;">✨</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Gemini</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">코드 리뷰, 아키텍처 설계</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--secondary);">₩80/회</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #1FB8CD; display: flex; align-items: center; justify-content: center; font-size: 18px;">🔍</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Perplexity</div>
+                                        <div style="font-size: 12px; color: var(--gray-500);">실시간 검색, 최신 정보</div>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 700; color: var(--secondary);">₩50/회</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">빠른 메뉴</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <a href="credit.html" class="btn-edit" style="text-decoration: none; text-align: center; background: #2C4A8A;">💰 크레딧 충전</a>
+                            <a href="credit.html#ai-qa" class="btn-edit" style="text-decoration: none; text-align: center;">🤖 AI 질문하기</a>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">최근 크레딧 거래 내역</h3>
+                            <a href="credit.html" style="font-size: 14px; color: var(--primary);">전체 보기 →</a>
+                        </div>
+                        <div id="creditHistory" style="max-height: 300px; overflow-y: auto;">
+                            <div style="color: var(--gray-500); text-align: center; padding: 40px;">
+                                로딩 중...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Usage Log -->
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">최근 AI 사용 기록</h3>
+                            <a href="credit.html" style="font-size: 14px; color: var(--primary);">전체 보기 →</a>
+                        </div>
+                        <div id="aiUsageHistory" style="max-height: 300px; overflow-y: auto;">
+                            <div style="color: var(--gray-500); text-align: center; padding: 40px;">
+                                로딩 중...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section class="section" id="securitySection">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">비밀번호 변경</h3>
+                        </div>
+                        <form id="passwordForm" onsubmit="changePassword(event)">
+                            <div class="form-group">
+                                <label class="form-label">현재 비밀번호</label>
+                                <input type="password" class="form-input" id="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">새 비밀번호</label>
+                                <input type="password" class="form-input" id="newPassword" required minlength="8">
+                                <small style="color: var(--gray-500); font-size: 12px;">8자 이상, 영문/숫자/특수문자 조합</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">새 비밀번호 확인</label>
+                                <input type="password" class="form-input" id="confirmPassword" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-edit">비밀번호 변경</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">로그인 기록</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">마지막 로그인</div>
+                                <div class="info-value" id="lastLogin">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">현재 세션</div>
+                                <div class="info-value" style="color: var(--success);">활성</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 24px; border: 1px solid var(--danger);">
+                        <div class="card-header">
+                            <h3 class="card-title" style="color: var(--danger);">계정 삭제</h3>
+                        </div>
+                        <p style="color: var(--gray-500); margin-bottom: 16px;">
+                            계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+                        </p>
+                        <button class="btn-edit" style="background: var(--danger);" onclick="confirmDeleteAccount()">
+                            계정 삭제 요청
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Resources Section (다운로드) -->
+                <section class="section" id="resourcesSection">
+                    <!-- Dev Package 다운로드 카드 (위) -->
+                    <div class="card" id="devPackageCard">
+                        <div class="card-header">
+                            <h3 class="card-title">Dev Package 다운로드</h3>
+                            <span id="devPackageBadge" style="font-size: 11px; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 600;">빌더 전용</span>
+                        </div>
+                        <div id="devPackageContent">
+                            <p style="font-size: 14px; color: var(--gray-700); margin-bottom: 16px; line-height: 1.6;">
+                                풀스택 웹사이트 개발 프로젝트를 Claude Code와 함께<br>
+                                처음부터 끝까지 체계적으로 수행할 수 있도록 설계된 통합 개발 환경입니다.
+                            </p>
+                            <button id="devPackageDownloadBtn" onclick="downloadDevPackage()" class="btn-edit" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); width: 100%; border: none; cursor: pointer;">
+                                Dev Package 다운로드 (ZIP)
+                            </button>
+                            <p style="font-size: 12px; color: var(--gray-500); margin-top: 12px; text-align: center;">
+                                ※ 패키지 크기: 약 12MB | 설치 안내는 패키지 내 README 참조
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 빌더 계정 사용 매뉴얼 다운로드 카드 (아래) -->
+                    <div class="card" id="manualDownloadCard" style="margin-top: 16px;">
+                        <div class="card-header">
+                            <h3 class="card-title">빌더 계정 사용 매뉴얼 다운로드</h3>
+                            <span id="manualBuilderBadge" style="font-size: 11px; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 600;">빌더 전용</span>
+                        </div>
+                        <div id="manualDownloadContent">
+                            <p style="font-size: 14px; color: var(--gray-700); margin-bottom: 16px; line-height: 1.6;">
+                                SSAL Works 빌더 계정 사용 매뉴얼을 PDF로 다운로드하세요.
+                            </p>
+                            <button id="manualDownloadBtn" onclick="downloadManual()" class="btn-edit" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); width: 100%; border: none; cursor: pointer;">
+                                매뉴얼 다운로드 (PDF)
+                            </button>
+                            <p style="font-size: 12px; color: var(--gray-500); margin-top: 12px; text-align: center;">
+                                ※ 매뉴얼은 정기적으로 업데이트됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // ========== Supabase는 supabase-init.js에서 초기화됨 ==========
+        // window.supabaseClient 사용
+
+        // ========== 전역 변수 ==========
+        let currentUser = null;
+        let userData = null;
+        let isEditMode = false;
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Supabase 클라이언트 초기화 (supabase-init.js 사용)
+            if (!window.supabaseClient && window.SUPABASE_URL) {
+                window.supabaseClient = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+            }
+
+            await checkAuth();
+            setupMenuNavigation();
+        });
+
+        // ========== 인증 확인 ==========
+        async function checkAuth() {
+            showLoading();
+
+            try {
+                const { data: { session }, error } = await window.supabaseClient.auth.getSession();
+
+                if (error || !session) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+
+                currentUser = session.user;
+                await loadUserData();
+
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = '../auth/login.html';
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 사용자 데이터 로드 ==========
+        async function loadUserData() {
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+
+                userData = data;
+                renderProfile();
+                renderSubscription();
+                renderCredit();
+                renderSecurity();
+                updateQuickStats();
+                renderManualDownload();
+                renderDevPackageDownload();
+
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+                showToast('사용자 정보를 불러오는데 실패했습니다.', 'error');
+            }
+        }
+
+        // ========== 프로필 렌더링 ==========
+        function renderProfile() {
+            if (!userData) return;
+
+            const avatar = userData.nickname ? userData.nickname.charAt(0).toUpperCase() :
+                          userData.email ? userData.email.charAt(0).toUpperCase() : '?';
+            document.getElementById('profileAvatar').textContent = avatar;
+
+            document.getElementById('profileName').textContent =
+                sanitize(userData.nickname || userData.name || userData.email.split('@')[0]);
+            document.getElementById('profileUserId').textContent =
+                `회원 ID: ${sanitize(userData.user_id || '-')}`;
+
+            const badge = document.getElementById('profileBadge');
+            const statusText = getSubscriptionStatusText(userData.subscription_status);
+            badge.textContent = statusText;
+            badge.className = `profile-badge badge-${userData.subscription_status || 'free'}`;
+
+            document.getElementById('viewEmail').textContent = sanitize(userData.email || '-');
+            document.getElementById('viewNickname').textContent = sanitize(userData.nickname || '-');
+            document.getElementById('viewRealName').textContent = sanitize(userData.real_name || '-');
+            document.getElementById('viewPhone').textContent = sanitize(userData.phone || '-');
+            document.getElementById('viewCreatedAt').textContent = formatDate(userData.created_at);
+            document.getElementById('viewMarketing').textContent = userData.marketing_agreed ? '동의함' : '동의 안함';
+
+            document.getElementById('editEmail').value = userData.email || '';
+            document.getElementById('editUserId').value = userData.user_id || '';
+            document.getElementById('editNickname').value = userData.nickname || '';
+            document.getElementById('editRealName').value = userData.real_name || '';
+            document.getElementById('editPhone').value = userData.phone || '';
+            document.getElementById('editMarketing').value = userData.marketing_agreed ? 'true' : 'false';
+        }
+
+        // ========== 서비스 이용 현황 렌더링 ==========
+        async function renderSubscription() {
+            if (!userData) return;
+
+            // 서비스 이용 상태
+            const statusBadge = document.getElementById('serviceStatusBadge');
+            const isServiceActive = userData.is_service_active;
+            const subscriptionStatus = userData.subscription_status;
+
+            if (isServiceActive) {
+                statusBadge.textContent = '✅ 이용 중';
+                statusBadge.className = 'profile-badge badge-active';
+            } else if (subscriptionStatus === 'pending') {
+                statusBadge.textContent = '⏳ 빌더 계정 개설비 대기';
+                statusBadge.className = 'profile-badge badge-paused';
+            } else {
+                statusBadge.textContent = '❌ 비활성';
+                statusBadge.className = 'profile-badge badge-free';
+            }
+
+            // 무료 이용 기간 계산
+            const freePeriodEl = document.getElementById('freePeriodRemaining');
+            if (userData.subscription_started_at && userData.next_billing_date) {
+                const now = new Date();
+                const nextBilling = new Date(userData.next_billing_date);
+                const diffTime = nextBilling - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 0) {
+                    const months = Math.floor(diffDays / 30);
+                    const days = diffDays % 30;
+                    freePeriodEl.textContent = months > 0 ? `${months}개월 ${days}일 남음` : `${days}일 남음`;
+                    freePeriodEl.style.color = 'var(--success)';
+                } else {
+                    freePeriodEl.textContent = '무료 기간 종료';
+                    freePeriodEl.style.color = 'var(--gray-500)';
+                }
+            } else if (!userData.installation_fee_paid) {
+                freePeriodEl.textContent = '빌더 계정 개설비 납부 후 시작';
+                freePeriodEl.style.color = 'var(--gray-500)';
+            } else {
+                freePeriodEl.textContent = '-';
+            }
+
+            // 다음 결제일
+            if (userData.next_billing_date) {
+                document.getElementById('nextPayDate').textContent = formatDate(userData.next_billing_date);
+            } else {
+                document.getElementById('nextPayDate').textContent = '-';
+            }
+
+            // 크레딧 잔액
+            const creditBalance = userData.credit_balance || 0;
+            document.getElementById('subCreditBalance').textContent = `₩${creditBalance.toLocaleString()}`;
+
+            // 빌더 계정 개설비 상태 (메인 카드)
+            const installFeeStatusMain = document.getElementById('installFeeStatusMain');
+            const installFeePaidDate = document.getElementById('installFeePaidDate');
+            if (userData.installation_fee_paid) {
+                installFeeStatusMain.innerHTML = '<span style="color: var(--success);">✅ 완납</span>';
+                installFeePaidDate.textContent = userData.subscription_started_at
+                    ? formatDate(userData.subscription_started_at)
+                    : '-';
+            } else {
+                installFeeStatusMain.innerHTML = '<span style="color: var(--danger);">❌ 미납</span>';
+                installFeePaidDate.textContent = '-';
+            }
+
+            // 빌더 계정 개설비 상태 (요금 안내 카드)
+            const installFeeStatus = document.getElementById('installFeeStatus');
+            if (userData.installation_fee_paid) {
+                installFeeStatus.textContent = '✅ 완납';
+                installFeeStatus.style.color = 'var(--success)';
+            } else {
+                installFeeStatus.textContent = '미납';
+                installFeeStatus.style.color = 'var(--danger)';
+            }
+
+            // Load payment methods from Supabase
+            try {
+                const { data: methods, error } = await window.supabaseClient
+                    .from('payment_methods')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .eq('is_default', true)
+                    .limit(1);
+
+                if (!error && methods && methods.length > 0) {
+                    const method = methods[0];
+                    if (method.payment_type === 'card') {
+                        document.getElementById('paymentMethodName').textContent = `${method.card_company || '카드'} ****-${method.card_last4}`;
+                        document.getElementById('paymentMethodDetail').textContent = '자동결제 등록됨';
+                    } else if (method.payment_type === 'bank') {
+                        document.getElementById('paymentMethodName').textContent = `${method.bank_name} ****${method.account_last4}`;
+                        document.getElementById('paymentMethodDetail').textContent = '자동이체 등록됨';
+                    }
+                }
+            } catch (e) {
+                console.log('결제 수단 로드 실패:', e);
+            }
+
+            // Load billing history from Supabase
+            try {
+                const { data: billingHistory, error } = await window.supabaseClient
+                    .from('billing_history')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .order('billing_date', { ascending: false })
+                    .limit(5);
+
+                if (!error && billingHistory) {
+                    renderBillingHistory(billingHistory);
+                }
+            } catch (e) {
+                console.log('결제 내역 로드 실패:', e);
+            }
+        }
+
+        function renderBillingHistory(billingHistory) {
+            const container = document.getElementById('billingHistoryList');
+            if (!billingHistory || billingHistory.length === 0) {
+                container.innerHTML = '<div style="color: var(--gray-500); text-align: center; padding: 40px;">결제 내역이 없습니다.</div>';
+                return;
+            }
+
+            const statusColors = {
+                'paid': 'var(--success)',
+                'failed': 'var(--danger)',
+                'refunded': 'var(--primary)'
+            };
+
+            const statusLabels = {
+                'paid': '결제 완료',
+                'failed': '결제 실패',
+                'refunded': '환불 완료'
+            };
+
+            const typeLabels = {
+                'platform_fee': '플랫폼 이용료',
+                'credit_purchase': '크레딧 충전'
+            };
+
+            container.innerHTML = billingHistory.map(b => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray-100);">
+                    <div>
+                        <div style="font-weight: 500;">${typeLabels[b.billing_type] || b.billing_type}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${formatDate(b.billing_date)}</div>
+                        <span style="font-size: 11px; padding: 2px 8px; background: ${b.status === 'paid' ? 'rgba(16, 185, 129, 0.1)' : b.status === 'failed' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(44, 74, 138, 0.1)'}; color: ${statusColors[b.status] || 'var(--gray-500)'}; border-radius: 4px; margin-top: 4px; display: inline-block;">${statusLabels[b.status] || b.status}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700;">₩${b.amount.toLocaleString()}</div>
+                        ${b.payment_method ? `<div style="font-size: 12px; color: var(--gray-500);">${sanitize(b.payment_method)}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========== 매뉴얼 다운로드 렌더링 ==========
+        function renderManualDownload() {
+            if (!userData) return;
+
+            const btn = document.getElementById('manualDownloadBtn');
+            const badge = document.getElementById('manualBuilderBadge');
+
+            if (userData.installation_fee_paid) {
+                // 빌더 계정: 버튼 활성화
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                badge.textContent = '다운로드 가능';
+                badge.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+            } else {
+                // 일반 회원: 버튼 비활성화 스타일 (클릭은 가능, 함수에서 체크)
+                btn.style.opacity = '0.6';
+                badge.textContent = '빌더 전용';
+                badge.style.background = 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)';
+            }
+        }
+
+        // ========== Dev Package 다운로드 렌더링 ==========
+        function renderDevPackageDownload() {
+            if (!userData) return;
+
+            const btn = document.getElementById('devPackageDownloadBtn');
+            const badge = document.getElementById('devPackageBadge');
+
+            if (userData.installation_fee_paid) {
+                // 빌더 계정: 버튼 활성화
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                badge.textContent = '다운로드 가능';
+                badge.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+            } else {
+                // 일반 회원: 버튼 비활성화 스타일 (클릭은 가능, 함수에서 체크)
+                btn.style.opacity = '0.6';
+                badge.textContent = '빌더 전용';
+                badge.style.background = 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)';
+            }
+        }
+
+        // ========== 매뉴얼 다운로드 ==========
+        async function downloadManual() {
+            if (!userData || !userData.installation_fee_paid) {
+                showPopup('빌더 계정 전용', '빌더 계정 개설 후 이용 가능합니다.\n빌더 계정 개설비 납부 후 다운로드할 수 있습니다.', 'warning');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                // 매뉴얼 파일 URL (배포된 PDF 파일)
+                const manualUrl = '/pages/mypage/manual.pdf';
+
+                // 다운로드 링크 생성 및 클릭
+                const link = document.createElement('a');
+                link.href = manualUrl;
+                link.download = 'SSAL_Works_빌더계정_사용매뉴얼.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showPopup('다운로드 완료', '빌더 계정 사용 매뉴얼 PDF 다운로드가 완료되었습니다.', 'success');
+
+                // 다운로드 기록 저장 (선택적)
+                try {
+                    await window.supabaseClient
+                        .from('user_activity_logs')
+                        .insert({
+                            user_id: userData.user_id,
+                            activity_type: 'manual_download',
+                            activity_data: { file: 'SSAL_Works_빌더계정_사용매뉴얼.pdf' },
+                            created_at: new Date().toISOString()
+                        });
+                } catch (logError) {
+                    console.log('다운로드 기록 저장 실패 (무시):', logError);
+                }
+
+            } catch (error) {
+                console.error('매뉴얼 다운로드 오류:', error);
+                showToast('매뉴얼 다운로드에 실패했습니다. 잠시 후 다시 시도해주세요.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== Dev Package 다운로드 ==========
+        async function downloadDevPackage() {
+            if (!userData || !userData.installation_fee_paid) {
+                showToast('빌더 계정 개설 후 이용 가능합니다. 빌더 계정 개설비 납부 후 다운로드할 수 있습니다.', 'warning');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                // Dev Package 파일 URL (Google Drive 직접 다운로드 링크)
+                const devPackageUrl = 'https://drive.google.com/uc?export=download&id=1jTsna28NUbVTuYzo1S6ny6UTXX1s7Tk0';
+
+                // 다운로드 링크 생성 및 클릭
+                const link = document.createElement('a');
+                link.href = devPackageUrl;
+                link.download = 'Dev_Package.zip';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showToast('📥 Dev Package 다운로드를 시작합니다.', 'success');
+
+                // 다운로드 기록 저장 (선택적)
+                try {
+                    await window.supabaseClient
+                        .from('user_activity_logs')
+                        .insert({
+                            user_id: userData.user_id,
+                            activity_type: 'dev_package_download',
+                            activity_data: { file: 'Dev_Package.zip' },
+                            created_at: new Date().toISOString()
+                        });
+                } catch (logError) {
+                    console.log('다운로드 기록 저장 실패 (무시):', logError);
+                }
+
+            } catch (error) {
+                console.error('Dev Package 다운로드 오류:', error);
+                showToast('Dev Package 다운로드에 실패했습니다. 잠시 후 다시 시도해주세요.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 크레딧 렌더링 ==========
+        async function renderCredit() {
+            if (!userData) return;
+
+            const balance = userData.credit_balance || 0;
+            document.getElementById('creditBalance').textContent = `₩${balance.toLocaleString()}`;
+
+            // Load credit transactions from Supabase
+            try {
+                const { data: transactions, error } = await window.supabaseClient
+                    .from('credit_transactions')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (!error && transactions) {
+                    // Calculate monthly usage
+                    const now = new Date();
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                    const monthlySpend = transactions
+                        .filter(t => t.type === 'spend' && new Date(t.created_at) >= monthStart)
+                        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+                    const totalCharged = transactions
+                        .filter(t => t.type === 'charge')
+                        .reduce((sum, t) => sum + t.amount, 0);
+
+                    document.getElementById('creditUsed').textContent = `₩${monthlySpend.toLocaleString()}`;
+                    document.getElementById('creditCharged').textContent = `₩${totalCharged.toLocaleString()}`;
+
+                    // Render transaction history
+                    renderCreditHistory(transactions);
+                }
+            } catch (e) {
+                console.log('크레딧 거래 내역 로드 실패:', e);
+            }
+
+            // Load AI usage log
+            try {
+                const { data: usageLogs, error } = await window.supabaseClient
+                    .from('ai_usage_log')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (!error && usageLogs) {
+                    document.getElementById('aiUsageCount').textContent = `${usageLogs.length}회`;
+                    renderAIUsageHistory(usageLogs);
+                }
+            } catch (e) {
+                console.log('AI 사용 로그 로드 실패:', e);
+            }
+
+            // Load AI pricing
+            try {
+                const { data: pricing, error } = await window.supabaseClient
+                    .from('ai_service_pricing')
+                    .select('*')
+                    .eq('is_active', true);
+
+                if (!error && pricing && pricing.length > 0) {
+                    renderAIPricing(pricing);
+                }
+            } catch (e) {
+                console.log('AI 가격 정보 로드 실패:', e);
+            }
+        }
+
+        function renderCreditHistory(transactions) {
+            const container = document.getElementById('creditHistory');
+            if (!transactions || transactions.length === 0) {
+                container.innerHTML = '<div style="color: var(--gray-500); text-align: center; padding: 40px;">거래 내역이 없습니다.</div>';
+                return;
+            }
+
+            const typeColors = {
+                'charge': 'var(--success)',
+                'spend': 'var(--danger)',
+                'refund': 'var(--primary)',
+                'bonus': 'var(--secondary)',
+                'expire': 'var(--gray-500)'
+            };
+
+            container.innerHTML = transactions.map(t => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray-100);">
+                    <div>
+                        <div style="font-weight: 500;">${sanitize(t.description)}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${formatDateTime(t.created_at)}</div>
+                        ${t.related_service ? `<span style="font-size: 11px; padding: 2px 8px; background: var(--gray-100); border-radius: 4px; margin-top: 4px; display: inline-block;">${sanitize(t.related_service)}</span>` : ''}
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; color: ${typeColors[t.type] || 'var(--gray-900)'};">${t.amount > 0 ? '+' : ''}₩${t.amount.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">잔액: ₩${t.balance_after.toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAIUsageHistory(usageLogs) {
+            const container = document.getElementById('aiUsageHistory');
+            if (!usageLogs || usageLogs.length === 0) {
+                container.innerHTML = '<div style="color: var(--gray-500); text-align: center; padding: 40px;">사용 기록이 없습니다.</div>';
+                return;
+            }
+
+            const serviceIcons = { 'ChatGPT': '🤖', 'Gemini': '✨', 'Perplexity': '🔍' };
+
+            container.innerHTML = usageLogs.map(u => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray-100);">
+                    <div>
+                        <div style="font-weight: 500;">${sanitize(u.prompt.substring(0, 30))}...</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${formatDateTime(u.created_at)}</div>
+                        <span style="font-size: 11px; padding: 2px 8px; background: var(--gray-100); border-radius: 4px; margin-top: 4px; display: inline-block;">${serviceIcons[u.service_name] || '🤖'} ${sanitize(u.service_name)}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; color: var(--danger);">-₩${u.cost.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${u.tokens_used?.toLocaleString() || '-'} 토큰</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAIPricing(pricing) {
+            const container = document.getElementById('aiPriceList');
+            const iconMap = {
+                'ChatGPT': { icon: '🤖', bg: '#74AA9C' },
+                'Gemini': { icon: '✨', bg: '#4285F4' },
+                'Perplexity': { icon: '🔍', bg: '#1FB8CD' }
+            };
+
+            container.innerHTML = pricing.map(p => {
+                const config = iconMap[p.service_name] || { icon: '🤖', bg: '#74AA9C' };
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 36px; height: 36px; border-radius: 8px; background: ${config.bg}; display: flex; align-items: center; justify-content: center; font-size: 18px;">${config.icon}</div>
+                            <div>
+                                <div style="font-weight: 600;">${sanitize(p.service_name)}</div>
+                                <div style="font-size: 12px; color: var(--gray-500);">${sanitize(p.description || '')}</div>
+                            </div>
+                        </div>
+                        <div style="font-weight: 700; color: var(--secondary);">₩${p.price_per_use.toLocaleString()}/회</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== 보안 정보 렌더링 ==========
+        function renderSecurity() {
+            if (!userData) return;
+
+            document.getElementById('lastLogin').textContent =
+                userData.last_login_at ? formatDateTime(userData.last_login_at) : '-';
+        }
+
+        // ========== Quick Stats 업데이트 ==========
+        function updateQuickStats() {
+            if (!userData) return;
+
+            document.getElementById('quickCredit').textContent =
+                `₩${(userData.credit_balance || 0).toLocaleString()}`;
+
+            const statusBadge = document.getElementById('quickStatus');
+            if (userData.is_service_active) {
+                statusBadge.innerHTML = `<span class="profile-badge badge-active">이용 중</span>`;
+            } else if (userData.subscription_status === 'pending') {
+                statusBadge.innerHTML = `<span class="profile-badge badge-paused">대기 중</span>`;
+            } else {
+                statusBadge.innerHTML = `<span class="profile-badge badge-free">비활성</span>`;
+            }
+        }
+
+        // ========== 메뉴 네비게이션 ==========
+        function setupMenuNavigation() {
+            const menuLinks = document.querySelectorAll('.menu-link[data-section]');
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.dataset.section;
+                    navigateToSection(sectionId);
+                });
+            });
+
+            // 페이지 로드 시 URL 해시 확인
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(`${hash}Section`)) {
+                navigateToSection(hash);
+            }
+
+            // 브라우저 뒤로/앞으로 버튼 지원
+            window.addEventListener('hashchange', () => {
+                const newHash = window.location.hash.replace('#', '');
+                if (newHash && document.getElementById(`${newHash}Section`)) {
+                    navigateToSection(newHash);
+                }
+            });
+        }
+
+        function navigateToSection(sectionId) {
+            const menuLinks = document.querySelectorAll('.menu-link[data-section]');
+
+            menuLinks.forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`.menu-link[data-section="${sectionId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${sectionId}Section`).classList.add('active');
+
+            // URL 해시 업데이트 (히스토리에 추가하지 않음)
+            history.replaceState(null, null, `#${sectionId}`);
+
+            if (isEditMode) toggleEditMode();
+        }
+
+        // ========== 편집 모드 토글 ==========
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const card = document.getElementById('profileCard');
+
+            if (isEditMode) {
+                card.classList.remove('view-mode');
+                card.classList.add('edit-mode');
+            } else {
+                card.classList.remove('edit-mode');
+                card.classList.add('view-mode');
+                renderProfile();
+            }
+        }
+
+        // ========== 프로필 저장 ==========
+        async function saveProfile(e) {
+            e.preventDefault();
+            showLoading();
+
+            try {
+                const nickname = document.getElementById('editNickname').value.trim();
+                const realName = document.getElementById('editRealName').value.trim();
+                const phone = document.getElementById('editPhone').value.trim();
+                const marketing = document.getElementById('editMarketing').value === 'true';
+
+                if (nickname && (nickname.length < 2 || nickname.length > 20)) {
+                    throw new Error('닉네임은 2-20자 사이여야 합니다.');
+                }
+
+                const { error } = await window.supabaseClient
+                    .from('users')
+                    .update({
+                        nickname: nickname || null,
+                        real_name: realName || null,
+                        phone: phone || null,
+                        marketing_agreed: marketing,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                await loadUserData();
+                toggleEditMode();
+                showToast('프로필이 저장되었습니다.', 'success');
+
+            } catch (error) {
+                console.error('Profile save error:', error);
+                showToast(error.message || '프로필 저장에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 비밀번호 변경 ==========
+        async function changePassword(e) {
+            e.preventDefault();
+
+            const currentPw = document.getElementById('currentPassword').value;
+            const newPw = document.getElementById('newPassword').value;
+            const confirmPw = document.getElementById('confirmPassword').value;
+
+            if (newPw !== confirmPw) {
+                showToast('새 비밀번호가 일치하지 않습니다.', 'error');
+                return;
+            }
+
+            if (newPw.length < 8) {
+                showToast('비밀번호는 8자 이상이어야 합니다.', 'error');
+                return;
+            }
+
+            const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+            if (!pwRegex.test(newPw)) {
+                showToast('비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const { error } = await window.supabaseClient.auth.updateUser({
+                    password: newPw
+                });
+
+                if (error) throw error;
+
+                document.getElementById('passwordForm').reset();
+                showToast('비밀번호가 변경되었습니다.', 'success');
+
+            } catch (error) {
+                console.error('Password change error:', error);
+                showToast(error.message || '비밀번호 변경에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 크레딧 충전 ==========
+        function chargeCredit(amount) {
+            showToast('크레딧 충전 기능은 준비 중입니다.', 'error');
+        }
+
+        // ========== 계정 삭제 ==========
+        function confirmDeleteAccount() {
+            if (confirm('정말로 계정을 삭제하시겠습니까?\n\n모든 데이터가 영구적으로 삭제되며, 이 작업은 되돌릴 수 없습니다.')) {
+                if (confirm('마지막 확인입니다. 계정을 삭제하시겠습니까?')) {
+                    showToast('계정 삭제 요청이 접수되었습니다. 관리자가 확인 후 처리됩니다.', 'success');
+                }
+            }
+        }
+
+        // ========== 로그아웃 ==========
+        async function logout() {
+            try {
+                await window.supabaseClient.auth.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('로그아웃에 실패했습니다.', 'error');
+            }
+        }
+
+        // ========== 유틸리티 함수 ==========
+        function sanitize(text) {
+            return DOMPurify.sanitize(text);
+        }
+
+        function getSubscriptionStatusText(status) {
+            const statusMap = {
+                'free': '무료',
+                'active': '활성',
+                'paused': '일시정지',
+                'suspended': '정지',
+                'cancelled': '해지'
+            };
+            return statusMap[status] || '무료';
+        }
+
+        // formatDate, formatDateTime → date-utils.js 사용
+        // showToast → toast.js 사용
+
+        // 페이지 전용 로딩 함수 (loadingOverlay 요소 사용)
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.add('hidden');
+        }
+
+        // 모달 팝업 함수
+        function showPopup(title, message, type = 'info') {
+            // 기존 팝업 제거
+            const existingPopup = document.getElementById('customPopup');
+            if (existingPopup) existingPopup.remove();
+
+            // 아이콘 설정
+            const icons = {
+                success: '✅',
+                warning: '⚠️',
+                error: '❌',
+                info: 'ℹ️'
+            };
+
+            // 색상 설정 (디자인 시스템 기반)
+            const colors = {
+                success: '#20808D',  // tertiary
+                warning: '#ffc107',  // warning
+                error: '#dc3545',    // danger
+                info: '#6B5CCC'      // primary
+            };
+
+            // 팝업 HTML 생성
+            const popup = document.createElement('div');
+            popup.id = 'customPopup';
+            popup.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                " onclick="if(event.target === this) this.remove()">
+                    <div style="
+                        background: white;
+                        border-radius: 16px;
+                        padding: 32px;
+                        max-width: 400px;
+                        width: 90%;
+                        text-align: center;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                        animation: popupIn 0.3s ease;
+                    ">
+                        <div style="font-size: 48px; margin-bottom: 16px;">${icons[type]}</div>
+                        <h3 style="
+                            font-size: 20px;
+                            font-weight: 700;
+                            color: ${colors[type]};
+                            margin-bottom: 12px;
+                        ">${title}</h3>
+                        <p style="
+                            font-size: 14px;
+                            color: #666;
+                            line-height: 1.6;
+                            margin-bottom: 24px;
+                        ">${message}</p>
+                        <button onclick="document.getElementById('customPopup').remove()" style="
+                            background: ${colors[type]};
+                            color: white;
+                            border: none;
+                            padding: 12px 32px;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: opacity 0.2s;
+                        " onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            확인
+                        </button>
+                    </div>
+                </div>
+                <style>
+                    @keyframes popupIn {
+                        from { opacity: 0; transform: scale(0.9); }
+                        to { opacity: 1; transform: scale(1); }
+                    }
+                </style>
+            `;
+            document.body.appendChild(popup);
+        }
+    </script>
+</body>
+</html>

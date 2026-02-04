@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSAL 빌더 Q 프로그램 - Facebook Poster</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .poster {
+            width: 2000px;
+            background: linear-gradient(180deg, #1a2d4d 0%, #2C4A8A 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 배경 장식 */
+        .bg-circle-1 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
+            border-radius: 50%;
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-circle-2 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(217, 119, 6, 0.08) 0%, transparent 60%);
+            border-radius: 50%;
+            bottom: 300px;
+            left: -120px;
+        }
+
+        /* 헤더 영역 */
+        .header-section {
+            position: relative;
+            z-index: 1;
+            padding: 70px 100px 60px;
+            text-align: center;
+        }
+
+        /* SSAL Works 로고 */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 16px;
+            height: 30px;
+            background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+            border-radius: 40%;
+            box-shadow: 0 3px 6px rgba(217, 119, 6, 0.5), inset 0 2px 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 3px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -2px; }
+
+        .logo-text {
+            font-size: 38px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        /* 메인 타이틀 */
+        .main-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #10B981;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .sub-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        /* 정의 박스 */
+        .definitions {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 35px 60px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: left;
+        }
+
+        .definitions p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 2.1;
+        }
+
+        /* 콘텐츠 영역 */
+        .content-section {
+            position: relative;
+            z-index: 1;
+            padding: 60px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 45px;
+        }
+
+        /* 섹션 카드 */
+        .section-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 45px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a2d4d;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 4px solid #10B981;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* 리스트 */
+        .content-list {
+            list-style: none;
+        }
+
+        .content-list li {
+            font-size: 20px;
+            color: #1f2937;
+            line-height: 2;
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .content-list li::before {
+            content: "-";
+            position: absolute;
+            left: 0;
+            color: #10B981;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        /* 넘버링 */
+        .numbered-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #D97706;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-left: 4px;
+        }
+
+        /* 크리덴셜 그리드 */
+        .credential-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .credential-item {
+            font-size: 19px;
+            color: #1f2937;
+            padding: 16px 20px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            border-left: 5px solid #10B981;
+            line-height: 1.7;
+        }
+
+        /* 목표 그리드 */
+        .goal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .goal-item {
+            font-size: 20px;
+            color: #1f2937;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .goal-item::before {
+            content: "✓";
+            color: #b45309;
+            font-weight: 800;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .goal-item.highlight {
+            background: linear-gradient(135deg, #d1fae5 0%, #6ee7b7 100%);
+        }
+
+        .goal-item.highlight::before {
+            color: #047857;
+        }
+
+        /* CTA 영역 */
+        .cta-section {
+            position: relative;
+            z-index: 1;
+            padding: 40px 120px 50px;
+            text-align: center;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+            border-radius: 20px;
+            padding: 35px 60px;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.45);
+        }
+
+        .cta-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .cta-url {
+            font-size: 40px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .cta-text {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <!-- 배경 장식 -->
+        <div class="bg-circle-1"></div>
+        <div class="bg-circle-2"></div>
+
+        <!-- 헤더 -->
+        <div class="header-section">
+            <div class="logo">
+                <span class="rice-logo">
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                </span>
+                <span class="logo-text">SSAL Works</span>
+            </div>
+
+            <h1 class="main-title">&lt;SSAL 빌더 Q 프로그램 참가자 모집&gt;</h1>
+
+            <p class="sub-title">"Sunny와 함께 SSAL Works를 활용하여 풀스택 웹사이트를 운영하는 혁신 사업가로 변신하기"</p>
+
+            <div class="definitions">
+                <p>- SSAL 빌더 = SSAL Works를 활용하여 풀스택 웹사이트를 만들어 운영하는 혁신 사업가</p>
+                <p>- Q 프로그램 = SSAL 빌더 자격을 갖추어가는(Qualifying) 프로그램</p>
+                <p>- 변신 = 아이디어만 있는 비개발자 → SSAL 빌더로 바뀜</p>
+            </div>
+        </div>
+
+        <!-- 콘텐츠 -->
+        <div class="content-section">
+            <!-- SSAL Works 플랫폼 제공 -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">📦</span>
+                    [SSAL Works 플랫폼이 제공하는 것]
+                </h2>
+                <ul class="content-list">
+                    <li>플랫폼 사용권 제공 (빌더 계정 개설비 300만원, 플랫폼 이용료 5만원(3개월 후부터))</li>
+                    <li>SSAL Works의 저작권 등록된 소스코드 및 관련 문서 파일 일체 제공(보고 참고해서 그대로 활용하도록)</li>
+                    <li>Dev Package(통합개발환경: 작업 디렉토리 구조, 7개 작업규칙, 2개 작업방법, 12대 준수사항, 5대 절대규칙, 각종 자동화시스템 등이 포함된) 제공</li>
+                    <li>프로그램 진행단계별 안내문 및 작업지시서(Oder Sheet) 템플릿, 진행 프로세스 진행율 확인 도구, 프로젝트 진행의 관리ㆍ통제ㆍ검증 자동화 시스템 제공</li>
+                    <li>AI Tutor 서비스 제공</li>
+                    <li>3개 생성형 AI에게 질문하기 메뉴 제공</li>
+                </ul>
+            </div>
+
+            <!-- Sunny가 제공하는 것 -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">👨‍🏫</span>
+                    [Sunny가 제공하는 것]
+                </h2>
+                <p class="numbered-title">1) 개발 코칭(3개월간)</p>
+                <ul class="content-list">
+                    <li>초기 정착 단계까지 주 1회 대면 코칭(1대1 또는 소그룹)</li>
+                    <li>필요시 수시로 화상통화</li>
+                </ul>
+                <p class="numbered-title">2) 사업 멘토링(3개월간)</p>
+                <ul class="content-list">
+                    <li>비즈니스 모델 수립 자문</li>
+                    <li>사업계획서 작성 코칭</li>
+                    <li>정부지원사업계획서 작성 코칭</li>
+                    <li>특허출원서 초안 작성 코칭</li>
+                    <li>마케팅 전략 자문</li>
+                    <li>사업자금 조달방안 자문</li>
+                </ul>
+                <p class="numbered-title">3) Sunny에게 질문하기(월 이용료 납부기간 동안 계속)</p>
+                <p class="numbered-title">4) 특전: 기업가치평가보고서(현금흐름할인법)를 염가(일반적인 가격의 1/4)로 제공받을 기회 제공</p>
+            </div>
+
+            <!-- Sunny의 크리덴셜 -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">🏆</span>
+                    [Sunny의 크리덴셜]
+                </h2>
+                <div class="credential-grid">
+                    <div class="credential-item">- 공인회계사 활동 20년 이상</div>
+                    <div class="credential-item">- 스타트업 엑셀러레이터 활동 10년 이상</div>
+                    <div class="credential-item">- 5개의 플랫폼 개발 관련 정부지원사업 선정 7회</div>
+                    <div class="credential-item">- 정부지원사업 심사위원 5년 이상</div>
+                    <div class="credential-item">- 정부지원사업 관련 수백명 코칭 경험</div>
+                    <div class="credential-item">- AI 활용능력 키우기에 7개월간 2,500시간 이상 투입</div>
+                    <div class="credential-item" style="grid-column: 1 / -1;">- SSAL Works 및 2개의 풀스택 웹사이트를 직접 개발</div>
+                </div>
+            </div>
+
+            <!-- Q 프로그램 목표 -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <span class="section-icon">🎯</span>
+                    [Q 프로그램의 3개월 후 달성 목표]
+                </h2>
+                <div class="goal-grid">
+                    <div class="goal-item highlight">풀스택 웹사이트 런칭</div>
+                    <div class="goal-item">비즈니스 모델 정립</div>
+                    <div class="goal-item">사업계획서 2종(일반용, 정부지원사업용) 완성</div>
+                    <div class="goal-item">저작권 등록</div>
+                    <div class="goal-item">특허 출원</div>
+                    <div class="goal-item">마케팅 전략 및 사업자금 조달방안 수립</div>
+                    <div class="goal-item highlight" style="grid-column: 1 / -1;">Sunny의 개발관련 비법과 노하우를 완전 습득해서 Sunny와 비슷한 수준의 능력자로 변신 (* 시행착오 1,000시간 이상 줄임)</div>
+                </div>
+            </div>
+        </div>
+
+                <!-- CTA -->
+
+                <div class="cta-section">
+
+                    <div class="cta-card">
+
+                        <p class="cta-title">[참가 방법]</p>
+
+                        <p class="cta-url">www.ssalworks.ai.kr</p>
+
+                        <p class="cta-text">시이트에서 회원 가입하고 빌더 계정 개설</p>
+
+                    </div>
+
+                    <div style="font-size: 16px; color: rgba(255, 255, 255, 0.7); margin-top: 30px;">
+
+                        &copy; 2025 SSAL Works. All rights reserved.<br>본 프로젝트의 소스코드는 저작권 등록이 되었으며 (한국저작권위원회 C-2026-003858), 고유한 시스템 및 방법에 대해서는 특허 출원을 하였습니다 (특허 10-2026-0009425).
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </body>
+
+            
+</html>

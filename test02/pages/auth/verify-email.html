@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 인증 - SSAL Works</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Theme - Navy Blue */
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+
+            /* Secondary Theme - Amber Gold */
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+
+            /* Accent - Emerald Green */
+            --accent: #10B981;
+            --accent-dark: #059669;
+
+            /* Status Colors */
+            --success: #10B981;
+            --warning: #ffc107;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --neutral: #64748B;
+
+            /* Background */
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .verify-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* 로고 스타일 */
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            display: inline-block;
+        }
+
+        .rice-grain:nth-child(1) {
+            transform: rotate(-5deg);
+        }
+
+        .rice-grain:nth-child(2) {
+            transform: rotate(5deg);
+            margin-top: 2px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* 상태 아이콘 */
+        .status-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .status-icon.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .status-message.success {
+            color: var(--success);
+        }
+
+        .status-message.error {
+            color: var(--danger);
+        }
+
+        /* 버튼 */
+        .btn {
+            display: inline-block;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 추가 안내 */
+        .help-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .help-text a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <!-- 로고 -->
+        <div class="logo">
+            <div class="logo-inner">
+                <div class="rice-logo">
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                </div>
+                <span class="logo-text">SSAL Works</span>
+            </div>
+        </div>
+
+        <h1 class="title">이메일 인증</h1>
+
+        <!-- 로딩 상태 -->
+        <div id="loading-state">
+            <div class="status-icon loading">⏳</div>
+            <p class="status-message">이메일 인증을 확인하고 있습니다...</p>
+        </div>
+
+        <!-- 성공 상태 -->
+        <div id="success-state" class="hidden">
+            <div class="status-icon">✅</div>
+            <p class="status-message success">
+                이메일 인증이 완료되었습니다!<br>
+                이제 로그인하여 SSAL Works를 이용할 수 있습니다.
+            </p>
+            <a href="login.html" class="btn btn-primary">로그인하기</a>
+        </div>
+
+        <!-- 실패 상태 -->
+        <div id="error-state" class="hidden">
+            <div class="status-icon">❌</div>
+            <p class="status-message error" id="error-message">
+                이메일 인증에 실패했습니다.<br>
+                링크가 만료되었거나 이미 인증된 계정입니다.
+            </p>
+            <a href="login.html" class="btn btn-secondary">로그인 페이지로</a>
+            <p class="help-text">
+                문제가 계속되면 <a href="mailto:support@ssalworks.com">support@ssalworks.com</a>으로 문의해주세요.
+            </p>
+        </div>
+
+        <!-- 이미 인증됨 -->
+        <div id="already-verified-state" class="hidden">
+            <div class="status-icon">✅</div>
+            <p class="status-message success">
+                이미 인증된 계정입니다.<br>
+                로그인하여 서비스를 이용해주세요.
+            </p>
+            <a href="login.html" class="btn btn-primary">로그인하기</a>
+        </div>
+    </div>
+
+    <script>
+        // Supabase 클라이언트 초기화
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // UI 상태 관리
+        function showState(stateId) {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('success-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            document.getElementById('already-verified-state').classList.add('hidden');
+            document.getElementById(stateId).classList.remove('hidden');
+        }
+
+        // 사용자 상태 업데이트 (inactive → free)
+        async function activateUser(userId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ subscription_status: 'free' })
+                    .eq('id', userId);
+
+                if (error) {
+                    console.error('사용자 활성화 오류:', error);
+                    // 실패해도 인증 자체는 성공으로 처리
+                }
+            } catch (e) {
+                console.error('사용자 활성화 예외:', e);
+            }
+        }
+
+        // 이메일 인증 처리
+        async function handleEmailVerification() {
+            try {
+                // URL에서 해시 파라미터 확인 (Supabase가 #access_token=... 형태로 전달)
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                const accessToken = hashParams.get('access_token');
+                const refreshToken = hashParams.get('refresh_token');
+                const type = hashParams.get('type');
+
+                // URL 쿼리 파라미터도 확인 (일부 경우 ?token_hash=... 형태)
+                const urlParams = new URLSearchParams(window.location.search);
+                const tokenHash = urlParams.get('token_hash');
+                const tokenType = urlParams.get('type') || 'signup';
+
+                console.log('인증 파라미터:', { accessToken: !!accessToken, tokenHash: !!tokenHash, type: type || tokenType });
+
+                // Case 1: 해시에 access_token이 있는 경우 (자동 인증됨)
+                if (accessToken && refreshToken) {
+                    const { data: sessionData, error: sessionError } = await supabaseClient.auth.setSession({
+                        access_token: accessToken,
+                        refresh_token: refreshToken
+                    });
+
+                    if (sessionError) {
+                        console.error('세션 설정 오류:', sessionError);
+                        document.getElementById('error-message').innerHTML =
+                            '인증 세션 설정에 실패했습니다.<br>다시 시도해주세요.';
+                        showState('error-state');
+                        return;
+                    }
+
+                    if (sessionData.user) {
+                        // 사용자 활성화 (subscription_status: inactive → free)
+                        await activateUser(sessionData.user.id);
+                        showState('success-state');
+                        return;
+                    }
+                }
+
+                // Case 2: token_hash가 있는 경우 (수동 인증 필요)
+                if (tokenHash) {
+                    const { data, error } = await supabaseClient.auth.verifyOtp({
+                        token_hash: tokenHash,
+                        type: tokenType === 'signup' ? 'signup' : 'email'
+                    });
+
+                    if (error) {
+                        console.error('OTP 인증 오류:', error);
+                        if (error.message.includes('expired')) {
+                            document.getElementById('error-message').innerHTML =
+                                '인증 링크가 만료되었습니다.<br>다시 회원가입을 진행해주세요.';
+                        } else if (error.message.includes('already')) {
+                            showState('already-verified-state');
+                            return;
+                        }
+                        showState('error-state');
+                        return;
+                    }
+
+                    if (data.user) {
+                        await activateUser(data.user.id);
+                        showState('success-state');
+                        return;
+                    }
+                }
+
+                // Case 3: 현재 세션 확인 (이미 로그인되어 있을 수 있음)
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (session && session.user) {
+                    // 이미 인증된 사용자
+                    const { data: userData } = await supabaseClient
+                        .from('users')
+                        .select('subscription_status')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (userData && userData.subscription_status === 'inactive') {
+                        // 아직 활성화되지 않은 경우 활성화
+                        await activateUser(session.user.id);
+                        showState('success-state');
+                    } else {
+                        showState('already-verified-state');
+                    }
+                    return;
+                }
+
+                // 인증 파라미터가 없는 경우
+                document.getElementById('error-message').innerHTML =
+                    '유효한 인증 링크가 아닙니다.<br>이메일에서 인증 링크를 다시 클릭해주세요.';
+                showState('error-state');
+
+            } catch (error) {
+                console.error('인증 처리 오류:', error);
+                document.getElementById('error-message').innerHTML =
+                    '인증 처리 중 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.';
+                showState('error-state');
+            }
+        }
+
+        // 페이지 로드 시 인증 처리
+        document.addEventListener('DOMContentLoaded', () => {
+            // 약간의 딜레이 후 인증 처리 (UX 향상)
+            setTimeout(handleEmailVerification, 500);
+        });
+    </script>
+</body>
+</html>

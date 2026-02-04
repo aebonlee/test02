@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 수단 등록 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; text-align: center; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .free-notice {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .free-notice-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .free-notice-text { font-size: 14px; color: var(--gray-700); }
+
+        .next-billing {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+
+        .next-billing strong { color: var(--primary); }
+
+        .payment-option {
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(44, 74, 138, 0.05);
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-option.selected .radio-circle {
+            border-color: var(--primary);
+        }
+
+        .payment-option.selected .radio-circle::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .option-title { font-size: 16px; font-weight: 600; }
+        .option-icon { font-size: 24px; }
+
+        .option-fields {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .payment-option.selected .option-fields {
+            display: block;
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--gray-700);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .inline-inputs {
+            display: flex;
+            gap: 12px;
+        }
+
+        .inline-inputs .form-group { flex: 1; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+
+        /* 등록된 결제 수단 목록 */
+        .registered-methods {
+            margin-bottom: 24px;
+        }
+
+        .registered-methods h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--gray-700);
+        }
+
+        .method-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .method-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-icon { font-size: 24px; }
+
+        .method-details { font-size: 14px; }
+        .method-details strong { display: block; margin-bottom: 2px; }
+
+        .method-badge {
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .btn-delete {
+            padding: 6px 12px;
+            background: none;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <button class="close-btn" onclick="history.back()">✕ 닫기</button>
+    </nav>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>결제 수단 등록</span>
+        </div>
+
+        <h1 class="page-title">💳 결제 수단 등록</h1>
+
+        <!-- 무료 안내 -->
+        <div class="free-notice">
+            <div class="free-notice-title">1~3개월은 무료입니다!</div>
+            <div class="free-notice-text">결제 수단을 등록하면 4개월차부터 자동 결제됩니다.</div>
+        </div>
+
+        <div class="next-billing">
+            다음 결제일: <strong id="nextBillingDate">-</strong> | 월 이용료: <strong>₩50,000</strong>
+        </div>
+
+        <!-- 등록된 결제 수단 -->
+        <div class="registered-methods" id="registeredMethods" style="display: none;">
+            <h3>등록된 결제 수단</h3>
+            <div id="methodsList"></div>
+        </div>
+
+        <div class="card">
+            <!-- 카드 결제 -->
+            <div class="payment-option selected" id="cardOption" onclick="selectOption('card')">
+                <div class="option-header">
+                    <div class="radio-circle"></div>
+                    <span class="option-icon">💳</span>
+                    <span class="option-title">신용/체크카드</span>
+                </div>
+                <div class="option-fields">
+                    <div class="form-group">
+                        <label class="form-label">카드번호</label>
+                        <input type="text" class="form-input" id="cardNumber" placeholder="0000-0000-0000-0000" maxlength="19">
+                    </div>
+                    <div class="inline-inputs">
+                        <div class="form-group">
+                            <label class="form-label">유효기간</label>
+                            <input type="text" class="form-input" id="cardExpiry" placeholder="MM / YY" maxlength="7">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVC</label>
+                            <input type="password" class="form-input" id="cardCvc" placeholder="***" maxlength="4">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">카드 소유자명</label>
+                        <input type="text" class="form-input" id="cardHolder" placeholder="카드에 표시된 이름">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 계좌이체 -->
+            <div class="payment-option" id="bankOption" onclick="selectOption('bank')">
+                <div class="option-header">
+                    <div class="radio-circle"></div>
+                    <span class="option-icon">🏦</span>
+                    <span class="option-title">계좌 자동이체</span>
+                </div>
+                <div class="option-fields">
+                    <div class="form-group">
+                        <label class="form-label">은행 선택</label>
+                        <select class="form-select" id="bankName">
+                            <option value="">은행을 선택하세요</option>
+                            <option value="KB국민은행">KB국민은행</option>
+                            <option value="신한은행">신한은행</option>
+                            <option value="우리은행">우리은행</option>
+                            <option value="하나은행">하나은행</option>
+                            <option value="NH농협은행">NH농협은행</option>
+                            <option value="IBK기업은행">IBK기업은행</option>
+                            <option value="카카오뱅크">카카오뱅크</option>
+                            <option value="토스뱅크">토스뱅크</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">계좌번호</label>
+                        <input type="text" class="form-input" id="accountNumber" placeholder="계좌번호 입력" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">예금주</label>
+                        <input type="text" class="form-input" id="accountHolder" placeholder="예금주명">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="registerPaymentMethod()">등록하기</button>
+            <button class="btn btn-secondary" onclick="skipRegistration()">나중에 등록</button>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+        let selectedType = 'card';
+        let existingMethods = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupInputFormatting();
+            calculateNextBillingDate();
+        });
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    showToast('로그인이 필요합니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../auth/login.html';
+                    }, 1500);
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+                await loadExistingMethods();
+            } catch (error) {
+                console.error('인증 확인 실패:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+            } catch (error) {
+                console.error('사용자 정보 로드 실패:', error);
+            }
+        }
+
+        async function loadExistingMethods() {
+            if (!userData) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('payment_methods')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                existingMethods = data || [];
+                renderExistingMethods();
+            } catch (error) {
+                console.error('결제 수단 로드 실패:', error);
+            }
+        }
+
+        function renderExistingMethods() {
+            if (existingMethods.length === 0) {
+                document.getElementById('registeredMethods').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('registeredMethods').style.display = 'block';
+            const container = document.getElementById('methodsList');
+
+            container.innerHTML = existingMethods.map(method => {
+                const icon = method.payment_type === 'card' ? '💳' : '🏦';
+                const info = method.payment_type === 'card'
+                    ? `${method.card_company} ****-${method.card_last4}`
+                    : `${method.bank_name} ****-${method.account_last4}`;
+
+                return `
+                    <div class="method-item">
+                        <div class="method-info">
+                            <span class="method-icon">${icon}</span>
+                            <div class="method-details">
+                                <strong>${info}</strong>
+                                <span>${method.payment_type === 'card' ? '카드' : '계좌'}</span>
+                            </div>
+                            ${method.is_default ? '<span class="method-badge">기본</span>' : ''}
+                        </div>
+                        <button class="btn-delete" onclick="deleteMethod('${method.id}')">삭제</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectOption(type) {
+            selectedType = type;
+
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            document.getElementById(`${type}Option`).classList.add('selected');
+        }
+
+        function calculateNextBillingDate() {
+            const now = new Date();
+            const nextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 1);
+            document.getElementById('nextBillingDate').textContent =
+                `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-01`;
+        }
+
+        function setupInputFormatting() {
+            // 카드번호 자동 포맷팅
+            document.getElementById('cardNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                let formatted = value.match(/.{1,4}/g)?.join('-') || value;
+                e.target.value = formatted.substring(0, 19);
+            });
+
+            // 유효기간 자동 포맷팅
+            document.getElementById('cardExpiry').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + ' / ' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+
+            // 계좌번호 숫자만
+            document.getElementById('accountNumber').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+        }
+
+        async function registerPaymentMethod() {
+            if (!userData) {
+                showToast('사용자 정보를 불러올 수 없습니다.', 'error');
+                return;
+            }
+
+            let paymentData = {};
+
+            if (selectedType === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value.replace(/-/g, '');
+                const cardExpiry = document.getElementById('cardExpiry').value;
+                const cardCvc = document.getElementById('cardCvc').value;
+                const cardHolder = document.getElementById('cardHolder').value;
+
+                if (!cardNumber || cardNumber.length < 16) {
+                    showToast('카드번호를 정확히 입력해주세요.', 'error');
+                    return;
+                }
+                if (!cardExpiry || cardExpiry.length < 7) {
+                    showToast('유효기간을 입력해주세요.', 'error');
+                    return;
+                }
+                if (!cardCvc || cardCvc.length < 3) {
+                    showToast('CVC를 입력해주세요.', 'error');
+                    return;
+                }
+                if (!cardHolder) {
+                    showToast('카드 소유자명을 입력해주세요.', 'error');
+                    return;
+                }
+
+                // 카드사 판별 (간단한 BIN 체크)
+                const cardCompany = detectCardCompany(cardNumber);
+
+                paymentData = {
+                    user_id: userData.user_id,
+                    payment_type: 'card',
+                    card_last4: cardNumber.slice(-4),
+                    card_company: cardCompany,
+                    is_default: existingMethods.length === 0,
+                    toss_billing_key: 'test_billing_' + Date.now()
+                };
+            } else {
+                const bankName = document.getElementById('bankName').value;
+                const accountNumber = document.getElementById('accountNumber').value;
+                const accountHolder = document.getElementById('accountHolder').value;
+
+                if (!bankName) {
+                    showToast('은행을 선택해주세요.', 'error');
+                    return;
+                }
+                if (!accountNumber) {
+                    showToast('계좌번호를 입력해주세요.', 'error');
+                    return;
+                }
+                if (!accountHolder) {
+                    showToast('예금주를 입력해주세요.', 'error');
+                    return;
+                }
+
+                paymentData = {
+                    user_id: userData.user_id,
+                    payment_type: 'bank',
+                    bank_name: bankName,
+                    account_last4: accountNumber.slice(-4),
+                    is_default: existingMethods.length === 0
+                };
+            }
+
+            showLoading();
+            try {
+                const { error } = await supabaseClient
+                    .from('payment_methods')
+                    .insert(paymentData);
+
+                if (error) throw error;
+
+                showToast('결제 수단이 등록되었습니다!', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'billing-history.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('결제 수단 등록 실패:', error);
+                showToast('등록에 실패했습니다: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function detectCardCompany(cardNumber) {
+            const bin = cardNumber.substring(0, 6);
+            // 간단한 카드사 판별 (실제로는 BIN DB 사용)
+            if (bin.startsWith('4')) return '비자카드';
+            if (bin.startsWith('5')) return '마스터카드';
+            if (bin.startsWith('9')) return '삼성카드';
+            if (bin.startsWith('3')) return '아멕스';
+            return '신용카드';
+        }
+
+        async function deleteMethod(methodId) {
+            if (!confirm('이 결제 수단을 삭제하시겠습니까?')) return;
+
+            showLoading();
+            try {
+                const { error } = await supabaseClient
+                    .from('payment_methods')
+                    .delete()
+                    .eq('id', methodId);
+
+                if (error) throw error;
+
+                showToast('결제 수단이 삭제되었습니다.', 'success');
+                await loadExistingMethods();
+            } catch (error) {
+                console.error('삭제 실패:', error);
+                showToast('삭제에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function skipRegistration() {
+            if (confirm('나중에 등록하시겠습니까?\n\n결제일 전에 등록하지 않으면 서비스가 일시정지될 수 있습니다.')) {
+                window.location.href = '../../index.html';
+            }
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

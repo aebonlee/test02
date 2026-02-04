@@ -1,0 +1,13 @@
+{
+  "project_id": "",
+  "project_name": "",
+  "description": "",
+  "owner_email": "",
+  "created_at": "",
+  "version": "1.0.0",
+  "settings": {
+    "auto_upload_progress": true,
+    "github_pages_deploy": false
+  },
+  "_template_note": "이 파일은 템플릿입니다. Claude Code가 초기 설정 시 자동으로 채웁니다. project_id가 빈 값이면 자동 설정이 필요한 상태입니다."
+}

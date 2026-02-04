@@ -1,0 +1,61 @@
+{
+  "report_id": "Builder_Account_심재우_2025-12-29",
+  "report_type": "builder_account_creation",
+  "created_at": "2025-12-29T02:30:00Z",
+  "status": "completed",
+
+  "builder_info": {
+    "name": "심재우",
+    "email": "jaiwshim@gmail.com",
+    "builder_id": "BLDR-2512-001",
+    "user_id": "P8MUH37Q",
+    "installation_fee_paid": true,
+    "installation_date": "2025-12-29",
+    "credit_balance": 50000,
+    "subscription_status": "active"
+  },
+
+  "tasks_completed": [
+    {
+      "task": "빌더 계정 ID 규칙 확인",
+      "details": "BLDR-YYMM-NNN 형식 확인 (Builder_Account_Application_Process.md)"
+    },
+    {
+      "task": "DB 스키마 수정",
+      "details": "builder_id 컬럼 VARCHAR(12) → VARCHAR(20) 확장",
+      "sql_file": "S1_개발_준비/Database/99_alter_builder_id.sql"
+    },
+    {
+      "task": "Supabase users 테이블 업데이트",
+      "fields_updated": [
+        "builder_id: BLDR-2512-001",
+        "installation_fee_paid: true",
+        "installation_date: 2025-12-29T01:58:48.058+00:00",
+        "credit_balance: 50000"
+      ]
+    },
+    {
+      "task": "개설 완료 안내 이메일 발송",
+      "method": "Resend API",
+      "email_id": "a2b7cc1f-6fe2-41a3-8a39-45fb1f4f1714",
+      "subject": "[SSAL Works] 빌더 계정 개설이 완료되었습니다"
+    },
+    {
+      "task": "Resend API 키 저장",
+      "location": "P3_프로토타입_제작/Database/.env",
+      "security_check": ".gitignore에 .env 포함 확인됨"
+    }
+  ],
+
+  "related_files": [
+    "P2_프로젝트_기획/Workflows/Builder_Account_Application_Process.md",
+    "S1_개발_준비/Database/99_alter_builder_id.sql",
+    "P3_프로토타입_제작/Database/.env"
+  ],
+
+  "builder_id_rule": {
+    "format": "BLDR-YYMM-NNN",
+    "example": "BLDR-2512-001",
+    "description": "BLDR = 접두어, YYMM = 연월(2512=2025년12월), NNN = 순번"
+  }
+}

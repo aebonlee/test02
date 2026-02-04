@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 내역 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* 구독 상태 카드 */
+        .subscription-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.paused {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge.cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-details { font-size: 14px; color: var(--gray-700); }
+        .status-details strong { color: var(--primary); }
+
+        .status-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-50);
+        }
+
+        /* 결제 수단 정보 */
+        .payment-method-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .payment-icon { font-size: 24px; }
+        .payment-details { flex: 1; }
+        .payment-details strong { display: block; margin-bottom: 2px; }
+        .payment-details span { font-size: 13px; color: var(--gray-500); }
+
+        /* 필터 바 */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        /* 결제 내역 테이블 */
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .billing-table th {
+            text-align: left;
+            padding: 12px;
+            background: var(--gray-50);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .billing-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 14px;
+        }
+
+        .billing-table tr:hover td {
+            background: var(--gray-50);
+        }
+
+        .amount { font-weight: 600; }
+        .amount.positive { color: var(--success); }
+        .amount.negative { color: var(--danger); }
+
+        .billing-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .billing-status.paid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .billing-status.failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .billing-status.refunded {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .billing-status.pending {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--gray-500);
+        }
+
+        .btn-receipt {
+            padding: 4px 8px;
+            background: none;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--gray-700);
+            cursor: pointer;
+        }
+
+        .btn-receipt:hover {
+            background: var(--gray-50);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: var(--gray-500);
+        }
+
+        .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+
+        /* 액션 버튼 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-danger {
+            background: white;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+
+        @media (max-width: 768px) {
+            .subscription-status {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .billing-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <button class="close-btn" onclick="history.back()">✕ 닫기</button>
+    </nav>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>결제 내역</span>
+        </div>
+
+        <h1 class="page-title">💳 결제 내역</h1>
+
+        <!-- 구독 상태 -->
+        <div class="card">
+            <div class="subscription-status">
+                <div class="status-info">
+                    <span class="status-badge active" id="statusBadge">활성</span>
+                    <div class="status-details">
+                        다음 결제일: <strong id="nextBillingDate">-</strong> |
+                        월 이용료: <strong>₩50,000</strong>
+                    </div>
+                </div>
+                <div class="status-actions">
+                    <button class="btn-sm btn-outline" onclick="location.href='payment-method.html'">결제 수단 변경</button>
+                </div>
+            </div>
+
+            <!-- 등록된 결제 수단 -->
+            <div class="payment-method-info" id="paymentMethodInfo" style="display: none;">
+                <span class="payment-icon" id="paymentIcon">💳</span>
+                <div class="payment-details">
+                    <strong id="paymentMethodName">-</strong>
+                    <span id="paymentMethodType">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결제 내역 -->
+        <div class="card">
+            <div class="filter-bar">
+                <select class="filter-select" id="typeFilter" onchange="filterHistory()">
+                    <option value="">전체 유형</option>
+                    <option value="platform_fee">플랫폼 이용료</option>
+                    <option value="credit_purchase">크레딧 충전</option>
+                    <option value="installation_fee">설치비</option>
+                </select>
+                <select class="filter-select" id="statusFilter" onchange="filterHistory()">
+                    <option value="">전체 상태</option>
+                    <option value="paid">결제 완료</option>
+                    <option value="failed">결제 실패</option>
+                    <option value="refunded">환불</option>
+                </select>
+            </div>
+
+            <table class="billing-table">
+                <thead>
+                    <tr>
+                        <th>결제일</th>
+                        <th>구분</th>
+                        <th>금액</th>
+                        <th>결제 수단</th>
+                        <th>상태</th>
+                        <th>영수증</th>
+                    </tr>
+                </thead>
+                <tbody id="billingTableBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <div>결제 내역이 없습니다.</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 액션 버튼 -->
+        <div class="card">
+            <div class="action-buttons" id="actionButtons">
+                <a href="payment-method.html" class="btn btn-primary">💳 결제 수단 관리</a>
+                <button class="btn btn-secondary" id="pauseBtn" onclick="pauseSubscription()">⏸️ 구독 일시정지</button>
+                <button class="btn btn-success" id="resumeBtn" onclick="resumeSubscription()" style="display:none; background:var(--success); color:white;">▶️ 구독 재개</button>
+                <button class="btn btn-danger" id="cancelBtn" onclick="cancelSubscription()">❌ 구독 해지</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+        let billingHistory = [];
+        let paymentMethod = null;
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    showToast('로그인이 필요합니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../auth/login.html';
+                    }, 1500);
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+                await Promise.all([
+                    loadPaymentMethod(),
+                    loadBillingHistory()
+                ]);
+                updateSubscriptionStatus();
+            } catch (error) {
+                console.error('초기화 실패:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (!error) userData = data;
+        }
+
+        async function loadPaymentMethod() {
+            if (!userData) return;
+
+            const { data, error } = await supabaseClient
+                .from('payment_methods')
+                .select('*')
+                .eq('user_id', userData.user_id)
+                .eq('is_default', true)
+                .single();
+
+            if (!error && data) {
+                paymentMethod = data;
+                displayPaymentMethod();
+            }
+        }
+
+        function displayPaymentMethod() {
+            if (!paymentMethod) return;
+
+            document.getElementById('paymentMethodInfo').style.display = 'flex';
+
+            if (paymentMethod.payment_type === 'card') {
+                document.getElementById('paymentIcon').textContent = '💳';
+                document.getElementById('paymentMethodName').textContent =
+                    `${paymentMethod.card_company} ****-${paymentMethod.card_last4}`;
+                document.getElementById('paymentMethodType').textContent = '신용/체크카드';
+            } else {
+                document.getElementById('paymentIcon').textContent = '🏦';
+                document.getElementById('paymentMethodName').textContent =
+                    `${paymentMethod.bank_name} ****-${paymentMethod.account_last4}`;
+                document.getElementById('paymentMethodType').textContent = '계좌이체';
+            }
+        }
+
+        async function loadBillingHistory() {
+            if (!userData) return;
+
+            const { data, error } = await supabaseClient
+                .from('billing_history')
+                .select('*')
+                .eq('user_id', userData.user_id)
+                .order('billing_date', { ascending: false });
+
+            if (!error) {
+                billingHistory = data || [];
+                renderBillingHistory(billingHistory);
+            }
+        }
+
+        function renderBillingHistory(history) {
+            const tbody = document.getElementById('billingTableBody');
+
+            if (!history || history.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <div>결제 내역이 없습니다.</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const typeLabels = {
+                'platform_fee': '플랫폼 이용료',
+                'credit_purchase': '크레딧 충전',
+                'installation_fee': '설치비'
+            };
+
+            const statusLabels = {
+                'paid': '결제 완료',
+                'failed': '결제 실패',
+                'refunded': '환불',
+                'pending': '대기 중'
+            };
+
+            tbody.innerHTML = history.map(item => `
+                <tr>
+                    <td>${formatDate(item.billing_date)}</td>
+                    <td>${typeLabels[item.billing_type] || item.billing_type}</td>
+                    <td class="amount ${item.status === 'refunded' ? 'negative' : ''}">
+                        ${item.status === 'refunded' ? '-' : ''}₩${item.amount.toLocaleString()}
+                    </td>
+                    <td>${item.payment_method || '-'}</td>
+                    <td>
+                        <span class="billing-status ${item.status}">
+                            ${statusLabels[item.status]}
+                        </span>
+                        ${item.failure_reason ? `<br><small style="color:var(--danger)">${item.failure_reason}</small>` : ''}
+                    </td>
+                    <td>
+                        ${item.receipt_url ?
+                            `<button class="btn-receipt" onclick="window.open('${item.receipt_url}')">영수증</button>`
+                            : '-'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterHistory() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = billingHistory;
+
+            if (typeFilter) {
+                filtered = filtered.filter(h => h.billing_type === typeFilter);
+            }
+
+            if (statusFilter) {
+                filtered = filtered.filter(h => h.status === statusFilter);
+            }
+
+            renderBillingHistory(filtered);
+        }
+
+        function updateSubscriptionStatus() {
+            // 다음 결제일 계산
+            const now = new Date();
+            const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            document.getElementById('nextBillingDate').textContent = formatDate(nextMonth);
+
+            // 구독 상태 (users 테이블의 subscription_status 기반)
+            if (userData && userData.subscription_status) {
+                const badge = document.getElementById('statusBadge');
+                const status = userData.subscription_status;
+
+                badge.className = `status-badge ${status}`;
+                badge.textContent = {
+                    'active': '활성',
+                    'paused': '일시정지',
+                    'cancelled': '해지됨'
+                }[status] || '활성';
+
+                // 버튼 상태 업데이트
+                const pauseBtn = document.getElementById('pauseBtn');
+                const resumeBtn = document.getElementById('resumeBtn');
+                const cancelBtn = document.getElementById('cancelBtn');
+
+                if (status === 'active') {
+                    pauseBtn.style.display = 'inline-flex';
+                    resumeBtn.style.display = 'none';
+                    cancelBtn.style.display = 'inline-flex';
+                } else if (status === 'paused') {
+                    pauseBtn.style.display = 'none';
+                    resumeBtn.style.display = 'inline-flex';
+                    cancelBtn.style.display = 'inline-flex';
+                } else if (status === 'cancelled') {
+                    pauseBtn.style.display = 'none';
+                    resumeBtn.style.display = 'none';
+                    cancelBtn.style.display = 'none';
+                }
+            }
+        }
+
+        async function pauseSubscription() {
+            // 이미 일시정지 상태인지 확인
+            if (userData && userData.subscription_status === 'paused') {
+                showToast('이미 일시정지 상태입니다.', 'error');
+                return;
+            }
+
+            // 해지된 상태에서는 일시정지 불가
+            if (userData && userData.subscription_status === 'cancelled') {
+                showToast('해지된 구독은 일시정지할 수 없습니다.', 'error');
+                return;
+            }
+
+            const confirmed = confirm(
+                '구독을 일시정지하시겠습니까?\n\n' +
+                '📌 일시정지 정책:\n' +
+                '• 최대 3개월까지 일시정지 가능\n' +
+                '• 일시정지 기간 동안 서비스 이용 및 결제가 중단됩니다\n' +
+                '• 3개월 후 자동으로 재개되거나 해지됩니다\n' +
+                '• 언제든 수동으로 재개할 수 있습니다'
+            );
+
+            if (!confirmed) return;
+
+            showLoading();
+            try {
+                const pauseEndDate = new Date();
+                pauseEndDate.setMonth(pauseEndDate.getMonth() + 3); // 최대 3개월
+
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        subscription_status: 'paused',
+                        subscription_paused_at: new Date().toISOString(),
+                        subscription_pause_end_date: pauseEndDate.toISOString(),
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', userData.user_id);
+
+                if (error) throw error;
+
+                // 로컬 상태 업데이트
+                userData.subscription_status = 'paused';
+                updateSubscriptionStatus();
+
+                showToast('구독이 일시정지되었습니다. 최대 3개월간 유지됩니다.', 'success');
+            } catch (error) {
+                console.error('일시정지 실패:', error);
+                showToast('일시정지 처리 중 오류가 발생했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function resumeSubscription() {
+            if (userData && userData.subscription_status !== 'paused') {
+                showToast('일시정지 상태가 아닙니다.', 'error');
+                return;
+            }
+
+            const confirmed = confirm('구독을 재개하시겠습니까?\n\n다음 결제일부터 정상적으로 결제됩니다.');
+
+            if (!confirmed) return;
+
+            showLoading();
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        subscription_status: 'active',
+                        subscription_paused_at: null,
+                        subscription_pause_end_date: null,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', userData.user_id);
+
+                if (error) throw error;
+
+                userData.subscription_status = 'active';
+                updateSubscriptionStatus();
+
+                showToast('구독이 재개되었습니다.', 'success');
+            } catch (error) {
+                console.error('재개 실패:', error);
+                showToast('구독 재개 중 오류가 발생했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function cancelSubscription() {
+            // 이미 해지된 상태인지 확인
+            if (userData && userData.subscription_status === 'cancelled') {
+                showToast('이미 해지된 구독입니다.', 'error');
+                return;
+            }
+
+            const confirmed = confirm(
+                '정말 구독을 해지하시겠습니까?\n\n' +
+                '⚠️ 해지 정책:\n' +
+                '• 당월 이용료는 환불되지 않습니다 (이미 서비스 제공됨)\n' +
+                '• 해지 즉시 서비스 이용이 중단됩니다\n' +
+                '• 데이터는 90일간 보관 후 삭제됩니다\n' +
+                '• 90일 내 재가입 시 데이터 복구 가능합니다\n\n' +
+                '계속하시겠습니까?'
+            );
+
+            if (!confirmed) return;
+
+            // 2차 확인
+            const doubleConfirmed = confirm(
+                '⚠️ 최종 확인 ⚠️\n\n' +
+                '구독 해지를 진행합니다.\n' +
+                '이 작업은 즉시 적용됩니다.\n\n' +
+                '정말 해지하시겠습니까?'
+            );
+
+            if (!doubleConfirmed) return;
+
+            showLoading();
+            try {
+                const cancelledAt = new Date();
+                const dataDeleteDate = new Date();
+                dataDeleteDate.setDate(dataDeleteDate.getDate() + 90); // 90일 후 삭제
+
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        subscription_status: 'cancelled',
+                        subscription_cancelled_at: cancelledAt.toISOString(),
+                        data_deletion_scheduled_at: dataDeleteDate.toISOString(),
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('user_id', userData.user_id);
+
+                if (error) throw error;
+
+                userData.subscription_status = 'cancelled';
+                updateSubscriptionStatus();
+
+                showToast('구독이 해지되었습니다. 데이터는 90일간 보관됩니다.', 'success');
+
+                // 3초 후 홈으로 이동
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 3000);
+            } catch (error) {
+                console.error('해지 실패:', error);
+                showToast('해지 처리 중 오류가 발생했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

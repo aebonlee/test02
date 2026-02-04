@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project SAL Grid Viewer - Mobile</title>
+    <!-- GitHub JSON 기반 Viewer -->
+    <style>
+        :root {
+            --primary: #10B981;
+            --secondary: #2C4A8A;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'Malgun Gothic', sans-serif;
+            background: #f5f5f5;
+            font-size: 14px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--secondary), #1F3563);
+            color: white;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 16px; font-weight: 600; }
+        .close-btn {
+            padding: 10px 14px;
+            min-height: 44px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Connection Status */
+        .status-bar {
+            background: white;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+        }
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #ffc107;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .status-dot.connected { background: #28a745; }
+
+        /* Stage Tabs */
+        .stage-tabs {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 12px;
+            gap: 8px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            -webkit-overflow-scrolling: touch;
+        }
+        .stage-tab {
+            padding: 8px 14px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .stage-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: white;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 8px 4px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-value { font-size: 18px; font-weight: 700; }
+        .stat-label { font-size: 10px; color: #666; }
+        .stat-item.pending .stat-value { color: #6c757d; }
+        .stat-item.progress .stat-value { color: #ffc107; }
+        .stat-item.executed .stat-value { color: #3B82F6; }
+        .stat-item.completed .stat-value { color: #28a745; }
+
+        /* Task List */
+        .task-list { padding: 12px; }
+        .task-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #6c757d;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .task-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+        .task-card.Completed { border-left-color: #28a745; }
+        .task-card.Executed { border-left-color: #3B82F6; }
+        .task-card.In-Progress { border-left-color: #ffc107; }
+        .task-card.Pending { border-left-color: #6c757d; }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .task-id { font-weight: 700; color: var(--secondary); font-size: 14px; }
+        .task-status {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-Completed { background: #d4edda; color: #155724; }
+        .status-Executed { background: #dbeafe; color: #1e40af; }
+        .status-In-Progress { background: #fff3cd; color: #856404; }
+        .status-Pending { background: #e2e3e5; color: #383d41; }
+
+        .task-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+        .task-meta { font-size: 11px; color: #666; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Empty */
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        /* Task Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+        .modal-overlay.active { display: block; }
+
+        .modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 201;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .modal.active { transform: translateY(0); }
+
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-content { padding: 16px; }
+
+        .detail-section {
+            margin-bottom: 16px;
+        }
+        .detail-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .detail-value {
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .detail-value.instruction {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .detail-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .detail-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-stage { background: #e0e7ff; color: #3730a3; }
+        .badge-area { background: #dcfce7; color: #166534; }
+        .badge-progress { background: #fef3c7; color: #92400e; }
+
+        /* Stage Gate Tab */
+        .stage-tab.gate-tab {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe5b4 100%);
+            border: 1px solid #FFD700;
+            font-size: 11px;
+        }
+        .stage-tab.gate-tab.approved {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: var(--primary);
+        }
+        .stage-tab.gate-tab.rejected {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+        }
+
+        /* Stage Gate Panel */
+        .gate-panel {
+            display: none;
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe5b4 100%);
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+        }
+        .gate-panel.active { display: block; }
+        .gate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .gate-title {
+            color: #FF8C00;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .gate-status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .gate-status-badge.approved { background: #d4edda; color: #155724; }
+        .gate-status-badge.rejected { background: #f8d7da; color: #721c24; }
+        .gate-status-badge.pending { background: #fff3cd; color: #856404; }
+
+        .gate-section {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .gate-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .gate-section-title.ai { color: var(--secondary); }
+        .gate-section-title.po { color: #FF8C00; }
+
+        .gate-field {
+            margin-bottom: 8px;
+        }
+        .gate-field-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        .gate-field-value {
+            font-size: 13px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            min-height: 36px;
+        }
+        .gate-field-value.multiline {
+            min-height: 60px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .gate-info {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SAL Grid Viewer</h1>
+        <button class="close-btn" onclick="window.close(); return false;">← 돌아가기</button>
+    </header>
+
+    <div class="status-bar">
+        <span><span class="status-dot" id="statusDot"></span><span id="statusText">데이터 준비 중...</span></span>
+        <span id="taskCount">0개 Task</span>
+    </div>
+
+    <div class="stage-tabs" id="stageTabs">
+        <button class="stage-tab active" data-stage="all">전체</button>
+        <button class="stage-tab" data-stage="1">S1</button>
+        <button class="stage-tab" data-stage="2">S2</button>
+        <button class="stage-tab" data-stage="3">S3</button>
+        <button class="stage-tab" data-stage="4">S4</button>
+        <button class="stage-tab" data-stage="5">S5</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item pending">
+            <div class="stat-value" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-item progress">
+            <div class="stat-value" id="progressCount">0</div>
+            <div class="stat-label">Progress</div>
+        </div>
+        <div class="stat-item executed">
+            <div class="stat-value" id="executedCount">0</div>
+            <div class="stat-label">Executed</div>
+        </div>
+        <div class="stat-item completed">
+            <div class="stat-value" id="completedCount">0</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <!-- Stage Gate Panel (read-only) -->
+    <div class="gate-panel" id="stageGatePanel">
+        <div class="gate-header">
+            <span class="gate-title" id="gateTitle">Stage Gate</span>
+            <span class="gate-status-badge pending" id="gateStatusBadge">Not Started</span>
+        </div>
+
+        <!-- AI 검증 영역 -->
+        <div class="gate-section">
+            <div class="gate-section-title ai">AI 검증 (Claude Code)</div>
+            <div class="gate-field">
+                <div class="gate-field-label">검증 의견</div>
+                <div class="gate-field-value multiline" id="gateAINote">-</div>
+            </div>
+            <div class="gate-field">
+                <div class="gate-field-label">검증 리포트</div>
+                <div class="gate-field-value" id="gateAIReport">-</div>
+            </div>
+            <div class="gate-field">
+                <div class="gate-field-label">검증 날짜</div>
+                <div class="gate-field-value" id="gateAIDate">-</div>
+            </div>
+        </div>
+
+        <!-- PO 승인 영역 -->
+        <div class="gate-section">
+            <div class="gate-section-title po">Project Owner 승인</div>
+            <div class="gate-field">
+                <div class="gate-field-label">승인 상태</div>
+                <div class="gate-field-value" id="gatePOStatus">-</div>
+            </div>
+            <div class="gate-field">
+                <div class="gate-field-label">승인자</div>
+                <div class="gate-field-value" id="gatePOUser">-</div>
+            </div>
+            <div class="gate-field">
+                <div class="gate-field-label">승인 의견</div>
+                <div class="gate-field-value multiline" id="gatePONote">-</div>
+            </div>
+            <div class="gate-field">
+                <div class="gate-field-label">승인 날짜</div>
+                <div class="gate-field-value" id="gatePODate">-</div>
+            </div>
+        </div>
+
+        <div class="gate-info" id="gateGuidanceMessage">Stage Gate 승인을 Claude Code에게 요청하세요</div>
+    </div>
+
+    <div class="task-list" id="taskList">
+        <div class="loading">데이터 로딩 중...</div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+    <div class="modal" id="taskModal">
+        <div class="modal-header">
+            <span class="modal-title" id="modalTitle">Task 상세</span>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-content" id="modalContent">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ================================================================
+        // Project SAL Grid Mobile Viewer (JSON + GitHub 연동)
+        // - 모든 사용자: Supabase에서 github_repo_url 조회 후 GitHub에서 로드
+        // - 일반 사용자: GitHub 레포에서 직접 로드 (서버 저장 X)
+        // ================================================================
+
+        // Supabase 설정 (사용자 github_repo_url 조회용)
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // GitHub URL을 raw URL로 변환
+        function githubToRawUrl(githubUrl, filePath) {
+            // https://github.com/owner/repo → https://raw.githubusercontent.com/owner/repo/master/filePath
+            const match = githubUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+            if (!match) return null;
+            const owner = match[1];
+            const repo = match[2].replace(/\.git$/, ''); // .git 제거
+            // 한글 경로 URL 인코딩 (슬래시는 유지)
+            const encodedPath = filePath.split('/').map(part => encodeURIComponent(part)).join('/');
+            return `https://raw.githubusercontent.com/${owner}/${repo}/master/${encodedPath}`;
+        }
+
+        let allTasks = [];
+        let stageGates = [];
+        let currentStage = 'all';
+        let currentGateStage = null;
+
+        // 현재 JSON 기본 경로 (전역 변수)
+        let jsonBasePath = '';
+        let useGitHub = false;
+
+        // CSV 파싱 함수
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) return [];
+
+            const headers = parseCSVLine(lines[0]);
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue; // 빈 줄 건너뛰기
+
+                const values = parseCSVLine(line);
+                const row = {};
+                headers.forEach((header, idx) => {
+                    let value = values[idx] || '';
+                    if (header === 'stage' || header === 'task_progress') {
+                        value = parseInt(value) || 0;
+                    }
+                    row[header] = value;
+                });
+
+                // task_id가 없으면 건너뛰기
+                if (!row.task_id) continue;
+
+                data.push(row);
+            }
+            return data;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        async function loadTasks() {
+            try {
+                document.getElementById('statusText').textContent = '사용자 확인 중...';
+
+                // 1. URL 파라미터에서 이메일 가져오기 (우선)
+                const urlParams = new URLSearchParams(window.location.search);
+                let userEmail = urlParams.get('email');
+
+                if (userEmail) {
+                    userEmail = decodeURIComponent(userEmail);
+                    console.log('User email from URL:', userEmail);
+                } else {
+                    // 2. URL에 없으면 Supabase 세션에서 가져오기 (fallback)
+                    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                    if (sessionError) {
+                        console.error('Session error:', sessionError);
+                    }
+                    userEmail = session?.user?.email;
+                    console.log('User email from session:', userEmail);
+                }
+
+                // 이메일이 없으면 로그인 필요 안내
+                if (!userEmail) {
+                    allTasks = [];
+                    useGitHub = false;
+                    document.getElementById('statusDot').classList.remove('connected');
+                    document.getElementById('statusText').textContent = '로그인 필요';
+                    document.getElementById('taskCount').textContent = '0개 Task';
+                    renderTasks();
+                    updateStats();
+                    console.log('No user email found');
+                    return;
+                }
+
+                // 모든 사용자: Supabase에서 github_repo_url 조회
+                document.getElementById('statusText').textContent = 'GitHub 정보 확인 중...';
+
+                const { data: userData, error } = await supabaseClient
+                    .from('users')
+                    .select('github_repo_url')
+                    .eq('email', userEmail)
+                    .single();
+
+                console.log('Supabase query result:', { userData, error });
+
+                if (error) {
+                    console.error('Supabase error:', error);
+                    // PGRST116 = 결과 없음 (사용자가 GitHub URL 미등록)
+                    if (error.code === 'PGRST116') {
+                        allTasks = [];
+                        useGitHub = false;
+                        document.getElementById('statusDot').classList.remove('connected');
+                        document.getElementById('statusText').textContent = 'GitHub 연결 필요';
+                        document.getElementById('taskCount').textContent = '0개 Task';
+                        renderTasks();
+                        updateStats();
+                        return;
+                    }
+                    // 그 외 실제 에러
+                    allTasks = [];
+                    useGitHub = false;
+                    document.getElementById('statusDot').classList.remove('connected');
+                    document.getElementById('statusText').textContent = '사용자 조회 실패';
+                    document.getElementById('taskCount').textContent = '0개 Task';
+                    renderTasks();
+                    updateStats();
+                    return;
+                }
+
+                if (!userData || !userData.github_repo_url) {
+                    // GitHub URL이 없으면 "GitHub 연결 필요" 메시지
+                    console.log('No github_repo_url for user');
+                    allTasks = [];
+                    useGitHub = false;
+                    document.getElementById('statusDot').classList.remove('connected');
+                    document.getElementById('statusText').textContent = 'GitHub 연결 필요';
+                    document.getElementById('taskCount').textContent = '0개 Task';
+                    renderTasks();
+                    updateStats();
+                    return;
+                }
+
+                // GitHub raw URL을 기본 경로로 설정
+                jsonBasePath = userData.github_repo_url;
+                useGitHub = true;
+
+                // 1. index.json 로드
+                let indexUrl;
+                if (useGitHub) {
+                    indexUrl = githubToRawUrl(jsonBasePath, 'S0_Project-SAL-Grid_생성/method/json/data/index.json');
+                } else {
+                    indexUrl = `${jsonBasePath}/index.json`;
+                }
+
+                const indexResponse = await fetch(indexUrl);
+
+                if (!indexResponse.ok) {
+                    if (indexResponse.status === 404) {
+                        allTasks = [];
+                        document.getElementById('statusDot').classList.add('connected');
+                        document.getElementById('statusText').textContent = '프로젝트 데이터 없음';
+                        document.getElementById('taskCount').textContent = '0개 Task';
+                        renderTasks();
+                        updateStats();
+                        return;
+                    }
+                    throw new Error(`index.json 로드 실패: ${indexResponse.status}`);
+                }
+
+                const indexData = await indexResponse.json();
+                const taskIds = indexData.task_ids || [];
+
+                if (taskIds.length === 0) {
+                    allTasks = [];
+                    document.getElementById('statusDot').classList.add('connected');
+                    document.getElementById('statusText').textContent = '프로젝트 데이터 없음';
+                    document.getElementById('taskCount').textContent = '0개 Task';
+                    renderTasks();
+                    updateStats();
+                    return;
+                }
+
+                // 2. 개별 Task 파일 병렬 로드
+                document.getElementById('statusText').textContent = `Task 로딩 중... (0/${taskIds.length})`;
+
+                const taskPromises = taskIds.map(async (taskId, idx) => {
+                    let taskUrl;
+                    if (useGitHub) {
+                        taskUrl = githubToRawUrl(jsonBasePath, `S0_Project-SAL-Grid_생성/method/json/data/grid_records/${taskId}.json`);
+                    } else {
+                        taskUrl = `${jsonBasePath}/grid_records/${taskId}.json`;
+                    }
+
+                    try {
+                        const res = await fetch(taskUrl);
+                        if (!res.ok) return null;
+                        const task = await res.json();
+                        document.getElementById('statusText').textContent =
+                            `Task 로딩 중... (${idx + 1}/${taskIds.length})`;
+                        return task;
+                    } catch (e) {
+                        console.warn(`Task ${taskId} 로드 실패:`, e);
+                        return null;
+                    }
+                });
+
+                const loadedTasks = await Promise.all(taskPromises);
+                const data = loadedTasks.filter(t => t !== null);
+
+                // 정렬: stage → area → task_id
+                data.sort((a, b) => {
+                    const stageA = a.stage || 0;
+                    const stageB = b.stage || 0;
+                    if (stageA !== stageB) return stageA - stageB;
+                    const areaA = a.area || '';
+                    const areaB = b.area || '';
+                    if (areaA !== areaB) return areaA.localeCompare(areaB);
+                    const taskIdA = a.task_id || '';
+                    const taskIdB = b.task_id || '';
+                    return taskIdA.localeCompare(taskIdB);
+                });
+
+                allTasks = data;
+                document.getElementById('statusDot').classList.add('connected');
+                const source = useGitHub ? 'GitHub' : 'JSON';
+                document.getElementById('statusText').textContent = `${source} 로드 완료`;
+                document.getElementById('taskCount').textContent = allTasks.length + '개 Task';
+
+                renderTasks();
+                updateStats();
+
+                // Stage Gate 로드
+                await loadStageGates();
+                renderStageTabs();
+            } catch (err) {
+                console.error('Load error:', err);
+                document.getElementById('statusText').textContent = '오류: ' + err.message;
+            }
+        }
+
+        // Stage Gate 데이터 로드 (GitHub JSON)
+        async function loadStageGates() {
+            stageGates = [];
+            if (!useGitHub || !jsonBasePath) return;
+
+            const stageNums = [1, 2, 3, 4, 5];
+            for (const num of stageNums) {
+                try {
+                    const gateUrl = githubToRawUrl(jsonBasePath, `S0_Project-SAL-Grid_생성/method/json/data/stage_gate_records/S${num}_gate.json`);
+                    const response = await fetch(gateUrl);
+                    if (response.ok) {
+                        const gateData = await response.json();
+                        gateData.stage_name = `Stage ${num}`;
+                        stageGates.push(gateData);
+                    }
+                } catch (err) {
+                    console.warn(`Stage ${num} Gate 로드 실패:`, err.message);
+                }
+            }
+        }
+
+        // Stage 탭 렌더링 (Gate 탭 포함)
+        function renderStageTabs() {
+            const container = document.getElementById('stageTabs');
+            let html = '<button class="stage-tab active" data-stage="all" onclick="selectStage(\'all\')">전체</button>';
+
+            for (let s = 1; s <= 5; s++) {
+                const count = allTasks.filter(t => t.stage === s).length;
+                const gate = stageGates.find(g => g.stage === s) || {};
+                const gateStatus = gate.stage_gate_status || 'Not Started';
+                const gateClass = gateStatus === 'Approved' ? 'approved' : gateStatus === 'Rejected' ? 'rejected' : '';
+                const gateIcon = gateStatus === 'Approved' ? '✅' : gateStatus === 'Rejected' ? '❌' : '🔐';
+
+                html += `<button class="stage-tab" data-stage="${s}" onclick="selectStage(${s})">S${s}</button>`;
+                html += `<button class="stage-tab gate-tab ${gateClass}" onclick="showGatePanel(${s})">${gateIcon}</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Gate 패널 표시
+        function showGatePanel(stageNum) {
+            currentGateStage = stageNum;
+            const panel = document.getElementById('stageGatePanel');
+            const gate = stageGates.find(g => g.stage === stageNum) || {};
+
+            // 제목 및 상태 배지
+            document.getElementById('gateTitle').textContent = `🔐 Stage ${stageNum} Gate`;
+            const statusBadge = document.getElementById('gateStatusBadge');
+            const status = gate.stage_gate_status || 'Not Started';
+            statusBadge.textContent = status;
+            statusBadge.className = 'gate-status-badge ' +
+                (status === 'Approved' ? 'approved' : status === 'Rejected' ? 'rejected' : 'pending');
+
+            // AI 검증 정보
+            document.getElementById('gateAINote').textContent = gate.ai_verification_note || '-';
+            document.getElementById('gateAIReport').textContent = gate.verification_report_path || '-';
+            document.getElementById('gateAIDate').textContent = gate.ai_verification_date ?
+                new Date(gate.ai_verification_date).toLocaleDateString('ko-KR') : '-';
+
+            // PO 승인 정보
+            const poStatus = gate.po_approval_status === 'Approved' ? '✅ 승인' :
+                            gate.po_approval_status === 'Rejected' ? '❌ 거부' : '-';
+            document.getElementById('gatePOStatus').textContent = poStatus;
+            document.getElementById('gatePOUser').textContent = gate.po_approval_user || '-';
+            document.getElementById('gatePONote').textContent = gate.po_approval_note || '-';
+            document.getElementById('gatePODate').textContent = gate.po_approval_date ?
+                new Date(gate.po_approval_date).toLocaleDateString('ko-KR') : '-';
+
+            // 안내 메시지 - 승인 완료 시 숨김
+            const guidanceEl = document.getElementById('gateGuidanceMessage');
+            if (guidanceEl) {
+                guidanceEl.style.display = status === 'Approved' ? 'none' : 'block';
+            }
+
+            // 패널 토글
+            if (panel.classList.contains('active') && currentGateStage === stageNum) {
+                panel.classList.remove('active');
+                currentGateStage = null;
+            } else {
+                panel.classList.add('active');
+            }
+        }
+
+        // Stage 선택
+        function selectStage(stage) {
+            currentStage = stage;
+
+            // 탭 활성화 상태 업데이트
+            document.querySelectorAll('.stage-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.querySelector(`.stage-tab[data-stage="${stage}"]`);
+            if (activeTab) activeTab.classList.add('active');
+
+            // Gate 패널 닫기
+            document.getElementById('stageGatePanel').classList.remove('active');
+            currentGateStage = null;
+
+            renderTasks();
+            updateStats();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+
+            // 프로젝트 데이터가 아예 없는 경우
+            if (allTasks.length === 0) {
+                const userEmail = localStorage.getItem('userEmail');
+                const isAdmin = userEmail === 'wksun999@gmail.com';
+
+                let messageHtml = '';
+
+                if (!isAdmin && !useGitHub) {
+                    // GitHub URL이 등록되지 않은 경우
+                    messageHtml = `
+                        <div style="text-align:center; padding:50px 20px; color:#6c757d;">
+                            <div style="font-size:36px; margin-bottom:15px;">🔗</div>
+                            <h4 style="color:#343a40; margin-bottom:12px;">GitHub 연결이 필요합니다</h4>
+                            <p style="font-size:14px; line-height:1.6; margin-bottom:20px;">
+                                프로젝트 진행 현황을 확인하려면<br>
+                                GitHub 레포지토리 연결이 필요합니다.
+                            </p>
+                            <div style="background:#f8f9fa; padding:15px; border-radius:10px; text-align:left; margin-bottom:20px;">
+                                <p style="color:#495057; font-weight:600; margin-bottom:10px; font-size:14px;">📋 연결 방법:</p>
+                                <ol style="color:#495057; margin:0; padding-left:18px; line-height:1.8; font-size:13px;">
+                                    <li>프로젝트를 GitHub에 push</li>
+                                    <li>Claude Code에게 "Viewer 연결해줘" 요청</li>
+                                    <li>자동으로 GitHub URL이 등록됩니다</li>
+                                </ol>
+                            </div>
+                            <p style="color:#868e96; font-size:12px;">
+                                💡 개인정보는 본인의 GitHub에만 저장되어 안전합니다.
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    // GitHub 연결은 됐지만 데이터가 없는 경우
+                    messageHtml = `
+                        <div style="text-align:center; padding:50px 20px; color:#6c757d;">
+                            <div style="font-size:36px; margin-bottom:15px;">📋</div>
+                            <h4 style="color:#343a40; margin-bottom:12px;">진행 중인 프로젝트가 아직 없습니다</h4>
+                            <p style="font-size:14px; line-height:1.6; margin-bottom:20px;">
+                                프로젝트를 등록하고 Project SAL Grid를 생성하면<br>
+                                여기에 진행 현황이 표시됩니다.
+                            </p>
+                            <p style="color:#495057; font-size:14px;">
+                                👉 S0 단계인 'Project SAL Grid 생성'을 먼저 완료하세요.
+                            </p>
+                            <p style="color:#868e96; font-size:12px; margin-top:15px;">
+                                💡 Task 완료 시 자동으로 GitHub에 푸시되며,<br>
+                                이 Viewer에서 실시간으로 확인할 수 있습니다.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                list.innerHTML = messageHtml;
+                return;
+            }
+
+            const filtered = currentStage === 'all'
+                ? allTasks
+                : allTasks.filter(t => t.stage == currentStage);
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty">해당 Stage에 Task가 없습니다</div>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(task => {
+                const status = task.task_status || 'Pending';
+                const statusClass = status.replace(' ', '-');
+                const taskId = task.task_id || '';
+                const taskName = task.task_name || '';
+                const stage = task.stage || 0;
+                const area = task.area || '';
+                const progress = task.task_progress || 0;
+                return `
+                    <div class="task-card ${statusClass}" onclick="openModal('${taskId}')">
+                        <div class="task-header">
+                            <span class="task-id">${taskId}</span>
+                            <span class="task-status status-${statusClass}">${status}</span>
+                        </div>
+                        <div class="task-name">${taskName}</div>
+                        <div class="task-meta">Stage ${stage} · ${area} · ${progress}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Modal Functions (GitHub + JSON 지원 - 개별 파일에서 22개 속성 로드)
+        async function openModal(taskId) {
+            document.getElementById('modalTitle').textContent = taskId + ' 상세';
+            document.getElementById('modalContent').innerHTML = '<div class="loading">개별 Task 파일 로딩 중...</div>';
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('taskModal').classList.add('active');
+
+            try {
+                // 개별 Task 파일에서 상세 정보 로드 (토큰 효율적!)
+                let taskPath;
+                if (useGitHub) {
+                    taskPath = githubToRawUrl(jsonBasePath, `S0_Project-SAL-Grid_생성/method/json/data/grid_records/${taskId}.json`);
+                } else {
+                    taskPath = `${jsonBasePath}/grid_records/${taskId}.json`;
+                }
+                const response = await fetch(taskPath);
+
+                if (!response.ok) {
+                    throw new Error(`Task 파일 로드 실패: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                const statusClass = (data.task_status || 'Pending').replace(' ', '-');
+                const verificationClass = (data.verification_status || 'Not Verified').replace(' ', '-');
+
+            const formatJson = (val) => {
+                if (!val) return '-';
+                if (typeof val === 'object') return JSON.stringify(val, null, 2);
+                return val;
+            };
+
+            const AREA_NAMES = {
+                'M': 'Documentation (문서화)',
+                'U': 'Design (UI/UX 디자인)',
+                'F': 'Frontend (프론트엔드)',
+                'BI': 'Backend Infrastructure (백엔드 기반)',
+                'BA': 'Backend APIs (백엔드 API)',
+                'D': 'Database (데이터베이스)',
+                'S': 'Security (보안/인증/인가)',
+                'T': 'Testing (테스트)',
+                'O': 'DevOps (운영/배포)',
+                'E': 'External (외부 연동)',
+                'C': 'Content System (콘텐츠 시스템)'
+            };
+
+            const STAGE_NAMES = {
+                1: '개발 준비 (Development Setup)',
+                2: '개발 1차 (Core Development)',
+                3: '개발 2차 (Advanced Features)',
+                4: '개발 3차 (QA & Optimization)',
+                5: '운영 (Operations)'
+            };
+
+            // CSV에는 10개 컬럼만 있으므로 간소화된 상세 표시
+            document.getElementById('modalContent').innerHTML = `
+                    <!-- [1-4] Basic Info -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[1-4] Basic Info</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">1. Stage</div>
+                        <div class="detail-value">S${data.stage}: ${STAGE_NAMES[data.stage] || ''}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">2. Area</div>
+                        <div class="detail-value">${data.area}: ${AREA_NAMES[data.area] || ''}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">3. Task ID</div>
+                        <div class="detail-value">${data.task_id}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">4. Task Name</div>
+                        <div class="detail-value">${data.task_name}</div>
+                    </div>
+
+                    <!-- [5-9] Task Definition -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[5-9] Task Definition</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">5. Task Instruction</div>
+                        <div class="detail-value instruction">${data.task_instruction || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">6. Task Agent</div>
+                        <div class="detail-value">${data.task_agent || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">7. Tools</div>
+                        <div class="detail-value">${data.tools || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">8. Execution Type</div>
+                        <div class="detail-value">${data.execution_type || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">9. Dependencies</div>
+                        <div class="detail-value">${data.dependencies || '없음'}</div>
+                    </div>
+
+                    <!-- [10-13] Task Execution -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[10-13] Task Execution</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">10. Task Progress</div>
+                        <div class="detail-value">${data.task_progress || 0}%</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">11. Task Status</div>
+                        <div class="detail-value"><span class="task-status status-${statusClass}">${data.task_status}</span></div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">12. Generated Files</div>
+                        <div class="detail-value instruction">${data.generated_files || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">13. Modification History</div>
+                        <div class="detail-value instruction">${formatJson(data.modification_history)}</div>
+                    </div>
+
+                    <!-- [14-15] Verification Definition -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[14-15] Verification Definition</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">14. Verification Instruction</div>
+                        <div class="detail-value instruction">${data.verification_instruction || '-'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">15. Verification Agent</div>
+                        <div class="detail-value">${data.verification_agent || '-'}</div>
+                    </div>
+
+                    <!-- [16-19] Verification Execution -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[16-19] Verification Execution</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">16. Test Result</div>
+                        <div class="detail-value instruction">${formatJson(data.test_result)}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">17. Build Verification</div>
+                        <div class="detail-value instruction">${formatJson(data.build_verification)}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">18. Integration Verification</div>
+                        <div class="detail-value instruction">${formatJson(data.integration_verification)}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">19. Blockers</div>
+                        <div class="detail-value instruction">${formatJson(data.blockers)}</div>
+                    </div>
+
+                    <!-- [20-22] Verification Completion -->
+                    <div class="detail-section">
+                        <div class="detail-label" style="color:#667eea;font-weight:700;">[20-22] Verification Completion</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">20. Comprehensive Verification</div>
+                        <div class="detail-value instruction">${formatJson(data.comprehensive_verification)}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">21. Verification Status</div>
+                        <div class="detail-value">${data.verification_status || 'Not Verified'}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-label">22. Remarks</div>
+                        <div class="detail-value instruction">${data.remarks || '-'}</div>
+                    </div>
+                `;
+            } catch (err) {
+                console.error('Task 상세 정보 로드 실패:', err);
+                document.getElementById('modalContent').innerHTML = `<div class="error" style="text-align:center;padding:20px;color:#dc3545;">❌ Task 파일을 로드할 수 없습니다.<br><small>${err.message}</small></div>`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('taskModal').classList.remove('active');
+        }
+
+        function updateStats() {
+            const filtered = currentStage === 'all'
+                ? allTasks
+                : allTasks.filter(t => t.stage == currentStage);
+
+            document.getElementById('pendingCount').textContent = filtered.filter(t => t.task_status === 'Pending').length;
+            document.getElementById('progressCount').textContent = filtered.filter(t => t.task_status === 'In Progress').length;
+            document.getElementById('executedCount').textContent = filtered.filter(t => t.task_status === 'Executed').length;
+            document.getElementById('completedCount').textContent = filtered.filter(t => t.task_status === 'Completed').length;
+        }
+
+        // Stage Tab Click - 동적 렌더링으로 대체됨 (selectStage 함수 사용)
+
+        // Init
+        loadTasks();
+    </script>
+</body>
+</html>

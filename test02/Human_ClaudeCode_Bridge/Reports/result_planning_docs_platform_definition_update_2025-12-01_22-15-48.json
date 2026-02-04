@@ -1,0 +1,240 @@
+{
+  "task_id": "플랫폼_목적_정리_및_4대_기능_재정의",
+  "task_name": "SSALWorks 플랫폼 목적 정리 및 4대 핵심 기능 문서 반영",
+  "completion_date": "2025-12-01T22:15:48Z",
+  "status": "✅ 완료",
+  "executor": "Claude Code Session",
+
+  "task_summary": {
+    "description": "SSALWorks 플랫폼의 목적을 명확히 정리하고, 4대 핵심 기능(실행, 관리, 학습, 멘토링)을 모든 기획 문서에 일관되게 반영",
+    "scope": "PROJECT_PLAN.md, User Flow 문서들, functional_requirements.md 수정",
+    "key_change": "플랫폼 정의 - 실행이 가장 핵심, 관리로 체계화, 학습하며 성장, 멘토링으로 완성"
+  },
+
+  "platform_definition": {
+    "before": "3D 그리드로 프로젝트를 관리하고, AI가 자동으로 개발하는 플랫폼 (관리 중심)",
+    "after": "AI 기반 웹사이트 개발 프로젝트 관리 및 실행 플랫폼 (실행 중심)",
+    "core_message": "기술은 몰라도, 내 사이트는 내가 만든다",
+    "primary_strength": "실행 (Execution)",
+    "platform_characteristics": [
+      "실행이 핵심: Order Sheet로 AI에게 실제 작업 시키기",
+      "관리로 체계화: PROJECT SAL Grid로 무엇을 할지 계획",
+      "학습하며 성장: Books + FAQ + AI Q&A (3개 AI 모델)로 지식 습득",
+      "멘토링으로 완성: 비즈니스 자문까지 제공"
+    ]
+  },
+
+  "four_core_features": {
+    "1_execution": {
+      "name": "실행 (Execution)",
+      "location": "Workspace + Order Sheet",
+      "description": "SSALWorks의 가장 핵심적인 기능",
+      "components": [
+        "Order Sheet 시스템: Dashboard → Inbox → Claude Code → Outbox → Dashboard",
+        "실시간 알림 시스템: Socket.io v4.7.2 (구현 완료 2025-12-01)",
+        "지원 AI 도구: Claude Code (메인), ChatGPT, Gemini, Perplexity"
+      ],
+      "role": "Claude Code에게 작업 지시 → AI가 실제 코드 작성/수정"
+    },
+    "2_management": {
+      "name": "관리 (Management)",
+      "location": "좌측 사이드바 + PROJECT SAL Grid",
+      "description": "체계적인 프로젝트 Task 관리",
+      "components": [
+        "PROJECT SAL Grid: Stage-Area-Level 3D 그리드 시스템",
+        "3차원 구조: X축(Stage), Y축(Area), Z축(Level)",
+        "시각화: 2D 카드 뷰 (구현 완료), 3D 블록 뷰 (예정)"
+      ],
+      "role": "무엇을 할지 계획하고 Task 상태 관리"
+    },
+    "3_learning": {
+      "name": "학습 (Learning)",
+      "location": "우측 사이드바 상단",
+      "description": "프로젝트를 진행하면서 학습",
+      "components": [
+        "Books: Claude & Claude Code 사용법, 웹개발 기초지식",
+        "FAQ: 자주 묻는 질문 모음",
+        "AI Q&A: ChatGPT, Gemini, Perplexity (3개 AI 모델 - 구현 완료)"
+      ],
+      "role": "지식 습득 및 실시간 질문 가능"
+    },
+    "4_mentoring": {
+      "name": "멘토링 (Mentoring)",
+      "location": "우측 사이드바 하단",
+      "description": "CPA + 엑셀러레이터의 비즈니스 자문",
+      "components": [
+        "써니에게 묻기: 복잡한 비즈니스/기술 문제 상담",
+        "Supabase Realtime 실시간 알림",
+        "평균 응답 시간: 24-48시간"
+      ],
+      "role": "사업 전략, 수익 모델, 시장 진입 등 깊이 있는 조언"
+    }
+  },
+
+  "naming_conventions": {
+    "platform": "SSALWorks (쌀웍스)",
+    "grid": "PROJECT SAL Grid (프로젝트 살 그리드)",
+    "note": "플랫폼 전체는 SSALWorks, 관리 도구는 PROJECT SAL Grid (4대 기능 중 하나)"
+  },
+
+  "completed_tasks": [
+    {
+      "priority": 1,
+      "task": "PROJECT_PLAN.md 수정",
+      "target_file": "P2_프로젝트_기획/1-1_Project_Plan/PROJECT_PLAN.md",
+      "changes_applied": [
+        "✅ 섹션 1.1: 4대 핵심 기능 명시 (실행, 관리, 학습, 멘토링)",
+        "✅ 섹션 3: '4대 핵심 기능'으로 재구성",
+        "✅ 섹션 3.1: 실행 (Workspace + Order Sheet + Socket.io)",
+        "✅ 섹션 3.2: 관리 (좌측 사이드바 + PROJECT SAL Grid)",
+        "✅ 섹션 3.3: 학습 (Books + FAQ + AI Q&A 3개 모델)",
+        "✅ 섹션 3.4: 멘토링 (써니에게 묻기)",
+        "✅ AI Q&A: ChatGPT, Gemini, Perplexity 모두 명시",
+        "✅ FAQ 추가",
+        "✅ PROJECT SAL Grid로 명칭 통일"
+      ],
+      "status": "✅ 완료"
+    },
+    {
+      "priority": 2,
+      "task": "User Flow #1 (Signup) 수정",
+      "target_file": "P2_프로젝트_기획/1-2_User_Flows/1_Signup/flow.md",
+      "changes_applied": [
+        "✅ 환영 팝업: FAQ 추가",
+        "✅ AI Q&A: ChatGPT, Gemini, Perplexity 모두 명시",
+        "✅ Dashboard 진입 시 이용 가능 기능에 FAQ 추가",
+        "✅ AI Q&A 3개 모델 명시"
+      ],
+      "status": "✅ 완료"
+    },
+    {
+      "priority": 3,
+      "task": "User Flow #2 (Project Registration) 수정",
+      "target_file": "P2_프로젝트_기획/1-2_User_Flows/2_Project_Registration/flow.md",
+      "changes_applied": [
+        "✅ 설치비 안내 페이지: 'SAL 3D Grid' → 'PROJECT SAL Grid'",
+        "✅ 포함 내용: AI 크레딧 설명에 3개 모델 명시 (ChatGPT, Gemini, Perplexity)",
+        "✅ Books + FAQ 무제한 추가",
+        "✅ 성공 팝업: 'SAL 3D Grid' → 'PROJECT SAL Grid'",
+        "✅ Step 7 제목: 'PROJECT SAL Grid 화면 진입'",
+        "✅ 플로우 다이어그램: 종료 단계 수정",
+        "✅ 성공 기준: PROJECT SAL Grid 명칭 반영"
+      ],
+      "status": "✅ 완료"
+    },
+    {
+      "priority": 4,
+      "task": "functional_requirements.md 수정",
+      "target_file": "P2_프로젝트_기획/1-3_Requirements/functional_requirements.md",
+      "changes_applied": [
+        "✅ 섹션 4 제목: 'SAL 3D 그리드 관리' → 'PROJECT SAL Grid 관리'",
+        "✅ FR-GRID-001 설명: 'SAL 3D 그리드' → 'PROJECT SAL Grid'",
+        "✅ 화면 구성: 'SAL 그리드' → 'PROJECT SAL Grid'",
+        "✅ 프로젝트 생성 출력: 'SAL 그리드' → 'PROJECT SAL Grid'",
+        "✅ Books 화면 구성: 'SAL 그리드' → 'PROJECT SAL Grid'",
+        "✅ Phase 3 제목: 'SAL 그리드' → 'PROJECT SAL Grid'"
+      ],
+      "status": "✅ 완료"
+    }
+  },
+
+  "files_modified": [
+    {
+      "file": "P2_프로젝트_기획/1-1_Project_Plan/PROJECT_PLAN.md",
+      "sections_modified": ["1.1", "3.1", "3.2", "3.3", "3.4"],
+      "major_changes": [
+        "4대 핵심 기능으로 재구성",
+        "실행이 가장 핵심임을 명확히",
+        "AI Q&A 3개 모델 모두 명시",
+        "FAQ 추가",
+        "PROJECT SAL Grid 명칭 통일"
+      ],
+      "change_type": "섹션 재구성 및 내용 보강"
+    },
+    {
+      "file": "P2_프로젝트_기획/1-2_User_Flows/1_Signup/flow.md",
+      "sections_modified": ["Step 7 (환영 팝업)", "Step 8 (Dashboard 진입)"],
+      "major_changes": [
+        "FAQ 추가",
+        "AI Q&A 3개 모델 명시"
+      ],
+      "change_type": "기능 목록 보강"
+    },
+    {
+      "file": "P2_프로젝트_기획/1-2_User_Flows/2_Project_Registration/flow.md",
+      "sections_modified": ["Step 2-A", "Step 6", "Step 7", "플로우 다이어그램", "성공 기준"],
+      "major_changes": [
+        "SAL 3D Grid → PROJECT SAL Grid 명칭 통일",
+        "AI Q&A 3개 모델 명시",
+        "Books + FAQ 추가"
+      ],
+      "change_type": "명칭 통일 및 기능 보강"
+    },
+    {
+      "file": "P2_프로젝트_기획/1-3_Requirements/functional_requirements.md",
+      "sections_modified": ["4 (Grid Management)", "3.1 (프로젝트 생성)", "6.1 (Books)", "Phase 3"],
+      "major_changes": [
+        "SAL 그리드 → PROJECT SAL Grid 전체 명칭 통일"
+      ],
+      "change_type": "명칭 통일"
+    }
+  ],
+
+  "key_corrections_made": [
+    {
+      "issue": "플랫폼 목적 불명확",
+      "problem": "관리 플랫폼으로 오인, 실행 기능의 중요성 부각 안 됨",
+      "solution": "실행이 가장 핵심임을 명확히 하고 4대 기능으로 재정의",
+      "impact": "플랫폼의 가치 제안이 명확해짐 (Order Sheet로 AI에게 실제 작업 시키기)"
+    },
+    {
+      "issue": "명칭 혼란",
+      "problem": "SAL Grid, SAL 3D Grid, SAL 그리드, SSAL GRID 등 표현 불일치",
+      "solution": "PROJECT SAL Grid로 통일 (플랫폼 = SSALWorks, 관리 도구 = PROJECT SAL Grid)",
+      "impact": "명칭 일관성 확보, 문서 가독성 향상"
+    },
+    {
+      "issue": "AI Q&A 정보 불완전",
+      "problem": "Perplexity만 언급되거나 일부 모델만 표기",
+      "solution": "ChatGPT, Gemini, Perplexity 3개 모델 모두 명시",
+      "impact": "구현된 기능의 정확한 반영"
+    },
+    {
+      "issue": "FAQ 누락",
+      "problem": "학습 기능에 FAQ가 빠져 있음",
+      "solution": "Books + FAQ + AI Q&A로 완전하게 구성",
+      "impact": "학습 기능의 완전한 설명"
+    }
+  ],
+
+  "verification": {
+    "all_tasks_completed": true,
+    "naming_consistency": "✅ PROJECT SAL Grid로 전체 통일",
+    "four_core_features_reflected": "✅ 실행, 관리, 학습, 멘토링 모두 반영",
+    "ai_models_complete": "✅ ChatGPT, Gemini, Perplexity 3개 모두 명시",
+    "faq_added": "✅ 학습 기능에 FAQ 추가",
+    "platform_definition_clear": "✅ 실행 중심 플랫폼임을 명확히"
+  },
+
+  "final_status": {
+    "completion_percentage": "100%",
+    "all_requirements_met": true,
+    "documents_up_to_date": true,
+    "ready_for_next_phase": true
+  },
+
+  "session_info": {
+    "session_type": "문서 수정 세션",
+    "total_tasks": 4,
+    "tasks_completed": 4,
+    "files_read": 7,
+    "files_modified": 4,
+    "files_created": 1
+  },
+
+  "next_steps_recommendation": [
+    "문서 검토 및 승인",
+    "나머지 User Flow (#3-7) 작성 시 4대 기능 및 명칭 규칙 적용",
+    "필요시 추가 기획 문서에도 동일한 원칙 적용"
+  ]
+}

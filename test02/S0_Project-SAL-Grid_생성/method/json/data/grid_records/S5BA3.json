@@ -1,0 +1,16 @@
+{
+  "task_id": "S5BA3",
+  "task_name": "크레딧 차감 기능 구현",
+  "stage": 5,
+  "area": "BA",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S3BA1, S4BA4",
+  "task_instruction": "AI Q&A API 사용 시 크레딧 자동 차감, 잔액 부족 시 사용 제한",
+  "task_agent": "backend-developer",
+  "execution_type": "AI-Only",
+  "generated_files": "api/External/ai-qa.js",
+  "verification_instruction": "크레딧 차감 로직, 에러 처리, 이력 기록 검증",
+  "verification_agent": "code-reviewer"
+}

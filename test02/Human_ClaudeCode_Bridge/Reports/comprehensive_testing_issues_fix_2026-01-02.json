@@ -1,0 +1,155 @@
+{
+  "report_title": "Comprehensive Testing - 8개 이슈 수정 리포트",
+  "date": "2026-01-02",
+  "session_summary": "Dev Package 4개 Task 완료 후 종합 테스트에서 발견된 8개 이슈 처리",
+  "issues_processed": 8,
+  "issues_fixed": 6,
+  "issues_skipped": 1,
+  "issues_verified_ok": 1,
+
+  "issues": [
+    {
+      "issue_id": 1,
+      "title": "/api/ai/usage API 500 에러",
+      "status": "fixed",
+      "cause": "api/Backend_Infrastructure/ 폴더 및 usage-limiter.js 파일 누락",
+      "solution": [
+        "api/Backend_Infrastructure/ai/usage-limiter.js 생성",
+        "api/Backend_APIs/admin/ai-usage.js 생성 (Admin 사용량 집계)",
+        "vercel.json에 rewrite 규칙 추가"
+      ],
+      "files_created": [
+        "api/Backend_Infrastructure/ai/usage-limiter.js",
+        "api/Backend_APIs/admin/ai-usage.js"
+      ],
+      "files_modified": [
+        "vercel.json"
+      ],
+      "commit": "111cb8f"
+    },
+    {
+      "issue_id": 2,
+      "title": "ADMIN_EMAIL 불일치",
+      "status": "fixed",
+      "cause": "index.html의 ADMIN_EMAIL이 잘못된 값으로 설정됨",
+      "solution": "ADMIN_EMAIL을 'wksun999@gmail.com'으로 수정",
+      "files_modified": [
+        "index.html (line 12284)"
+      ],
+      "commit": "571fb9e"
+    },
+    {
+      "issue_id": 3,
+      "title": "Vercel URL 혼란",
+      "status": "fixed",
+      "cause": "여러 Vercel URL이 존재하여 혼란",
+      "solution": "ssal-works.vercel.app, ssalworks.vercel.app을 www.ssalworks.ai.kr로 리다이렉트 추가",
+      "files_modified": [
+        "vercel.json (redirects 섹션)"
+      ],
+      "commit": "a973f91"
+    },
+    {
+      "issue_id": 4,
+      "title": "2FA 미구현",
+      "status": "fixed",
+      "cause": "Admin/Builder 계정 보안 강화를 위한 2FA 필요",
+      "solution": [
+        "Supabase Auth MFA API 4개 생성 (enroll, verify, unenroll, status)",
+        "pages/mypage/security.html에 2FA 섹션 UI 추가",
+        "vercel.json에 MFA API rewrite 규칙 추가"
+      ],
+      "files_created": [
+        "api/Security/mfa/enroll.js",
+        "api/Security/mfa/verify.js",
+        "api/Security/mfa/unenroll.js",
+        "api/Security/mfa/status.js"
+      ],
+      "files_modified": [
+        "pages/mypage/security.html",
+        "vercel.json"
+      ],
+      "commit": "ed76f5c"
+    },
+    {
+      "issue_id": 5,
+      "title": "Admin 페이지 접근 보호",
+      "status": "fixed",
+      "cause": "Admin 페이지에 누구나 접근 가능",
+      "solution": "wksun999@gmail.com 이메일로 로그인한 사용자만 접근 가능하도록 인증 체크 추가",
+      "files_modified": [
+        "pages/admin-dashboard.html (lines 3944-3980)"
+      ],
+      "commit": "33f0831"
+    },
+    {
+      "issue_id": 6,
+      "title": "index.html 파일 크기",
+      "status": "skipped",
+      "reason": "다른 Claude Code 세션에서 처리 중"
+    },
+    {
+      "issue_id": 7,
+      "title": "manual.html 모바일 PDF 뷰어",
+      "status": "fixed",
+      "cause": "모바일에서 PDF 뷰어 표시 문제",
+      "solution": [
+        "B 방식 채택: HTML 콘텐츠 표시 + PDF 다운로드 버튼 추가",
+        "빌드 스크립트(build-web-assets.js)에 PDF 다운로드 버튼 스타일 및 HTML 추가",
+        "헤더에 Secondary Orange 색상의 PDF 다운로드 버튼 추가"
+      ],
+      "files_modified": [
+        "scripts/build-web-assets.js",
+        "pages/mypage/manual.html",
+        "pages/mypage/manual.pdf"
+      ],
+      "commit": "e993bb5"
+    },
+    {
+      "issue_id": 8,
+      "title": "예시 프로젝트 서약서 흐름",
+      "status": "verified_ok",
+      "verification_result": {
+        "handleSSALWorksClick": "정상 (index.html:6442)",
+        "Pledge_Agreement_content": "정상 (guides.js에 포함)",
+        "agreementModal": "정상 (index.html:11090)",
+        "agreementSuccessModal": "정상 (index.html:11116)",
+        "alreadyConnectedModal": "정상 (index.html:11136)",
+        "loginRequiredModal": "정상 (index.html:11151)",
+        "builderRequiredModal": "정상 (index.html:11169)",
+        "send_agreement_email_API": "정상 배포됨 (405 응답 확인)",
+        "vercel_routing": "정상 (catch-all 규칙)"
+      },
+      "conclusion": "수정 불필요 - 모든 흐름 정상 작동"
+    }
+  ],
+
+  "commits_summary": [
+    {"hash": "111cb8f", "message": "fix: /api/ai/usage 500 에러 수정"},
+    {"hash": "571fb9e", "message": "fix: ADMIN_EMAIL 수정"},
+    {"hash": "a973f91", "message": "fix: Vercel URL 리다이렉트 추가"},
+    {"hash": "ed76f5c", "message": "feat: 2FA MFA 기능 구현"},
+    {"hash": "33f0831", "message": "fix: Admin 페이지 접근 보호"},
+    {"hash": "e993bb5", "message": "feat: manual.html PDF 다운로드 버튼 추가"}
+  ],
+
+  "files_summary": {
+    "created": [
+      "api/Backend_Infrastructure/ai/usage-limiter.js",
+      "api/Backend_APIs/admin/ai-usage.js",
+      "api/Security/mfa/enroll.js",
+      "api/Security/mfa/verify.js",
+      "api/Security/mfa/unenroll.js",
+      "api/Security/mfa/status.js"
+    ],
+    "modified": [
+      "vercel.json",
+      "index.html",
+      "pages/mypage/security.html",
+      "pages/admin-dashboard.html",
+      "scripts/build-web-assets.js",
+      "pages/mypage/manual.html",
+      "pages/mypage/manual.pdf"
+    ]
+  }
+}

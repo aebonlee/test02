@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지를 찾을 수 없습니다 - SSAL Works</title>
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #212529;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 12px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-home:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.3);
+        }
+
+        .links {
+            margin-top: 24px;
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/index.html" class="logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="logo-text">SSAL Works</span>
+        </a>
+
+        <div class="error-code">404</div>
+        <h1 class="error-title">페이지를 찾을 수 없습니다</h1>
+        <p class="error-message">
+            요청하신 페이지가 존재하지 않거나 이동되었습니다.<br>
+            주소를 다시 확인해주세요.
+        </p>
+
+        <a href="/index.html" class="btn-home">홈으로 돌아가기</a>
+
+        <div class="links">
+            <a href="/pages/auth/login.html">로그인</a>
+            <a href="/pages/auth/signup.html">회원가입</a>
+            <a href="/pages/legal/customer_service.html">고객지원</a>
+        </div>
+    </div>
+</body>
+</html>

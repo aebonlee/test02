@@ -1,0 +1,321 @@
+{
+  "version": 2,
+  "name": "ssal-works",
+  "buildCommand": "node scripts/build-all.js",
+  "outputDirectory": ".",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/api/auth/signup",
+      "destination": "/api/Backend_APIs/auth/signup"
+    },
+    {
+      "source": "/api/auth/verify-email",
+      "destination": "/api/Backend_APIs/auth/verify-email"
+    },
+    {
+      "source": "/api/ai/pricing",
+      "destination": "/api/Backend_APIs/ai/pricing"
+    },
+    {
+      "source": "/api/projects/create",
+      "destination": "/api/Backend_APIs/projects/create"
+    },
+    {
+      "source": "/api/projects/list",
+      "destination": "/api/Backend_APIs/projects/list"
+    },
+    {
+      "source": "/api/projects/update",
+      "destination": "/api/Backend_APIs/projects/update"
+    },
+    {
+      "source": "/api/projects/complete",
+      "destination": "/api/Backend_APIs/projects/complete"
+    },
+    {
+      "source": "/api/email/send",
+      "destination": "/api/Backend_APIs/email-send"
+    },
+    {
+      "source": "/api/email/welcome",
+      "destination": "/api/Backend_APIs/email-welcome"
+    },
+    {
+      "source": "/api/email/password-reset",
+      "destination": "/api/Backend_APIs/email-password-reset"
+    },
+    {
+      "source": "/api/subscription/status",
+      "destination": "/api/Backend_APIs/subscription-status"
+    },
+    {
+      "source": "/api/subscription/create",
+      "destination": "/api/Backend_APIs/subscription-create"
+    },
+    {
+      "source": "/api/subscription/cancel",
+      "destination": "/api/Backend_APIs/subscription-cancel"
+    },
+    {
+      "source": "/api/auth/google",
+      "destination": "/api/Security/google-login"
+    },
+    {
+      "source": "/api/auth/google/callback",
+      "destination": "/api/Security/google/callback"
+    },
+    {
+      "source": "/api/auth/logout",
+      "destination": "/api/Security/logout"
+    },
+    {
+      "source": "/api/auth/mfa/enroll",
+      "destination": "/api/Security/mfa/enroll"
+    },
+    {
+      "source": "/api/auth/mfa/verify",
+      "destination": "/api/Security/mfa/verify"
+    },
+    {
+      "source": "/api/auth/mfa/unenroll",
+      "destination": "/api/Security/mfa/unenroll"
+    },
+    {
+      "source": "/api/auth/mfa/status",
+      "destination": "/api/Security/mfa/status"
+    },
+    {
+      "source": "/api/subscription/check",
+      "destination": "/api/Security/subscription/check"
+    },
+    {
+      "source": "/api/ai/qa",
+      "destination": "/api/External/ai-qa"
+    },
+    {
+      "source": "/api/ai/usage",
+      "destination": "/api/External/ai-usage"
+    },
+    {
+      "source": "/api/ai/faq-suggest",
+      "destination": "/api/External/ai-faq-suggest"
+    },
+    {
+      "source": "/api/ai/test",
+      "destination": "/api/External/ai-test"
+    },
+    {
+      "source": "/api/ai/health",
+      "destination": "/api/External/ai-health"
+    },
+    {
+      "source": "/api/ai-tutor/chat",
+      "destination": "/api/External/ai-tutor-chat"
+    },
+    {
+      "source": "/api/ai-tutor/test",
+      "destination": "/api/External/ai-tutor-test"
+    },
+    {
+      "source": "/api/ai-tutor/conversations",
+      "destination": "/api/External/ai-tutor-conversations"
+    },
+    {
+      "source": "/api/ai-tutor/conversations/:id",
+      "destination": "/api/External/ai-tutor-conversations?id=:id"
+    },
+    {
+      "source": "/api/payment/installation-request",
+      "destination": "/api/Backend_APIs/payment/installation-request"
+    },
+    {
+      "source": "/api/payment/installation/:action",
+      "destination": "/api/Backend_APIs/payment/installation/:action"
+    },
+    {
+      "source": "/api/admin/confirm-installation",
+      "destination": "/api/Backend_APIs/admin/confirm-installation"
+    },
+    {
+      "source": "/api/admin/installation-list",
+      "destination": "/api/Backend_APIs/admin/installation-list"
+    },
+    {
+      "source": "/api/admin/installation/:action",
+      "destination": "/api/Backend_APIs/admin/installation/:action"
+    },
+    {
+      "source": "/api/admin/ai-usage",
+      "destination": "/api/Backend_APIs/admin/ai-usage"
+    },
+    {
+      "source": "/api/admin/sunny-answer",
+      "destination": "/api/Backend_APIs/admin-sunny-answer"
+    },
+    {
+      "source": "/api/credit/:action",
+      "destination": "/api/Backend_APIs/credit/:action"
+    },
+    {
+      "source": "/api/payment/billing/:action",
+      "destination": "/api/Backend_APIs/payment/billing/:action"
+    },
+    {
+      "source": "/api/payment/credit/:action",
+      "destination": "/api/Backend_APIs/payment/credit/:action"
+    },
+    {
+      "source": "/api/webhook/toss",
+      "destination": "/api/Backend_APIs/webhook/toss"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/Briefings_OrderSheets/(.*).js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.ssalworks.ai.kr"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, apikey"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(self)"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' https://www.ssalworks.ai.kr https://ssalworks.ai.kr; script-src 'self' https://www.ssalworks.ai.kr https://ssalworks.ai.kr 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://accounts.google.com https://apis.google.com; style-src 'self' https://www.ssalworks.ai.kr https://ssalworks.ai.kr 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://www.ssalworks.ai.kr https://ssalworks.ai.kr https://*.supabase.co wss://*.supabase.co https://generativelanguage.googleapis.com https://api.perplexity.ai https://api.toss.im https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; frame-src 'self' https://accounts.google.com https://js.tosspayments.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.ssalworks.ai.kr https://ssalworks.ai.kr"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "crons": [
+    {
+      "path": "/api/cron/ai-pricing-update",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/subscription-expiry",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/pending-payment-expiry",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/churn-risk-alert",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/challenge-expiry",
+      "schedule": "0 9 1 * *"
+    },
+    {
+      "path": "/api/cron/stats-aggregate",
+      "schedule": "0 1 * * *"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ssalworks.ai.kr"
+        }
+      ],
+      "destination": "https://www.ssalworks.ai.kr/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ssal-works.vercel.app"
+        }
+      ],
+      "destination": "https://www.ssalworks.ai.kr/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ssalworks.vercel.app"
+        }
+      ],
+      "destination": "https://www.ssalworks.ai.kr/:path*",
+      "permanent": true
+    }
+  ]
+}

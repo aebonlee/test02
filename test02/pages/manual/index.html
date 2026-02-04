@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT SAL GRID 매뉴얼 - SSAL Works</title>
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --accent: #10B981;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 8px;
+            height: 14px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .nav-logo-text { font-size: 22px; font-weight: 800; color: white; }
+
+        .nav-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            padding-left: 20px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Manual Header */
+        .manual-header {
+            background: white;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .manual-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .manual-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .manual-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .manual-meta {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .manual-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        /* Iframe Container */
+        .iframe-container {
+            flex: 1;
+            background: white;
+            overflow: hidden;
+        }
+
+        .manual-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Loading */
+        .loading {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--gray-500);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .error-detail {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 16px;
+            }
+
+            .nav-title {
+                display: none;
+            }
+
+            .manual-header {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .manual-actions {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .manual-text h1 {
+                font-size: 16px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="../../index.html" class="nav-logo">
+                <div class="rice-logo">
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                </div>
+                <span class="nav-logo-text">SSAL Works</span>
+            </a>
+            <span class="nav-title">플랫폼 매뉴얼</span>
+        </div>
+        <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="loading-spinner"></div>
+            <p>매뉴얼을 불러오는 중...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <div class="error-icon">⚠️</div>
+            <p class="error-message">매뉴얼을 불러올 수 없습니다.</p>
+            <p class="error-detail">잠시 후 다시 시도해주세요.</p>
+        </div>
+
+        <!-- Manual Header -->
+        <div id="manualHeader" class="manual-header" style="display: none;">
+            <div class="manual-info">
+                <div class="manual-icon">📖</div>
+                <div class="manual-text">
+                    <h1 id="manualTitle">PROJECT SAL GRID 매뉴얼</h1>
+                    <p class="manual-meta" id="manualMeta">버전 정보</p>
+                </div>
+            </div>
+            <div class="manual-actions">
+                <button class="action-btn secondary" onclick="openInNewTab()">
+                    ↗ 새 탭에서 열기
+                </button>
+                <button class="action-btn secondary" onclick="refreshManual()">
+                    🔄 새로고침
+                </button>
+            </div>
+        </div>
+
+        <!-- Iframe Container -->
+        <div id="iframeContainer" class="iframe-container" style="display: none;">
+            <iframe id="manualIframe" class="manual-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // Supabase Configuration
+        // =====================================================
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMxMjM5NTMsImV4cCI6MjA0ODY5OTk1M30.Q_KeU0JBvYqroWhJjnoHgz7M8baRuwJxPqGdXb7T-zY';
+
+        // 전역 변수
+        let currentManual = null;
+
+        // =====================================================
+        // Load Manual from Supabase
+        // =====================================================
+        async function loadManual() {
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const manualHeader = document.getElementById('manualHeader');
+            const iframeContainer = document.getElementById('iframeContainer');
+
+            try {
+                // manuals 테이블에서 활성화된 첫 번째 매뉴얼 가져오기
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/manuals?is_active=eq.true&order=display_order.asc&limit=1`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load manual');
+                }
+
+                const data = await response.json();
+
+                if (data.length === 0) {
+                    throw new Error('No manual found');
+                }
+
+                currentManual = data[0];
+
+                // UI 업데이트
+                document.getElementById('manualTitle').textContent = currentManual.title || 'PROJECT SAL GRID 매뉴얼';
+
+                let metaText = [];
+                if (currentManual.version) metaText.push(currentManual.version);
+                if (currentManual.category) metaText.push(currentManual.category);
+                document.getElementById('manualMeta').textContent = metaText.join(' • ') || '플랫폼 사용 가이드';
+
+                // iframe에 매뉴얼 URL 로드
+                document.getElementById('manualIframe').src = currentManual.url;
+
+                // 상태 전환
+                loadingState.style.display = 'none';
+                errorState.style.display = 'none';
+                manualHeader.style.display = 'flex';
+                iframeContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error('매뉴얼 로딩 오류:', error);
+                loadingState.style.display = 'none';
+                errorState.style.display = 'flex';
+                manualHeader.style.display = 'none';
+                iframeContainer.style.display = 'none';
+            }
+        }
+
+        // =====================================================
+        // Actions
+        // =====================================================
+        function openInNewTab() {
+            if (currentManual && currentManual.url) {
+                window.open(currentManual.url, '_blank');
+            }
+        }
+
+        function refreshManual() {
+            if (currentManual && currentManual.url) {
+                document.getElementById('manualIframe').src = currentManual.url;
+            }
+        }
+
+        // =====================================================
+        // Initialize
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', loadManual);
+    </script>
+
+<script>
+// 모바일 반응형 사이드바 토글
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+    if (overlay) {
+        overlay.classList.toggle('active');
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
+
+// ESC 키로 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeSidebar();
+    }
+});
+</script>
+
+</body>
+</html>

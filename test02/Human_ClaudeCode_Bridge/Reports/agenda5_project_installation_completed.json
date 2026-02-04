@@ -1,0 +1,202 @@
+{
+  "report_type": "agenda_completion",
+  "agenda_number": 5,
+  "agenda_title": "프로젝트 등록 & 설치비 납부",
+  "status": "completed",
+  "completion_date": "2025-12-11T01:15:00+09:00",
+  "generated_by": "Claude Code",
+
+  "summary": "Agenda #5 프로젝트 등록 및 설치비 납부 시스템 구현 완료",
+
+  "implementation_details": {
+    "database": {
+      "files_created": [
+        {
+          "path": "P3_프로토타입_제작/Database/15_create_projects.sql",
+          "purpose": "프로젝트 테이블 생성",
+          "features": [
+            "projects 테이블 생성 (id, user_id, project_id, project_name, description, status, progress, current_stage, total_stages, timestamps)",
+            "사용자당 진행 중인 프로젝트 1개 제한 (unique partial index)",
+            "project_id 자동 생성 함수 (generate_project_id)",
+            "updated_at 자동 업데이트 트리거",
+            "인덱스 생성 (user_id, status, project_id, created_at)"
+          ]
+        },
+        {
+          "path": "P3_프로토타입_제작/Database/16_create_installation_payment_requests.sql",
+          "purpose": "설치비 입금 요청 테이블 생성",
+          "features": [
+            "installation_payment_requests 테이블 생성",
+            "컬럼: id, user_id, depositor_name, amount, status, requested_at, processed_at, processed_by, reject_reason",
+            "상태 관리: pending / approved / rejected",
+            "인덱스 생성 (status, user_id, requested_at)"
+          ]
+        },
+        {
+          "path": "P3_프로토타입_제작/Database/17_projects_rls_dev.sql",
+          "purpose": "개발용 RLS 정책",
+          "note": "⚠️ 프로덕션 배포 전 반드시 원래 RLS 정책으로 교체 필요",
+          "features": [
+            "projects 테이블: SELECT/INSERT/UPDATE/DELETE 모두 허용",
+            "installation_payment_requests 테이블: SELECT/INSERT/UPDATE/DELETE 모두 허용"
+          ]
+        }
+      ]
+    },
+
+    "admin_dashboard": {
+      "file_modified": "P3_프로토타입_제작/Frontend/Prototype/admin-dashboard.html",
+      "sections_added": [
+        {
+          "name": "설치비 관리",
+          "menu_icon": "🏠",
+          "features": [
+            "대기/승인/거부 요청 통계 카드",
+            "대기 중인 요청 테이블 (승인/거부 버튼)",
+            "처리된 요청 테이블",
+            "입금 확인 승인 기능 (users 테이블 업데이트 + 크레딧 ₩5,000 지급)",
+            "입금 확인 거부 기능 (사유 입력)"
+          ]
+        },
+        {
+          "name": "프로젝트 관리",
+          "menu_icon": "📁",
+          "features": [
+            "전체/진행중/완료 프로젝트 통계 카드",
+            "프로젝트 목록 테이블 (상태 표시, 진행률, 단계)",
+            "검색 기능 (ID/이름/사용자ID)",
+            "상태 필터링"
+          ]
+        }
+      ],
+      "functions_added": [
+        "loadInstallationRequests()",
+        "renderInstallationTables()",
+        "updateInstallationStats()",
+        "approveInstallation(requestId)",
+        "rejectInstallation(requestId)",
+        "loadProjects()",
+        "renderProjectsTable(filteredProjects)",
+        "updateProjectsStats()",
+        "searchProjects()",
+        "viewProjectDetail(projectId)",
+        "formatDateTime(dateString)",
+        "formatDate(dateString)"
+      ]
+    },
+
+    "frontend_pages": {
+      "pages_created": [
+        {
+          "path": "P3_프로토타입_제작/Frontend/Prototype/pages/payment/installation.html",
+          "purpose": "설치비 안내 페이지",
+          "features": [
+            "설치비 금액 표시 (₩3,000,000)",
+            "포함 내용 안내 (프로젝트 1개, AI 협업, PROJECT SAL Grid, 무료 크레딧, 학습 콘텐츠)",
+            "50% 환불 보장 특별 혜택 안내",
+            "은행 정보 표시 (하나은행 287-910921-40507, 예금주: 선웅규)",
+            "계좌번호 복사 기능",
+            "상태별 UI: 납부 완료 / 승인 대기 / 미납",
+            "입금 확인 요청 기능"
+          ]
+        },
+        {
+          "path": "P3_프로토타입_제작/Frontend/Prototype/pages/projects/index.html",
+          "purpose": "프로젝트 목록 페이지",
+          "features": [
+            "프로젝트 통계 카드 (전체/진행중/완료)",
+            "설치비 미납 시 안내 메시지",
+            "프로젝트 카드 목록 (이름, ID, 상태, 진행률, 단계)",
+            "빈 상태 UI",
+            "새 프로젝트 버튼 (진행 중 프로젝트 있으면 비활성화)"
+          ]
+        },
+        {
+          "path": "P3_프로토타입_제작/Frontend/Prototype/pages/projects/new.html",
+          "purpose": "프로젝트 등록 페이지",
+          "features": [
+            "프로젝트 이름 입력 (필수, 최대 100자)",
+            "프로젝트 설명 입력 (선택, 최대 500자)",
+            "프로젝트 유형 선택 (포트폴리오/블로그/비즈니스/기타)",
+            "PROJECT SAL Grid 5단계 프로세스 안내",
+            "글자 수 카운터",
+            "등록 성공 화면",
+            "project_id 자동 생성 (user_id-P001 형식)"
+          ]
+        }
+      ],
+      "pages_modified": [
+        {
+          "path": "P3_프로토타입_제작/Frontend/Prototype/pages/mypage/index.html",
+          "purpose": "My Page에 프로젝트 섹션 추가",
+          "changes": [
+            "메뉴에 '내 프로젝트' 항목 추가",
+            "프로젝트 섹션 HTML 추가 (통계, 목록)",
+            "프로젝트 카드 CSS 스타일 추가",
+            "renderProjects(), renderProjectList() 함수 추가",
+            "설치비 미납 시 안내 메시지 표시"
+          ]
+        }
+      ]
+    }
+  },
+
+  "key_features": {
+    "project_management": {
+      "description": "프로젝트 등록 및 관리 시스템",
+      "rules": [
+        "사용자당 진행 중인 프로젝트 1개만 허용",
+        "설치비 납부 후 프로젝트 등록 가능",
+        "project_id는 user_id-P001 형식으로 자동 생성",
+        "5단계 PROJECT SAL Grid 프로세스 적용"
+      ]
+    },
+    "installation_fee": {
+      "description": "설치비 납부 시스템",
+      "amount": 3000000,
+      "currency": "KRW",
+      "benefits": [
+        "프로젝트 1개 완전한 풀스택 웹사이트 개발",
+        "Claude Code 기반 AI 협업",
+        "PROJECT SAL Grid 체계적인 5단계 개발 프로세스",
+        "무료 크레딧 ₩5,000 지급",
+        "학습 콘텐츠 제공"
+      ],
+      "special_offer": {
+        "description": "50% 환불 보장",
+        "condition": "프로젝트 5단계 완료 및 최종 배포 완료",
+        "refund_amount": 1500000
+      }
+    }
+  },
+
+  "files_summary": {
+    "created": [
+      "P3_프로토타입_제작/Database/15_create_projects.sql",
+      "P3_프로토타입_제작/Database/16_create_installation_payment_requests.sql",
+      "P3_프로토타입_제작/Database/17_projects_rls_dev.sql",
+      "P3_프로토타입_제작/Frontend/Prototype/pages/payment/installation.html",
+      "P3_프로토타입_제작/Frontend/Prototype/pages/projects/index.html",
+      "P3_프로토타입_제작/Frontend/Prototype/pages/projects/new.html"
+    ],
+    "modified": [
+      "P3_프로토타입_제작/Frontend/Prototype/admin-dashboard.html",
+      "P3_프로토타입_제작/Frontend/Prototype/pages/mypage/index.html"
+    ]
+  },
+
+  "deployment_notes": {
+    "database_execution_order": [
+      "1. 15_create_projects.sql - projects 테이블 생성",
+      "2. 16_create_installation_payment_requests.sql - installation_payment_requests 테이블 생성",
+      "3. 17_projects_rls_dev.sql - 개발용 RLS 정책 적용"
+    ],
+    "production_warning": "⚠️ 17_projects_rls_dev.sql은 개발용입니다. 프로덕션 배포 전 반드시 원래 RLS 정책으로 교체해야 합니다."
+  },
+
+  "next_agenda": {
+    "number": 6,
+    "title": "크레딧 시스템 & 플랫폼 이용료",
+    "description": "크레딧 충전/사용/내역 관리 및 플랫폼 이용료 시스템 구현"
+  }
+}

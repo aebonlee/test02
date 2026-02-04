@@ -1,0 +1,106 @@
+{
+  "report_id": "SSAL_Works_for_Builder_cleanup",
+  "date": "2025-12-30",
+  "task": "빌더용 참고 폴더 민감정보 제거 및 정리",
+  "target_directory": "G:\\내 드라이브\\SSAL_Works_for_Builder",
+  "status": "completed",
+
+  "sensitive_info_removal": {
+    "env_files_updated": [
+      {
+        "file": "P3_프로토타입_제작/Database/.env",
+        "removed": ["Supabase URL", "ANON_KEY", "SERVICE_ROLE_KEY", "DB_PASSWORD", "은행계좌", "Resend API"]
+      },
+      {
+        "file": "Human_ClaudeCode_Bridge/.env",
+        "removed": ["Google Translate API Key"]
+      },
+      {
+        "file": "부수적_고유기능/AI_Link/AI/ChatGPT/.env",
+        "removed": ["OpenAI API Key"]
+      },
+      {
+        "file": "부수적_고유기능/AI_Link/AI/Gemini/.env",
+        "removed": ["Gemini API Key"]
+      },
+      {
+        "file": "부수적_고유기능/AI_Link/AI/Perplexity/.env",
+        "removed": ["Perplexity API Key"]
+      }
+    ],
+    "html_js_files_updated": {
+      "pattern_replaced": [
+        "zwjmfewyshhwpgwdtrus.supabase.co → your-project-id.supabase.co",
+        "ANON_KEY JWT → your-supabase-anon-key-here",
+        "SERVICE_ROLE_KEY JWT → your-supabase-service-role-key-here"
+      ],
+      "folders_processed": ["index.html", "pages/", "api/", "assets/", "Production/", "P2_프로젝트_기획/", "P3_프로토타입_제작/", "Human_ClaudeCode_Bridge/", ".claude/"]
+    },
+    "deleted_files": [
+      ".vercel/ (Vercel project ID)",
+      "P3_프로토타입_제작/Frontend/Prototype/_archive/temp/.env.local"
+    ]
+  },
+
+  "root_directory_cleanup": {
+    "deleted_test_files": [
+      "test_clear_empty.js",
+      "test_clearEditor_modal.js",
+      "test_default_clear.js",
+      "test_production_features.js",
+      "test_screenshot.png",
+      "prod_default_check.png"
+    ],
+    "deleted_folders": [
+      "test-results/",
+      "Production/"
+    ],
+    "user_deleted_folders": [
+      "Briefings_OrderSheets/",
+      "공개_전환_업무/",
+      "부수적_고유기능/",
+      "참고자료/"
+    ]
+  },
+
+  "final_structure": [
+    ".claude/",
+    ".git/",
+    ".github/",
+    ".gitignore",
+    "404.html",
+    "api/",
+    "assets/",
+    "Development_Process_Monitor/",
+    "Human_ClaudeCode_Bridge/",
+    "index.html",
+    "node_modules/",
+    "P0_작업_디렉토리_구조_생성/",
+    "P1_사업계획/",
+    "P2_프로젝트_기획/",
+    "P3_프로토타입_제작/",
+    "package.json",
+    "package-lock.json",
+    "pages/",
+    "S0_Project-SAL-Grid_생성/",
+    "S1_개발_준비/",
+    "S2_개발-1차/",
+    "S3_개발-2차/",
+    "S4_개발-3차/",
+    "S5_개발_마무리/",
+    "scripts/",
+    "vercel.json"
+  ],
+
+  "placeholder_format": {
+    "supabase_url": "https://your-project-id.supabase.co",
+    "supabase_anon_key": "your-supabase-anon-key-here",
+    "supabase_service_role_key": "your-supabase-service-role-key-here",
+    "openai_api_key": "sk-your-openai-api-key-here",
+    "gemini_api_key": "your-gemini-api-key-here",
+    "perplexity_api_key": "pplx-your-perplexity-api-key-here",
+    "bank_info": "은행명/계좌번호/예금주명"
+  },
+
+  "notes": "빌더들이 Claude Code에게 이 폴더를 참고하라고 하면, Claude Code가 코드 패턴과 구조를 학습하여 빌더 프로젝트에 적용할 수 있음. 민감정보는 모두 플레이스홀더로 교체되어 안전함."
+}

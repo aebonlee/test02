@@ -1,0 +1,75 @@
+{
+  "report_date": "2025-12-29",
+  "report_title": "프로젝트 등록 안내문 분기 처리 및 Dev Package 설명 개선",
+  "status": "완료",
+
+  "summary": "프로젝트 등록 시 첫 번째/두 번째 이후 프로젝트를 구분하여 다른 안내문을 표시하도록 수정. Dev Package 설명을 구체적이고 상세하게 개선.",
+
+  "tasks_completed": [
+    {
+      "task": "프로젝트 등록 분기 처리",
+      "details": [
+        "첫 번째 프로젝트: 전체 개발환경 설정 안내 (Dev Package + Git + Node.js + Claude Code)",
+        "두 번째 이후 프로젝트: 새 폴더 준비 안내만 표시"
+      ]
+    },
+    {
+      "task": "새 안내문 파일 생성",
+      "file": "Briefings_OrderSheets/Briefings/Situational/Project_Registration_Subsequent.md",
+      "content": "두 번째 이후 프로젝트용 간단한 폴더 준비 안내"
+    },
+    {
+      "task": "기존 안내문 제목 변경",
+      "before": "개발 패키지 설치 안내",
+      "after": "처음 프로젝트 개발환경설정 가이드"
+    },
+    {
+      "task": "Dev Package 설명 상세화",
+      "details": [
+        ".claude/ 폴더 구조 및 각 파일 역할 설명",
+        "P0~P3 기획 단계 폴더 설명",
+        "S0~S5 개발 단계 폴더 설명",
+        "Briefings_OrderSheets 폴더 설명",
+        "Human_ClaudeCode_Bridge 폴더 설명"
+      ]
+    },
+    {
+      "task": "index.html 코드 수정",
+      "changes": [
+        "isFirstProject 변수로 첫 번째 프로젝트 여부 확인",
+        "showPackageInstallGuide() 함수 - 첫 번째 프로젝트용",
+        "showNewProjectFolderGuide() 함수 추가 - 두 번째 이후 프로젝트용",
+        "if-else 분기 처리로 적절한 안내문 표시"
+      ]
+    }
+  ],
+
+  "files_created": [
+    "Briefings_OrderSheets/Briefings/Situational/Project_Registration_Subsequent.md"
+  ],
+
+  "files_modified": [
+    "Briefings_OrderSheets/Briefings/Situational/Project_Registration.md",
+    "Briefings_OrderSheets/Briefings/guides.js",
+    "index.html"
+  ],
+
+  "build_executed": [
+    "node Briefings_OrderSheets/Briefings/generate-briefings-js.js"
+  ],
+
+  "logic_summary": {
+    "first_project": {
+      "condition": "existingProjects.length === 0",
+      "function": "showPackageInstallGuide()",
+      "guide": "처음 프로젝트 개발환경설정 가이드",
+      "content": "Dev Package 다운로드 + Git/Node.js/Claude Code 설치 안내"
+    },
+    "subsequent_project": {
+      "condition": "existingProjects.length > 0",
+      "function": "showNewProjectFolderGuide()",
+      "guide": "새 프로젝트 폴더 준비 안내",
+      "content": "My Page > 자료 다운로드에서 Dev Package 새로 다운로드 안내"
+    }
+  }
+}

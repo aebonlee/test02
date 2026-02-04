@@ -1,0 +1,70 @@
+{
+  "report_id": "2025-12-31_Rules_DB_CSV_Clarification",
+  "date": "2025-12-31",
+  "title": "Rules Files DB vs CSV 구분 명확화 작업",
+  "status": "completed",
+  "summary": "SSAL Works 내부용 Supabase 규칙과 일반 이용자용 CSV 규칙 파일 분리 및 문서화 완료",
+
+  "background": {
+    "issue": "Project_Dev_Package에 Supabase 규칙 파일이 포함되어 있어 일반 이용자에게 혼란 유발 가능",
+    "architecture": {
+      "DB_Supabase": "SSAL Works 예시 데이터 (고정, viewer_database.html)",
+      "CSV": "이용자 본인 프로젝트 데이터 (가변, viewer_csv.html)"
+    }
+  },
+
+  "changes_made": {
+    "ssal_works_internal": {
+      "file": ".claude/rules/04_grid-writing-supabase.md",
+      "change": "파일 상단에 적용 대상 명확화 헤더 추가",
+      "content_added": [
+        "적용 대상: SSAL Works 내부 관리용 (DB Method)",
+        "DB vs CSV 구분 설명 추가"
+      ]
+    },
+    "project_dev_package": {
+      "deleted_file": "공개_전환_업무/Project_Dev_Package/.claude/rules/04_grid-writing-supabase.md",
+      "added_file": "공개_전환_업무/Project_Dev_Package/.claude/rules/04_grid-writing-csv.md",
+      "source": "공개_전환_업무/.claude/rules/04_grid-writing-csv.md"
+    },
+    "claude_md_updates": {
+      "file": "공개_전환_업무/Project_Dev_Package/.claude/CLAUDE.md",
+      "changes": [
+        "규칙 테이블: 04_grid-writing-supabase.md -> 04_grid-writing-csv.md",
+        "STEP 3: 'Supabase DB에 UPDATE' -> 'CSV 파일 UPDATE'",
+        "STEP 6: '최종 상태 업데이트 (DB)' -> '최종 상태 업데이트 (CSV)'",
+        "'(DB 트리거로 강제됨)' 문구 제거",
+        "'DB 상태 업데이트 생략' -> 'CSV 상태 업데이트 생략'",
+        "검증 기록 위치: Supabase DB -> CSV 파일 (method/csv/data/sal_grid.csv)",
+        "절대 규칙 5: project_sal_grid 테이블 -> CSV 파일",
+        "Methods 섹션: Supabase CRUD -> CSV CRUD",
+        "Manual 참조: 이용자는 CSV 사용 명시"
+      ]
+    }
+  },
+
+  "git_commit": {
+    "hash": "b4be984",
+    "message": "refactor: Project_Dev_Package rules - Supabase -> CSV 변경\n\n- 04_grid-writing-supabase.md 삭제\n- 04_grid-writing-csv.md 추가 (공개_전환_업무에서 복사)\n- CLAUDE.md 전체 Supabase 참조를 CSV로 변경\n- 일반 이용자는 CSV Method 사용하도록 명확화"
+  },
+
+  "verification": {
+    "files_checked": [
+      ".claude/rules/04_grid-writing-supabase.md - 헤더 추가 확인",
+      "Project_Dev_Package/.claude/rules/04_grid-writing-csv.md - 파일 존재 확인",
+      "Project_Dev_Package/.claude/CLAUDE.md - 모든 Supabase 참조 CSV로 변경 확인"
+    ],
+    "result": "pass"
+  },
+
+  "impact": {
+    "ssal_works": "내부 관리에 Supabase 계속 사용, 규칙 파일에 적용 대상 명시",
+    "general_users": "Project_Dev_Package 사용 시 CSV 방식만 안내받음, 혼란 방지"
+  },
+
+  "related_files": {
+    "work_log": ".claude/work_logs/current.md",
+    "rules_location": ".claude/rules/",
+    "csv_data_location": "method/csv/data/sal_grid.csv"
+  }
+}

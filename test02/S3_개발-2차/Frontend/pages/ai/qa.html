@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!--
+    @task S3F1
+    AI Q&A 인터페이스 - 메인 페이지
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Q&A - SSALWorks</title>
+    <link rel="stylesheet" href="../../assets/css/shared.css">
+    <link rel="stylesheet" href="../../assets/css/ai-qa.css">
+</head>
+<body>
+    <!-- 상단 네비게이션 -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">SSALWorks</a>
+            <div class="nav-links">
+                <a href="/pages/dashboard.html">대시보드</a>
+                <a href="/pages/ai/qa.html" class="active">AI Q&A</a>
+                <a href="/pages/subscription/credit-purchase.html">크레딧</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-name">사용자</span>
+                <button id="logout-btn" class="btn-logout">로그아웃</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="qa-container">
+        <!-- AI 선택 영역 -->
+        <section class="ai-selector">
+            <h2>AI 모델 선택</h2>
+            <div class="ai-options" id="ai-options">
+                <button class="ai-option selected" data-ai="gemini">
+                    <span class="ai-icon">🌟</span>
+                    <span class="ai-name">Gemini</span>
+                    <span class="ai-price" id="gemini-price">로딩중...</span>
+                </button>
+                <button class="ai-option" data-ai="chatgpt">
+                    <span class="ai-icon">🤖</span>
+                    <span class="ai-name">ChatGPT</span>
+                    <span class="ai-price" id="chatgpt-price">로딩중...</span>
+                </button>
+                <button class="ai-option" data-ai="perplexity">
+                    <span class="ai-icon">🔍</span>
+                    <span class="ai-name">Perplexity</span>
+                    <span class="ai-price" id="perplexity-price">로딩중...</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 크레딧 정보 -->
+        <div class="credit-info">
+            <div class="credit-left">
+                <span class="credit-label">보유 크레딧:</span>
+                <span class="credit-amount" id="user-credit">0</span>
+                <span class="credit-unit">원</span>
+            </div>
+            <div class="credit-right">
+                <a href="/pages/subscription/credit-purchase.html" class="credit-link">
+                    <span class="credit-icon">💳</span>
+                    충전하기
+                </a>
+            </div>
+        </div>
+
+        <!-- 대화 영역 -->
+        <div class="chat-area" id="chat-area">
+            <div class="chat-welcome">
+                <div class="welcome-icon">💬</div>
+                <h3>AI에게 질문해보세요</h3>
+                <p>선택한 AI 모델이 질문에 답변해드립니다.</p>
+            </div>
+        </div>
+
+        <!-- 입력 영역 -->
+        <div class="input-area">
+            <div class="input-wrapper">
+                <textarea
+                    id="question-input"
+                    placeholder="AI에게 질문하세요... (Enter로 전송, Shift+Enter로 줄바꿈)"
+                    rows="3"
+                    maxlength="2000"
+                ></textarea>
+                <span class="char-count"><span id="char-current">0</span>/2000</span>
+            </div>
+            <button id="send-button" class="btn-send" disabled>
+                <span class="send-text">전송</span>
+                <span class="send-icon">➤</span>
+            </button>
+        </div>
+
+        <!-- 크레딧 부족 모달 -->
+        <div class="modal" id="credit-modal" hidden>
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>💳 크레딧이 부족합니다</h3>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="credit-status">
+                        현재 잔액: <strong id="modal-credit">0</strong>원
+                    </p>
+                    <p class="credit-needed">
+                        필요 크레딧: 약 <strong id="modal-needed">0</strong>원
+                    </p>
+
+                    <div class="credit-options">
+                        <h4>크레딧 충전</h4>
+                        <div class="charge-buttons">
+                            <button class="btn-charge" data-amount="10000">₩10,000</button>
+                            <button class="btn-charge" data-amount="20000">₩20,000</button>
+                            <button class="btn-charge recommended" data-amount="30000">
+                                ₩30,000
+                                <span class="badge">추천</span>
+                            </button>
+                            <button class="btn-charge" data-amount="50000">₩50,000</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="../../assets/js/ai-qa.js"></script>
+</body>
+</html>

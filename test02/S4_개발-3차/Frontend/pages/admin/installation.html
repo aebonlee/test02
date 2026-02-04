@@ -1,0 +1,145 @@
+<!--
+@task S4F1
+@description 설치비 관리 - 입금 확인/거부
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설치비 관리 - SSAL</title>
+    <link rel="stylesheet" href="../../shared.css">
+    <link rel="stylesheet" href="../../admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>SSAL 관리자</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>대시보드</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>사용자 관리</span>
+                </a>
+                <a href="installation.html" class="nav-item active">
+                    <span class="icon">💰</span>
+                    <span>설치비 관리</span>
+                </a>
+                <a href="subscriptions.html" class="nav-item">
+                    <span class="icon">🔄</span>
+                    <span>구독 관리</span>
+                </a>
+                <a href="payments.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>결제 내역</span>
+                </a>
+                <a href="credits.html" class="nav-item">
+                    <span class="icon">🎫</span>
+                    <span>크레딧 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📝</span>
+                    <span>콘텐츠 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span>설정</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>설치비 관리</h1>
+                <div class="admin-user">
+                    <span id="admin-name">관리자</span>
+                    <button id="logout-btn" class="btn-secondary">로그아웃</button>
+                </div>
+            </header>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="tab-btn active" data-status="pending">입금 대기</button>
+                <button class="tab-btn" data-status="confirmed">입금 완료</button>
+                <button class="tab-btn" data-status="rejected">입금 거부</button>
+                <button class="tab-btn" data-status="all">전체</button>
+            </div>
+
+            <!-- Installation List -->
+            <div class="card">
+                <div class="table-header">
+                    <h2>설치비 내역</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="사용자명, 이메일 검색...">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>신청일</th>
+                                <th>사용자</th>
+                                <th>이메일</th>
+                                <th>금액</th>
+                                <th>상태</th>
+                                <th>처리일</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="installation-list">
+                            <tr>
+                                <td colspan="7" class="loading">로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h2>입금 확인</h2>
+            <div id="confirm-details"></div>
+            <p class="modal-warning">
+                입금 확인 시 다음 작업이 자동 처리됩니다:
+            </p>
+            <ul class="modal-list">
+                <li>서비스 상태: <strong>활성화</strong></li>
+                <li>크레딧 지급: <strong>₩50,000</strong></li>
+                <li>사용자 이메일 알림 발송</li>
+            </ul>
+            <div class="modal-actions">
+                <button id="confirm-submit" class="btn-primary">확인 완료</button>
+                <button id="confirm-cancel" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejection Modal -->
+    <div id="reject-modal" class="modal">
+        <div class="modal-content">
+            <h2>입금 거부</h2>
+            <div id="reject-details"></div>
+            <div class="form-group">
+                <label for="reject-reason">거부 사유 <span class="required">*</span></label>
+                <textarea id="reject-reason" rows="4" placeholder="사용자에게 전달될 거부 사유를 입력하세요..." required></textarea>
+            </div>
+            <div class="modal-actions">
+                <button id="reject-submit" class="btn-danger">거부 처리</button>
+                <button id="reject-cancel" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../admin-installation.js"></script>
+</body>
+</html>

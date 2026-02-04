@@ -1,0 +1,53 @@
+{
+  "report_name": "Order Sheet Control Desk 표시 개선",
+  "date": "2025-12-27",
+  "status": "completed",
+  "request": {
+    "description": "Order Sheet 로딩 시 표시 개선",
+    "issues": [
+      "글씨 크기가 너무 작음 (11px)",
+      "마크다운 기호(#, **, * 등)가 그대로 표시됨"
+    ]
+  },
+  "changes": [
+    {
+      "item": "글씨 크기 증가",
+      "file": "index.html",
+      "line": 1198,
+      "before": "font-size: 11px",
+      "after": "font-size: 15px"
+    },
+    {
+      "item": "마크다운 변환 함수 추가",
+      "file": "index.html",
+      "lines": "4763-4804",
+      "function": "convertMarkdownToPlainText(md)",
+      "description": "마크다운 기호를 제거하고 일반 텍스트로 변환"
+    },
+    {
+      "item": "함수 적용",
+      "locations": [
+        "loadGuide() - 안내문 로드 시",
+        "loadOrderTemplate() - Order Sheet 템플릿 로드 시"
+      ]
+    }
+  ],
+  "markdown_conversions": {
+    "code_blocks": "``` 제거, 내용만 유지",
+    "inline_code": "` 제거, 내용만 유지",
+    "headings": "# 제거",
+    "bold": "** 제거",
+    "italic": "* 제거",
+    "underline_italic": "_ 제거",
+    "links": "[text](url) → text",
+    "images": "제거",
+    "horizontal_rules": "--- 제거",
+    "blockquotes": "> 제거",
+    "unordered_lists": "- 또는 * → •"
+  },
+  "verification": {
+    "font_size_check": "15px 적용 확인 (line 1198)",
+    "function_definition": "convertMarkdownToPlainText 정의 확인 (line 4764)",
+    "function_calls": "loadGuide, loadOrderTemplate에서 호출 확인"
+  }
+}

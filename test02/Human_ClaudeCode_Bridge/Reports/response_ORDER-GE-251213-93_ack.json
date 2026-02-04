@@ -1,0 +1,14 @@
+{
+  "order_id": "ORDER-GE-251213-93",
+  "order_name": "Dashboard에서 생성된 작업",
+  "response_type": "acknowledgment",
+  "status": "in_progress",
+  "message": "요청하신 작업을 시작하겠습니다.",
+  "started_at": "2025-12-13T16:29:34.853Z",
+  "metadata": {
+    "auto_generated": true,
+    "source_file": "order_2025-12-13_16-29-32.json",
+    "processor": "inbox_server auto-acknowledgment",
+    "detected_type": "task"
+  }
+}

@@ -1,0 +1,403 @@
+{
+  "task_id": "S3BA2",
+  "task_name": "AI 가격 조회 API 검증",
+  "verification_date": "2025-12-20T15:30:00Z",
+  "verified_by": "Claude Code (Code Reviewer)",
+  "verification_status": "⚠️ 부분 통과 - 가격 데이터 업데이트 필요",
+
+  "files_verified": [
+    {
+      "file": "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\ai\\pricing.js",
+      "status": "✅ 통과",
+      "issues": []
+    },
+    {
+      "file": "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\lib\\pricing-utils.js",
+      "status": "✅ 통과",
+      "issues": []
+    }
+  ],
+
+  "verification_details": {
+    "1_syntax_check": {
+      "status": "✅ 통과",
+      "result": "문법 오류 없음",
+      "details": {
+        "pricing_js": "✅ No syntax errors",
+        "pricing_utils_js": "✅ No syntax errors"
+      }
+    },
+
+    "2_api_pricing_accuracy": {
+      "status": "⚠️ 부분 정확 - 업데이트 필요",
+      "summary": "GPT-4o 가격이 부정확함. Gemini와 Perplexity는 정확함.",
+      "models": {
+        "chatgpt_gpt4o": {
+          "status": "❌ 부정확",
+          "code_values": {
+            "input_price_usd": 3.00,
+            "output_price_usd": 10.00,
+            "source": "pricing.js line 32-33, pricing-utils.js line 13-14"
+          },
+          "actual_values_2025": {
+            "input_price_usd": 2.50,
+            "output_price_usd": 10.00,
+            "source": "https://openai.com/api/pricing/"
+          },
+          "discrepancy": {
+            "input": "코드: $3.00/1M → 실제: $2.50/1M (20% 높게 책정됨)",
+            "output": "✅ 정확"
+          },
+          "recommendation": "input_price_usd를 3.00 → 2.50으로 수정 필요"
+        },
+        "gemini_2_5_pro": {
+          "status": "✅ 정확",
+          "code_values": {
+            "input_price_usd": 1.25,
+            "output_price_usd": 10.00,
+            "source": "pricing.js line 21-22, pricing-utils.js line 19-20"
+          },
+          "actual_values_2025": {
+            "input_price_usd": 1.25,
+            "output_price_usd": 10.00,
+            "context_limit": "≤200K tokens",
+            "source": "https://ai.google.dev/gemini-api/docs/pricing"
+          },
+          "note": "200K 토큰 초과 시 가격 2배 ($2.50/$20.00) - 현재 코드는 기본 가격만 적용"
+        },
+        "perplexity_sonar_pro": {
+          "status": "✅ 정확",
+          "code_values": {
+            "input_price_usd": 3.00,
+            "output_price_usd": 15.00,
+            "request_fee_usd": 0.005,
+            "source": "pricing.js line 43-45, pricing-utils.js line 25-27"
+          },
+          "actual_values_2025": {
+            "input_price_usd": 3.00,
+            "output_price_usd": 15.00,
+            "request_fee": "$5 per 1000 searches (= $0.005 per request)",
+            "source": "https://docs.perplexity.ai/pricing"
+          },
+          "note": "요청 비용은 검색 깊이(Low/Medium/High)에 따라 변동 가능"
+        }
+      },
+      "references": [
+        "https://openai.com/api/pricing/",
+        "https://platform.openai.com/docs/pricing",
+        "https://ai.google.dev/gemini-api/docs/pricing",
+        "https://docs.perplexity.ai/getting-started/pricing"
+      ]
+    },
+
+    "3_calculation_logic": {
+      "status": "✅ 통과",
+      "verified_functions": {
+        "calculateCostPerQuery": {
+          "location": "pricing.js line 237-255",
+          "logic": "✅ 정확",
+          "steps": [
+            "1. Input token cost = (avg_input_tokens / 1M) × input_price_usd ✅",
+            "2. Output token cost = (avg_output_tokens / 1M) × output_price_usd ✅",
+            "3. Add request fee (Perplexity) ✅",
+            "4. Apply margin (× margin_rate) ✅",
+            "5. Convert to KRW (× usd_to_krw) ✅",
+            "6. Apply minimum charge & ceiling ✅"
+          ]
+        },
+        "calculateCost_in_utils": {
+          "location": "pricing-utils.js line 52-76",
+          "logic": "✅ 정확",
+          "note": "동일한 로직 사용"
+        },
+        "estimateTokens": {
+          "location": "pricing-utils.js line 110-127",
+          "logic": "✅ 합리적",
+          "korean_estimation": "문자당 2 토큰 (적절)",
+          "english_estimation": "단어당 1.3 토큰 (적절)"
+        }
+      },
+      "formula_validation": {
+        "example_gemini": {
+          "input_tokens": 300,
+          "output_tokens": 800,
+          "input_cost_usd": "300 / 1,000,000 × 1.25 = 0.000375",
+          "output_cost_usd": "800 / 1,000,000 × 10.00 = 0.008",
+          "total_usd": "0.000375 + 0.008 = 0.008375",
+          "with_margin": "0.008375 × 1.2 = 0.01005",
+          "krw": "0.01005 × 1400 = 14.07",
+          "final": "Math.max(10, Math.ceil(14.07)) = 15원",
+          "status": "✅ 계산 정확"
+        }
+      }
+    },
+
+    "4_database_query_logic": {
+      "status": "✅ 통과",
+      "verified_functions": {
+        "getSystemConfig": {
+          "location": "pricing.js line 148-185",
+          "logic": "✅ 정확",
+          "features": [
+            "✅ DB 조회 (system_config 테이블)",
+            "✅ 폴백 처리 (DEFAULT_CONFIG)",
+            "✅ 타입 변환 (parseFloat, parseInt)",
+            "✅ 에러 처리"
+          ]
+        },
+        "getAIPricing": {
+          "location": "pricing.js line 190-232",
+          "logic": "✅ 정확",
+          "features": [
+            "✅ DB 조회 (ai_pricing 테이블, is_active = true)",
+            "✅ 폴백 처리 (FALLBACK_PRICING)",
+            "✅ 누락 모델 자동 채우기 (line 221-225)",
+            "✅ 에러 처리"
+          ]
+        }
+      },
+      "fallback_mechanism": {
+        "status": "✅ 강건함",
+        "scenarios": [
+          "DB 연결 실패 → FALLBACK_PRICING 사용 ✅",
+          "테이블 없음 → DEFAULT_CONFIG 사용 ✅",
+          "일부 모델 누락 → 폴백으로 채우기 ✅",
+          "완전 실패 → buildFallbackPricing() 응답 ✅"
+        ]
+      }
+    },
+
+    "5_exchange_rate_and_margin": {
+      "status": "✅ 통과",
+      "configuration": {
+        "usd_to_krw": {
+          "default": 1400,
+          "source": "pricing.js line 56, pricing-utils.js line 36",
+          "db_override": "system_config.USD_TO_KRW",
+          "status": "✅ 적절 (여유있게 설정)"
+        },
+        "margin_rate": {
+          "default": 1.2,
+          "meaning": "20% 마진",
+          "source": "pricing.js line 57, pricing-utils.js line 37",
+          "db_override": "system_config.AI_MARGIN_RATE",
+          "status": "✅ 적절"
+        },
+        "min_charge": {
+          "default": 10,
+          "unit": "원",
+          "source": "pricing.js line 60, pricing-utils.js line 38",
+          "db_override": "system_config.MIN_CHARGE",
+          "status": "✅ 적절"
+        }
+      },
+      "token_averages": {
+        "avg_input_tokens": {
+          "default": 300,
+          "estimate": "한글 ~150자",
+          "status": "✅ 합리적"
+        },
+        "avg_output_tokens": {
+          "default": 800,
+          "estimate": "한글 ~400자",
+          "status": "✅ 합리적"
+        }
+      }
+    }
+  },
+
+  "additional_checks": {
+    "cors_headers": {
+      "status": "✅ 적절",
+      "location": "pricing.js line 65-67",
+      "headers": [
+        "Access-Control-Allow-Origin: *",
+        "Access-Control-Allow-Methods: GET, OPTIONS",
+        "Access-Control-Allow-Headers: Content-Type, Authorization"
+      ]
+    },
+    "cache_headers": {
+      "status": "✅ 적절",
+      "location": "pricing.js line 78",
+      "value": "s-maxage=300, stale-while-revalidate=600",
+      "meaning": "5분 캐시, 10분 재검증"
+    },
+    "error_handling": {
+      "status": "✅ 강건함",
+      "features": [
+        "try-catch 블록 사용 ✅",
+        "폴백 응답 제공 ✅",
+        "개발 환경에서만 에러 메시지 노출 ✅"
+      ]
+    },
+    "response_format": {
+      "status": "✅ 일관성 있음",
+      "structure": {
+        "success": "boolean",
+        "pricing": "object (모델별)",
+        "currency": "KRW",
+        "config": "환율/마진/토큰 평균",
+        "meta": "메타데이터"
+      }
+    }
+  },
+
+  "issues_found": [
+    {
+      "severity": "⚠️ 경고",
+      "type": "가격 데이터 부정확",
+      "description": "GPT-4o input 가격이 실제보다 20% 높게 설정됨",
+      "location": [
+        "pricing.js line 32",
+        "pricing-utils.js line 13"
+      ],
+      "current_value": "input_price_usd: 3.00",
+      "correct_value": "input_price_usd: 2.50",
+      "impact": "사용자에게 실제보다 비싼 가격 표시 (약 3-4원 차이)",
+      "fix_required": "즉시 수정 권장"
+    },
+    {
+      "severity": "ℹ️ 정보",
+      "type": "가격 정책 미반영",
+      "description": "Gemini 2.5 Pro의 긴 컨텍스트 가격 정책 미반영",
+      "location": "pricing.js, pricing-utils.js",
+      "detail": "200K 토큰 초과 시 가격 2배 ($2.50/$20.00)",
+      "current_implementation": "항상 기본 가격 ($1.25/$10.00) 사용",
+      "impact": "긴 질문에 대해 저평가된 가격 표시 가능",
+      "fix_required": "선택사항 (대부분 질문은 200K 이하)"
+    },
+    {
+      "severity": "ℹ️ 정보",
+      "type": "가격 정책 미반영",
+      "description": "Perplexity 검색 깊이별 요청 비용 변동 미반영",
+      "location": "pricing.js line 45",
+      "detail": "Low/Medium/High 모드별 요청 비용 차이",
+      "current_implementation": "고정 $0.005 per request 사용",
+      "impact": "평균값 사용으로 큰 문제 없음",
+      "fix_required": "선택사항"
+    }
+  ],
+
+  "recommendations": {
+    "immediate": [
+      {
+        "priority": "높음",
+        "action": "GPT-4o input_price_usd 수정",
+        "from": 3.00,
+        "to": 2.50,
+        "files": [
+          "pricing.js line 32",
+          "pricing-utils.js line 13"
+        ]
+      },
+      {
+        "priority": "중간",
+        "action": "DB ai_pricing 테이블 데이터 업데이트",
+        "detail": "GPT-4o 가격 정보 수정"
+      }
+    ],
+    "future": [
+      {
+        "priority": "낮음",
+        "action": "Gemini 긴 컨텍스트 가격 정책 구현",
+        "detail": "토큰 수에 따른 가격 차별화"
+      },
+      {
+        "priority": "낮음",
+        "action": "정기적인 가격 업데이트 프로세스 수립",
+        "detail": "월 1회 공식 문서 확인 및 업데이트"
+      }
+    ]
+  },
+
+  "test_calculations": {
+    "scenario_1_gemini_avg": {
+      "model": "gemini",
+      "input_tokens": 300,
+      "output_tokens": 800,
+      "calculation": {
+        "input_cost_usd": 0.000375,
+        "output_cost_usd": 0.008,
+        "subtotal_usd": 0.008375,
+        "with_margin_usd": 0.01005,
+        "krw_raw": 14.07,
+        "final_krw": 15
+      },
+      "status": "✅ 정확"
+    },
+    "scenario_2_chatgpt_current_code": {
+      "model": "chatgpt",
+      "input_tokens": 300,
+      "output_tokens": 800,
+      "note": "현재 코드 기준 (잘못된 가격)",
+      "calculation": {
+        "input_cost_usd": 0.0009,
+        "output_cost_usd": 0.008,
+        "subtotal_usd": 0.0089,
+        "with_margin_usd": 0.01068,
+        "krw_raw": 14.952,
+        "final_krw": 15
+      },
+      "status": "❌ 잘못된 가격 사용"
+    },
+    "scenario_3_chatgpt_corrected": {
+      "model": "chatgpt",
+      "input_tokens": 300,
+      "output_tokens": 800,
+      "note": "수정된 가격 기준 ($2.50 input)",
+      "calculation": {
+        "input_cost_usd": 0.00075,
+        "output_cost_usd": 0.008,
+        "subtotal_usd": 0.00875,
+        "with_margin_usd": 0.0105,
+        "krw_raw": 14.7,
+        "final_krw": 15
+      },
+      "status": "✅ 올바른 계산",
+      "price_difference": "현재 가격과 동일 (반올림 후)"
+    },
+    "scenario_4_perplexity_with_request_fee": {
+      "model": "perplexity",
+      "input_tokens": 300,
+      "output_tokens": 800,
+      "calculation": {
+        "input_cost_usd": 0.0009,
+        "output_cost_usd": 0.012,
+        "request_fee_usd": 0.005,
+        "subtotal_usd": 0.0179,
+        "with_margin_usd": 0.02148,
+        "krw_raw": 30.072,
+        "final_krw": 31
+      },
+      "status": "✅ 정확"
+    }
+  },
+
+  "overall_assessment": {
+    "code_quality": "✅ 우수",
+    "logic_correctness": "✅ 정확",
+    "error_handling": "✅ 강건함",
+    "data_accuracy": "⚠️ 부분 정확 (GPT-4o 가격 수정 필요)",
+    "production_readiness": "⚠️ 조건부 (가격 수정 후 배포 가능)",
+    "overall_score": "85/100"
+  },
+
+  "approval_status": "⚠️ 조건부 승인",
+  "conditions": [
+    "GPT-4o input_price_usd를 3.00 → 2.50으로 수정",
+    "DB ai_pricing 테이블 데이터 업데이트"
+  ],
+  "estimated_fix_time": "5분",
+
+  "verification_summary": {
+    "syntax": "✅ 통과",
+    "api_pricing": "⚠️ 부분 정확 (GPT-4o 수정 필요)",
+    "calculation": "✅ 통과",
+    "db_logic": "✅ 통과",
+    "exchange_margin": "✅ 통과",
+    "total_issues": 3,
+    "critical_issues": 0,
+    "warnings": 1,
+    "info": 2
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "task_id": "S3S1",
+  "task_name": "구독 권한 체크",
+  "stage": "S3",
+  "area": "S",
+  "status": "완료",
+  "completion_date": "2025-12-18",
+  "execution_type": "AI-Only",
+
+  "summary": {
+    "description": "AI 기능 접근을 위한 구독 등급별 권한 체크 미들웨어 구현",
+    "files_created": 4,
+    "total_lines": 706,
+    "location": "S3_개발-2차/Security/"
+  },
+
+  "implemented_files": [
+    {
+      "file": "lib/subscription/check-permission.js",
+      "lines": 213,
+      "purpose": "구독 권한 체크 로직",
+      "functions": [
+        "checkSubscriptionPermission(userId, feature)",
+        "getUserPermissions(userId)",
+        "FEATURE_REQUIREMENTS 정의"
+      ]
+    },
+    {
+      "file": "lib/subscription/withSubscription.js",
+      "lines": 172,
+      "purpose": "API 래퍼 함수",
+      "functions": [
+        "withSubscription(feature) - 필수 권한 체크",
+        "withOptionalSubscription(feature) - 선택적 권한 체크"
+      ]
+    },
+    {
+      "file": "api/subscription-check.js",
+      "lines": 110,
+      "purpose": "프론트엔드 권한 확인 API",
+      "endpoint": "GET /api/subscription/check"
+    },
+    {
+      "file": "S3S1_구독_권한_체크_가이드.md",
+      "lines": 211,
+      "purpose": "사용 가이드 및 문서화"
+    }
+  ],
+
+  "feature_requirements": {
+    "ai-qa": {
+      "description": "AI Q&A 기본 기능",
+      "required_plans": ["basic", "premium"]
+    },
+    "ai-advanced": {
+      "description": "AI 고급 기능",
+      "required_plans": ["premium"]
+    },
+    "premium-content": {
+      "description": "프리미엄 콘텐츠 접근",
+      "required_plans": ["basic", "premium"]
+    },
+    "unlimited-api": {
+      "description": "무제한 API 호출",
+      "required_plans": ["premium"]
+    }
+  },
+
+  "api_endpoint": {
+    "path": "/api/subscription/check",
+    "method": "GET",
+    "auth": "Bearer Token (Required)",
+    "query_params": {
+      "feature": {
+        "type": "string",
+        "optional": true,
+        "description": "체크할 기능 (없으면 전체 권한 반환)"
+      }
+    },
+    "responses": {
+      "200_with_access": {
+        "description": "권한 있음",
+        "example": {
+          "success": true,
+          "hasAccess": true,
+          "feature": "ai-qa",
+          "subscription": {
+            "id": "sub_123",
+            "plan": "basic",
+            "status": "active"
+          }
+        }
+      },
+      "403_no_access": {
+        "description": "권한 없음",
+        "example": {
+          "success": false,
+          "hasAccess": false,
+          "error": {
+            "code": "INSUFFICIENT_PLAN",
+            "currentPlan": "basic",
+            "requiredPlans": ["premium"]
+          }
+        }
+      },
+      "200_all_permissions": {
+        "description": "전체 권한 조회",
+        "example": {
+          "success": true,
+          "permissions": {
+            "plan": "basic",
+            "ai-qa": true,
+            "ai-advanced": false,
+            "premium-content": true,
+            "unlimited-api": false
+          }
+        }
+      }
+    }
+  },
+
+  "usage_examples": {
+    "protect_api": {
+      "description": "API 엔드포인트 보호 (필수 권한)",
+      "code": "const { withSubscription } = require('...');\n\nmodule.exports = withSubscription('ai-qa')(async (req, res) => {\n  const { user, subscription } = req;\n  // 권한 있는 사용자만 실행\n});"
+    },
+    "optional_permission": {
+      "description": "선택적 권한 체크 (무료 사용자도 제한적 접근)",
+      "code": "const { withOptionalSubscription } = require('...');\n\nmodule.exports = withOptionalSubscription('ai-qa')(async (req, res) => {\n  if (req.subscription) {\n    // 유료: 무제한\n  } else {\n    // 무료: 제한적\n  }\n});"
+    },
+    "frontend_check": {
+      "description": "프론트엔드 권한 확인",
+      "code": "fetch('/api/subscription/check?feature=ai-qa', {\n  headers: { 'Authorization': `Bearer ${token}` }\n}).then(res => res.json()).then(data => {\n  if (data.hasAccess) {\n    enableFeature();\n  }\n});"
+    }
+  },
+
+  "error_codes": {
+    "AUTH_001": {
+      "http_status": 401,
+      "description": "No token provided"
+    },
+    "AUTH_002": {
+      "http_status": 401,
+      "description": "Invalid or expired token"
+    },
+    "INVALID_FEATURE": {
+      "http_status": 400,
+      "description": "Unknown feature name"
+    },
+    "NO_SUBSCRIPTION": {
+      "http_status": 403,
+      "description": "No active subscription found"
+    },
+    "INSUFFICIENT_PLAN": {
+      "http_status": 403,
+      "description": "Current plan does not have access"
+    },
+    "DB_ERROR": {
+      "http_status": 500,
+      "description": "Database error"
+    },
+    "INTERNAL_ERROR": {
+      "http_status": 500,
+      "description": "Unexpected error"
+    }
+  },
+
+  "database_dependencies": {
+    "tables": [
+      "subscriptions",
+      "subscription_plans",
+      "users"
+    ],
+    "queries": [
+      "SELECT * FROM subscriptions WHERE user_id = ? AND status = 'active'",
+      "JOIN subscription_plans ON subscriptions.plan_id = subscription_plans.id"
+    ]
+  },
+
+  "security_features": [
+    "Bearer Token 인증 필수",
+    "Supabase Service Role Key 사용",
+    "사용자 토큰 검증 (verifyAuth)",
+    "구독 상태 active만 허용",
+    "플랜별 권한 격리",
+    "CORS 헤더 설정"
+  ],
+
+  "integration_points": {
+    "depends_on": [
+      "S2S1 (인증 미들웨어)",
+      "S2BA3 (구독 관리 API)"
+    ],
+    "used_by": [
+      "S3BA1 (AI Q&A API)",
+      "S3BA2 (AI 고급 기능 API)",
+      "Frontend (권한 체크 UI)"
+    ]
+  },
+
+  "technical_details": {
+    "framework": "Vercel Serverless Functions",
+    "database": "Supabase PostgreSQL",
+    "auth": "Supabase Auth (Bearer Token)",
+    "client": "@supabase/supabase-js",
+    "env_variables": [
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY"
+    ]
+  },
+
+  "testing_scenarios": [
+    {
+      "scenario": "Basic 플랜 사용자",
+      "expected": {
+        "ai-qa": "통과",
+        "ai-advanced": "실패 (Premium 필요)",
+        "premium-content": "통과",
+        "unlimited-api": "실패 (Premium 필요)"
+      }
+    },
+    {
+      "scenario": "Premium 플랜 사용자",
+      "expected": {
+        "ai-qa": "통과",
+        "ai-advanced": "통과",
+        "premium-content": "통과",
+        "unlimited-api": "통과"
+      }
+    },
+    {
+      "scenario": "구독 없는 사용자",
+      "expected": {
+        "all_features": "NO_SUBSCRIPTION 에러"
+      }
+    }
+  ],
+
+  "frontend_integration": {
+    "page_load": "페이지 로드 시 /api/subscription/check 호출하여 권한 조회",
+    "ui_update": "권한에 따라 버튼/기능 활성화/비활성화",
+    "upgrade_flow": "권한 없으면 업그레이드 모달 표시",
+    "real_time": "구독 상태 변경 시 즉시 권한 재확인"
+  },
+
+  "next_steps": [
+    "S3BA1, S3BA2 등 AI API에 withSubscription 래퍼 적용",
+    "프론트엔드 권한 체크 통합 (페이지별)",
+    "Rate Limiting 추가 (무료 사용자 5회/일)",
+    "업그레이드 플로우 UI 구현",
+    "권한 없음 시 안내 메시지 표시"
+  ],
+
+  "completion_checklist": {
+    "권한 체크 로직 구현 (check-permission.js)": true,
+    "API 래퍼 함수 구현 (withSubscription.js)": true,
+    "권한 확인 API 구현 (subscription-check.js)": true,
+    "사용 가이드 문서 작성": true,
+    "Task ID 주석 포함": true,
+    "에러 처리 구현": true,
+    "CORS 헤더 설정": true,
+    "인증 미들웨어 통합": true,
+    "S3 Security 폴더 저장": true
+  },
+
+  "deployment_ready": {
+    "code_complete": true,
+    "documentation_complete": true,
+    "error_handling": true,
+    "security_implemented": true,
+    "production_ready": false,
+    "reason": "AI API 개발 후 통합 테스트 필요"
+  },
+
+  "verification_notes": "모든 파일이 S3_개발-2차/Security/ 폴더에 정상 생성되었습니다. 총 706줄의 코드와 문서가 작성되었으며, 인증 미들웨어(S2S1)와 구독 API(S2BA3)를 기반으로 구독 권한 체크 시스템이 완성되었습니다."
+}

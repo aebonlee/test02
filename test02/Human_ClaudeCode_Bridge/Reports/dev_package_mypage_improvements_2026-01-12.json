@@ -1,0 +1,87 @@
+{
+  "report_id": "dev_package_mypage_improvements_2026-01-12",
+  "report_date": "2026-01-12",
+  "report_title": "Dev Package 및 My Page 다운로드 기능 개선",
+  "status": "completed",
+  "tasks": [
+    {
+      "task_name": "Dev Package 다운로드 링크 업데이트",
+      "status": "completed",
+      "changes": {
+        "file": "index.html",
+        "line": 6553,
+        "old_value": "1BAzFKJT76fNkcX7Lx__6RfdR6bKFJgXm",
+        "new_value": "1__YoVMew4GUVJzhByE_NsrH4rzh-WIiI"
+      },
+      "commit": "0103111"
+    },
+    {
+      "task_name": "My Page Dev Package 다운로드 제거",
+      "status": "completed",
+      "reason": "My Page에서 다운로드 시 project_id 자동 주입이 안 되어 빈 템플릿 제공됨",
+      "changes": [
+        {
+          "file": "pages/mypage/downloads.html",
+          "description": "Dev Package 카드 제거, 메뉴명 변경, 불필요한 JS 함수 제거"
+        },
+        {
+          "file": "index.html",
+          "description": "사이드바 메뉴명 변경, 나중에 하기 버튼 및 함수 제거"
+        }
+      ],
+      "menu_name_change": {
+        "before": "파일 다운로드",
+        "after": "사용 매뉴얼 다운로드"
+      },
+      "commit": "707f2cd"
+    },
+    {
+      "task_name": "테스트 프로젝트 DB 삭제",
+      "status": "completed",
+      "deleted_projects": [
+        {"project_id": "2512000001TH-P001", "project_name": "FEWFWEFWFWF"},
+        {"project_id": "2512000001TH-P002", "project_name": "R32R2R23R"},
+        {"project_id": "2512000001TH-P003", "project_name": "ERYEYEWYEY"},
+        {"project_id": "2512000001TH-P004", "project_name": "ERGEGEGGWWWG"},
+        {"project_id": "2512000001TH-P005", "project_name": "YERYEYEYY"},
+        {"project_id": "2512000006TH-P001", "project_name": "ValueLine"}
+      ],
+      "total_deleted": 6,
+      "method": "Supabase REST API DELETE"
+    },
+    {
+      "task_name": "프로젝트 완료 기능 에러 수정",
+      "status": "completed",
+      "issue": "프로젝트 이름에 특수문자(', \")가 있을 때 onclick 핸들러 구문 에러",
+      "solution": "프로젝트 이름에 이스케이프 처리 추가",
+      "code_change": "project.project_name.replace(/'/g, \"\\\\'\").replace(/\"/g, '&quot;')",
+      "affected_functions": [
+        "completeProject",
+        "showIncompleteRegistrationModal"
+      ],
+      "commit": "28d4d6e"
+    }
+  ],
+  "commits": [
+    {
+      "hash": "0103111",
+      "message": "chore: Dev Package 다운로드 링크 업데이트"
+    },
+    {
+      "hash": "707f2cd",
+      "message": "refactor: My Page에서 Dev Package 다운로드 제거"
+    },
+    {
+      "hash": "28d4d6e",
+      "message": "fix: 프로젝트 이름 특수문자 이스케이프 처리"
+    }
+  ],
+  "files_modified": [
+    "index.html",
+    "pages/mypage/downloads.html"
+  ],
+  "verification": {
+    "build": "passed",
+    "deployment": "auto (Vercel)"
+  }
+}

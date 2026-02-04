@@ -1,0 +1,680 @@
+{
+  "document_id": "PLAN-IMP-2025-12-01",
+  "document_name": "P2_프로젝트_기획 폴더 수정보완 계획서",
+  "creation_date": "2025-12-01T00:42:28Z",
+  "executor": "Claude Code",
+  "target_folder": "C:\\!SSAL_Works_Private\\P2_프로젝트_기획",
+
+  "current_status_analysis": {
+    "folder_structure": {
+      "existing_folders": [
+        "1-1_Project_Plan",
+        "1-2_Requirements",
+        "1-4_Workflows",
+        "1-5_Design_System",
+        "1-6_UI_UX_Mockup"
+      ],
+      "total_files": 15,
+      "key_documents": {
+        "PROJECT_PLAN.md": {
+          "status": "✅ 양호",
+          "lines": 436,
+          "coverage": "전체 프로젝트 개요, SAL 3D 그리드, 질문답변 시스템, 학습자료, 향후 계획",
+          "issues": [
+            "일부 섹션이 중복됨 (Books 콘텐츠 제공 방식)",
+            "최신 정보 반영 필요 (Socket.io 실시간 알림 기능 추가됨)"
+          ]
+        },
+        "PROJECT_DIRECTORY_STRUCTURE.md": {
+          "status": "✅ 매우 양호",
+          "lines": 1476,
+          "coverage": "전체 디렉토리 구조, 네이밍 규칙, 초보자 가이드, Q&A",
+          "issues": [
+            "실제 프로젝트 진행 상황 반영 필요",
+            "최근 추가된 폴더 정보 업데이트 필요"
+          ]
+        },
+        "functional_requirements.md": {
+          "status": "✅ 양호",
+          "lines": 1038,
+          "coverage": "인증, 구독, 프로젝트 관리, SAL 그리드, Books, AI Q&A, 지원",
+          "issues": [
+            "구독 결제 프로세스가 변경되었을 가능성 (확인 필요)",
+            "실제 구현 상황과 차이 있을 수 있음"
+          ]
+        },
+        "ssalworks_complete_process.md": {
+          "status": "⚠️ 파일 크기 초과",
+          "lines": "25000+ tokens (읽기 실패)",
+          "coverage": "읽기 불가",
+          "issues": [
+            "파일이 너무 커서 전체 읽기 실패",
+            "분할 필요 또는 요약 필요"
+          ]
+        },
+        "website_development_process.md": {
+          "status": "✅ 양호",
+          "lines": 1406,
+          "coverage": "웹사이트 개발 프로세스, 예비 3단계, 본 개발 3단계, 프로젝트 그리드",
+          "issues": [
+            "실제 프로젝트 진행 방식과 맞는지 검증 필요",
+            "프로토타입 제작 현황 반영 필요"
+          ]
+        },
+        "DESIGN_SYSTEM_V2.md": {
+          "status": "⚠️ 불완전",
+          "lines": 84,
+          "coverage": "Color Palette, Typography, Spacing, Components (일부)",
+          "issues": [
+            "Components 섹션이 미완성 (84줄에서 끝)",
+            "실제 프로토타입 디자인 시스템과 동기화 필요"
+          ]
+        },
+        "ADMIN_DASHBOARD_설계.md": {
+          "status": "✅ 양호",
+          "lines": 386,
+          "coverage": "관리자 대시보드 설계, 화면 구성, 기술 스택",
+          "issues": [
+            "구현 현황 반영 필요 (실제 제작 여부 확인)"
+          ]
+        }
+      }
+    },
+
+    "missing_elements": [
+      {
+        "category": "API 설계 문서",
+        "description": "백엔드 API 엔드포인트 명세서가 없음",
+        "importance": "high",
+        "reason": "개발 시 필수 참고 자료"
+      },
+      {
+        "category": "데이터베이스 스키마 문서",
+        "description": "Supabase DB 스키마 상세 문서 부재",
+        "importance": "high",
+        "reason": "DB 구조 참조 및 수정 시 필요"
+      },
+      {
+        "category": "사용자 플로우 다이어그램",
+        "description": "시각적인 사용자 여정 다이어그램 부재",
+        "importance": "medium",
+        "reason": "UX 개선 및 신규 기능 추가 시 참고"
+      },
+      {
+        "category": "보안 정책 문서",
+        "description": "보안 요구사항 및 정책 문서 부재",
+        "importance": "medium",
+        "reason": "보안 기준 명확화"
+      },
+      {
+        "category": "배포 전략 문서",
+        "description": "Vercel 배포 전략 및 CI/CD 문서 부재",
+        "importance": "medium",
+        "reason": "배포 프로세스 표준화"
+      },
+      {
+        "category": "테스트 계획서",
+        "description": "테스트 전략 및 계획 문서 부재",
+        "importance": "medium",
+        "reason": "품질 보증 기준 마련"
+      },
+      {
+        "category": "프로젝트 마일스톤",
+        "description": "Phase별 마일스톤 및 체크리스트 부재",
+        "importance": "low",
+        "reason": "진행 상황 추적용 (work_log로 대체 가능)"
+      }
+    ],
+
+    "outdated_information": [
+      {
+        "document": "PROJECT_PLAN.md",
+        "section": "기술 스택",
+        "issue": "Socket.io 실시간 알림 기능이 추가되었으나 문서에 미반영",
+        "current_state": "언급 없음",
+        "should_be": "WebSocket (실시간 협업) 섹션에 Socket.io 추가"
+      },
+      {
+        "document": "functional_requirements.md",
+        "section": "실시간 알림",
+        "issue": "Order Sheet 실시간 알림 기능이 구현되었으나 요구사항에 없음",
+        "current_state": "언급 없음",
+        "should_be": "FR-NOTIFY-001: Order Sheet 실시간 알림 (Socket.io) 추가"
+      },
+      {
+        "document": "DESIGN_SYSTEM_V2.md",
+        "section": "Components",
+        "issue": "문서가 중간에 끊김 (84줄)",
+        "current_state": "Components 섹션 미완성",
+        "should_be": "실제 프로토타입의 컴포넌트 목록 추가"
+      }
+    ],
+
+    "inconsistencies": [
+      {
+        "issue": "프로젝트 폴더 구조 불일치",
+        "description": "PROJECT_DIRECTORY_STRUCTURE.md에 정의된 구조와 실제 P2_프로젝트_기획 폴더 구조가 다름",
+        "details": {
+          "documented": [
+            "1-1_Directory_Structure",
+            "1-2_Project_Plan",
+            "1-3_UI_UX_Design",
+            "1-4_Database_Design"
+          ],
+          "actual": [
+            "1-1_Project_Plan",
+            "1-2_Requirements",
+            "1-4_Workflows",
+            "1-5_Design_System",
+            "1-6_UI_UX_Mockup"
+          ],
+          "impact": "문서 참조 시 혼란 발생 가능"
+        }
+      },
+      {
+        "issue": "디자인 시스템 버전 불일치",
+        "description": "DESIGN_SYSTEM.md와 DESIGN_SYSTEM_V2.md가 모두 존재",
+        "details": "V2가 최신이지만 V1도 남아있어 혼란 가능",
+        "recommendation": "V1 삭제 또는 archived 폴더로 이동"
+      }
+    ]
+  },
+
+  "improvement_plan": {
+    "goals": [
+      "프로젝트 기획 문서들을 최신 상태로 업데이트",
+      "누락된 필수 문서 작성",
+      "문서 간 일관성 확보",
+      "실제 구현 현황 반영",
+      "초보자도 이해하기 쉽게 개선"
+    ],
+
+    "phases": [
+      {
+        "phase": "Phase 1: 문서 검증 및 정리",
+        "duration": "1일",
+        "priority": "high",
+        "tasks": [
+          {
+            "task_id": "P1-VERIFY-01",
+            "task_name": "ssalworks_complete_process.md 전체 확인",
+            "description": "파일이 너무 커서 읽기 실패한 문서 확인 (offset/limit 사용)",
+            "method": "Read tool로 부분 읽기 또는 분할",
+            "expected_output": "문서 내용 파악 및 분할 필요 여부 판단"
+          },
+          {
+            "task_id": "P1-VERIFY-02",
+            "task_name": "실제 프로젝트 구현 현황 조사",
+            "description": "프로토타입 제작 현황, DB 스키마 현황, API 구현 현황 파악",
+            "method": "P3_프로토타입_제작, 2_개발준비, 3_개발 폴더 탐색",
+            "expected_output": "구현 현황 리스트"
+          },
+          {
+            "task_id": "P1-VERIFY-03",
+            "task_name": "폴더 구조 실제 vs 문서 비교",
+            "description": "PROJECT_DIRECTORY_STRUCTURE.md와 실제 폴더 구조 비교",
+            "method": "Glob + 문서 대조",
+            "expected_output": "차이점 목록 및 수정 계획"
+          },
+          {
+            "task_id": "P1-CLEAN-01",
+            "task_name": "중복/구버전 파일 정리",
+            "description": "DESIGN_SYSTEM.md (V1) 처리 방안 결정",
+            "method": "사용자 확인 후 삭제 또는 archived 폴더 이동",
+            "expected_output": "깔끔한 폴더 구조"
+          }
+        ]
+      },
+
+      {
+        "phase": "Phase 2: 기존 문서 업데이트",
+        "duration": "2-3일",
+        "priority": "high",
+        "tasks": [
+          {
+            "task_id": "P2-UPDATE-01",
+            "task_name": "PROJECT_PLAN.md 최신화",
+            "description": "Socket.io 실시간 알림, 최신 프로젝트 현황 반영",
+            "sections_to_update": [
+              "기술 스택 (Socket.io 추가)",
+              "주요 기능 (실시간 알림 추가)",
+              "향후 계획 (완료된 항목 체크)"
+            ],
+            "expected_output": "업데이트된 PROJECT_PLAN.md"
+          },
+          {
+            "task_id": "P2-UPDATE-02",
+            "task_name": "functional_requirements.md 보완",
+            "description": "실시간 알림 기능 요구사항 추가, 구현된 기능 검증",
+            "new_sections": [
+              "FR-NOTIFY-001: Order Sheet 실시간 알림 (Socket.io)",
+              "FR-NOTIFY-002: Dashboard 자동 업데이트"
+            ],
+            "expected_output": "보완된 functional_requirements.md"
+          },
+          {
+            "task_id": "P2-UPDATE-03",
+            "task_name": "DESIGN_SYSTEM_V2.md 완성",
+            "description": "중간에 끊긴 Components 섹션 완성",
+            "method": "실제 프로토타입 (prototype_index_최종개선.html) 분석하여 컴포넌트 목록 추출",
+            "new_components": [
+              "Buttons (Primary, Secondary, Ghost)",
+              "Cards",
+              "Navigation",
+              "Modals/Popups",
+              "Forms",
+              "Tables",
+              "Alerts/Notifications"
+            ],
+            "expected_output": "완성된 DESIGN_SYSTEM_V2.md"
+          },
+          {
+            "task_id": "P2-UPDATE-04",
+            "task_name": "website_development_process.md 실제 현황 반영",
+            "description": "프로토타입 제작 현황, 실제 개발 방식 반영",
+            "sections_to_update": [
+              "예비 2단계: 프로토타입 제작 (현재까지 진행 상황)",
+              "본 개발 1단계: 실제 진행 방식 기록"
+            ],
+            "expected_output": "현황이 반영된 website_development_process.md"
+          },
+          {
+            "task_id": "P2-UPDATE-05",
+            "task_name": "PROJECT_DIRECTORY_STRUCTURE.md 실제 구조 반영",
+            "description": "P2_프로젝트_기획 폴더의 실제 구조로 수정",
+            "method": "실제 폴더 구조 스캔 + 문서 업데이트",
+            "expected_output": "정확한 PROJECT_DIRECTORY_STRUCTURE.md"
+          }
+        ]
+      },
+
+      {
+        "phase": "Phase 3: 신규 문서 작성",
+        "duration": "3-4일",
+        "priority": "medium",
+        "tasks": [
+          {
+            "task_id": "P3-NEW-01",
+            "task_name": "API 설계 문서 작성",
+            "description": "백엔드 API 엔드포인트 명세서 작성",
+            "file_path": "P2_프로젝트_기획/1-3_API_Design/API_SPECIFICATION.md",
+            "content_structure": {
+              "sections": [
+                "API 개요",
+                "인증 방식",
+                "엔드포인트 목록",
+                "요청/응답 형식",
+                "에러 코드",
+                "예시 코드"
+              ],
+              "endpoints_to_document": [
+                "POST /api/auth/signup",
+                "POST /api/auth/login",
+                "GET /api/projects",
+                "POST /api/projects",
+                "GET /api/books",
+                "POST /api/ai-query",
+                "POST /api/support-ticket"
+              ]
+            },
+            "expected_output": "API_SPECIFICATION.md (신규 작성)"
+          },
+          {
+            "task_id": "P3-NEW-02",
+            "task_name": "데이터베이스 스키마 문서 작성",
+            "description": "Supabase DB 스키마 상세 문서",
+            "file_path": "P2_프로젝트_기획/1-4_Database_Schema/DATABASE_SCHEMA.md",
+            "content_structure": {
+              "sections": [
+                "데이터베이스 개요",
+                "테이블 목록",
+                "각 테이블 상세 (컬럼, 타입, 제약조건)",
+                "관계도 (ERD)",
+                "인덱스 전략",
+                "RLS 정책",
+                "마이그레이션 이력"
+              ],
+              "tables_to_document": [
+                "users",
+                "projects",
+                "project_grid_tasks",
+                "subscriptions",
+                "ai_query_logs",
+                "support_tickets",
+                "books_content"
+              ]
+            },
+            "expected_output": "DATABASE_SCHEMA.md (신규 작성)"
+          },
+          {
+            "task_id": "P3-NEW-03",
+            "task_name": "사용자 플로우 다이어그램 작성",
+            "description": "주요 사용자 여정 시각화",
+            "file_path": "P2_프로젝트_기획/1-5_User_Flows/USER_FLOWS.md",
+            "content_structure": {
+              "flows": [
+                "회원가입 플로우",
+                "로그인 플로우",
+                "프로젝트 생성 플로우",
+                "Task 관리 플로우",
+                "AI Q&A 플로우",
+                "지원 요청 플로우"
+              ],
+              "format": "Mermaid 다이어그램 + 설명"
+            },
+            "expected_output": "USER_FLOWS.md (신규 작성)"
+          },
+          {
+            "task_id": "P3-NEW-04",
+            "task_name": "보안 정책 문서 작성",
+            "description": "보안 요구사항 및 정책 문서화",
+            "file_path": "P2_프로젝트_기획/1-6_Security/SECURITY_POLICY.md",
+            "content_structure": {
+              "sections": [
+                "보안 원칙",
+                "인증/인가 정책",
+                "데이터 보호",
+                "API 보안",
+                "XSS/CSRF 방어",
+                "민감정보 관리",
+                "보안 체크리스트"
+              ]
+            },
+            "expected_output": "SECURITY_POLICY.md (신규 작성)"
+          },
+          {
+            "task_id": "P3-NEW-05",
+            "task_name": "배포 전략 문서 작성",
+            "description": "Vercel 배포 및 CI/CD 문서화",
+            "file_path": "P2_프로젝트_기획/1-7_Deployment/DEPLOYMENT_STRATEGY.md",
+            "content_structure": {
+              "sections": [
+                "배포 환경 (Dev, Staging, Production)",
+                "Vercel 배포 설정",
+                "환경 변수 관리",
+                "CI/CD 파이프라인",
+                "롤백 전략",
+                "배포 체크리스트"
+              ]
+            },
+            "expected_output": "DEPLOYMENT_STRATEGY.md (신규 작성)"
+          },
+          {
+            "task_id": "P3-NEW-06",
+            "task_name": "테스트 계획서 작성",
+            "description": "테스트 전략 및 계획 문서화",
+            "file_path": "P2_프로젝트_기획/1-8_Testing/TEST_PLAN.md",
+            "content_structure": {
+              "sections": [
+                "테스트 전략",
+                "테스트 유형 (Unit, Integration, E2E)",
+                "테스트 범위",
+                "테스트 도구",
+                "테스트 케이스",
+                "품질 기준",
+                "테스트 자동화"
+              ]
+            },
+            "expected_output": "TEST_PLAN.md (신규 작성)"
+          }
+        ]
+      },
+
+      {
+        "phase": "Phase 4: 문서 통합 및 검증",
+        "duration": "1일",
+        "priority": "medium",
+        "tasks": [
+          {
+            "task_id": "P4-INTEGRATE-01",
+            "task_name": "문서 간 상호 참조 링크 추가",
+            "description": "관련 문서들을 서로 연결",
+            "method": "각 문서 하단에 '관련 문서' 섹션 추가",
+            "expected_output": "상호 참조가 추가된 모든 문서"
+          },
+          {
+            "task_id": "P4-INTEGRATE-02",
+            "task_name": "목차 및 인덱스 문서 작성",
+            "description": "P2_프로젝트_기획 폴더의 전체 문서 인덱스",
+            "file_path": "P2_프로젝트_기획/README.md",
+            "content_structure": {
+              "sections": [
+                "폴더 개요",
+                "문서 카테고리별 목록",
+                "문서 읽는 순서 가이드",
+                "최종 업데이트 일자"
+              ]
+            },
+            "expected_output": "README.md (신규 작성)"
+          },
+          {
+            "task_id": "P4-VERIFY-01",
+            "task_name": "모든 문서 최종 검증",
+            "description": "업데이트된 모든 문서 검토",
+            "checks": [
+              "오타 및 문법 오류",
+              "링크 유효성",
+              "내용 일관성",
+              "최신 정보 반영 여부",
+              "예제 코드 정확성"
+            ],
+            "expected_output": "검증 완료 체크리스트"
+          }
+        ]
+      },
+
+      {
+        "phase": "Phase 5: 사용자 피드백 및 개선",
+        "duration": "진행 중 지속",
+        "priority": "low",
+        "tasks": [
+          {
+            "task_id": "P5-FEEDBACK-01",
+            "task_name": "사용자에게 문서 검토 요청",
+            "description": "업데이트된 문서를 사용자에게 공유하여 피드백 수집",
+            "method": "주요 문서 목록 제시 및 검토 요청",
+            "expected_output": "피드백 목록"
+          },
+          {
+            "task_id": "P5-IMPROVE-01",
+            "task_name": "피드백 반영 및 추가 개선",
+            "description": "수집된 피드백을 바탕으로 문서 개선",
+            "method": "피드백 항목별 수정",
+            "expected_output": "최종 개선된 문서들"
+          }
+        ]
+      }
+    ]
+  },
+
+  "expected_deliverables": {
+    "updated_documents": [
+      "PROJECT_PLAN.md",
+      "functional_requirements.md",
+      "DESIGN_SYSTEM_V2.md",
+      "website_development_process.md",
+      "PROJECT_DIRECTORY_STRUCTURE.md"
+    ],
+    "new_documents": [
+      "API_SPECIFICATION.md",
+      "DATABASE_SCHEMA.md",
+      "USER_FLOWS.md",
+      "SECURITY_POLICY.md",
+      "DEPLOYMENT_STRATEGY.md",
+      "TEST_PLAN.md",
+      "README.md (인덱스)"
+    ],
+    "cleaned_up": [
+      "DESIGN_SYSTEM.md (V1 제거 또는 archived)"
+    ],
+    "new_folders": [
+      "1-3_API_Design/",
+      "1-4_Database_Schema/",
+      "1-5_User_Flows/",
+      "1-6_Security/",
+      "1-7_Deployment/",
+      "1-8_Testing/"
+    ]
+  },
+
+  "execution_strategy": {
+    "approach": "점진적 개선",
+    "principles": [
+      "사용자 승인 없이 임의로 문서 삭제하지 않음",
+      "기존 내용 최대한 보존하면서 보완",
+      "새 문서 작성 전 사용자에게 필요성 확인",
+      "한 번에 모든 작업 하지 않고 Phase별로 진행",
+      "각 Phase 완료 후 사용자 검토 및 승인"
+    ],
+    "user_involvement": [
+      {
+        "phase": "Phase 1",
+        "approval_needed": "중복 파일 삭제 여부 (DESIGN_SYSTEM.md V1)"
+      },
+      {
+        "phase": "Phase 2",
+        "approval_needed": "업데이트된 문서 검토"
+      },
+      {
+        "phase": "Phase 3",
+        "approval_needed": "신규 문서 작성 우선순위 결정"
+      },
+      {
+        "phase": "Phase 4",
+        "approval_needed": "최종 검증 결과 확인"
+      }
+    ]
+  },
+
+  "estimated_timeline": {
+    "total_duration": "7-9일",
+    "breakdown": {
+      "Phase 1: 문서 검증 및 정리": "1일",
+      "Phase 2: 기존 문서 업데이트": "2-3일",
+      "Phase 3: 신규 문서 작성": "3-4일",
+      "Phase 4: 문서 통합 및 검증": "1일",
+      "Phase 5: 사용자 피드백 및 개선": "진행 중 지속"
+    },
+    "daily_schedule": [
+      {
+        "day": "Day 1",
+        "tasks": "P1-VERIFY-01 ~ P1-CLEAN-01 (Phase 1 전체)"
+      },
+      {
+        "day": "Day 2",
+        "tasks": "P2-UPDATE-01, P2-UPDATE-02"
+      },
+      {
+        "day": "Day 3",
+        "tasks": "P2-UPDATE-03, P2-UPDATE-04"
+      },
+      {
+        "day": "Day 4",
+        "tasks": "P2-UPDATE-05, P3-NEW-01"
+      },
+      {
+        "day": "Day 5",
+        "tasks": "P3-NEW-02, P3-NEW-03"
+      },
+      {
+        "day": "Day 6",
+        "tasks": "P3-NEW-04, P3-NEW-05"
+      },
+      {
+        "day": "Day 7",
+        "tasks": "P3-NEW-06, P4-INTEGRATE-01"
+      },
+      {
+        "day": "Day 8",
+        "tasks": "P4-INTEGRATE-02, P4-VERIFY-01"
+      },
+      {
+        "day": "Day 9 (선택)",
+        "tasks": "P5-FEEDBACK-01, P5-IMPROVE-01 (피드백 반영)"
+      }
+    ]
+  },
+
+  "success_criteria": {
+    "completeness": [
+      "모든 필수 문서가 작성되었는가?",
+      "문서가 최신 정보를 반영하고 있는가?",
+      "문서 간 일관성이 유지되고 있는가?"
+    ],
+    "quality": [
+      "초보자도 이해하기 쉬운가?",
+      "실제 프로젝트 구현에 도움이 되는가?",
+      "오타 및 오류가 없는가?"
+    ],
+    "usability": [
+      "필요한 문서를 쉽게 찾을 수 있는가?",
+      "문서 간 상호 참조가 명확한가?",
+      "예제 및 코드가 정확한가?"
+    ]
+  },
+
+  "risks_and_mitigation": [
+    {
+      "risk": "문서 업데이트 중 기존 정보 손실",
+      "probability": "low",
+      "impact": "high",
+      "mitigation": "모든 수정 전 Git 커밋, 원본 백업"
+    },
+    {
+      "risk": "실제 구현과 문서 불일치",
+      "probability": "medium",
+      "impact": "high",
+      "mitigation": "Phase 1에서 철저한 현황 조사, 구현 코드 직접 확인"
+    },
+    {
+      "risk": "사용자 요구사항 오해",
+      "probability": "low",
+      "impact": "medium",
+      "mitigation": "각 Phase 완료 후 사용자 검토 요청"
+    },
+    {
+      "risk": "작업 시간 부족",
+      "probability": "medium",
+      "impact": "low",
+      "mitigation": "우선순위 높은 것부터 진행, Phase별 분할 작업"
+    }
+  ],
+
+  "next_steps": {
+    "immediate_action": "사용자에게 계획서 제시 및 승인 요청",
+    "after_approval": [
+      "Phase 1 작업 시작 (문서 검증 및 정리)",
+      "중복 파일 처리 방안 확인",
+      "실제 구현 현황 조사 시작"
+    ],
+    "user_questions": [
+      {
+        "question": "DESIGN_SYSTEM.md (V1) 파일을 삭제해도 될까요? 아니면 archived 폴더로 이동할까요?",
+        "context": "DESIGN_SYSTEM_V2.md가 최신 버전이므로 V1은 불필요할 수 있습니다."
+      },
+      {
+        "question": "신규 문서 작성 우선순위를 어떻게 정할까요?",
+        "context": "API 설계서, DB 스키마 문서, 보안 정책 등 중 가장 급한 것은 무엇인가요?"
+      },
+      {
+        "question": "ssalworks_complete_process.md 파일이 너무 큽니다. 분할하거나 요약할까요?",
+        "context": "현재 25000+ tokens로 한 번에 읽을 수 없습니다."
+      },
+      {
+        "question": "이 계획서대로 내일부터 작업을 시작해도 될까요?",
+        "context": "총 7-9일 예상되며, Phase별로 진행하겠습니다."
+      }
+    ]
+  },
+
+  "metadata": {
+    "created_by": "Claude Code",
+    "created_at": "2025-12-01T00:42:28Z",
+    "document_version": "1.0",
+    "estimated_reading_time": "15분",
+    "total_tasks": 27,
+    "total_phases": 5,
+    "priority_tasks": 15,
+    "optional_tasks": 12
+  }
+}

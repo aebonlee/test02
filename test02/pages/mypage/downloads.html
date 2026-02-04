@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용 매뉴얼 다운로드 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-title { font-size: 18px; font-weight: 600; }
+
+        .btn-edit {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .btn-edit:hover { opacity: 0.9; }
+
+        /* Loading & Toast */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.error { background: var(--danger); }
+        .toast.success { background: var(--success); }
+        .toast.info { background: var(--primary); }
+        .toast.warning { background: var(--warning); }
+
+        /* Popup Modal */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-overlay.active { display: flex; }
+
+        .popup-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .popup-icon { font-size: 48px; margin-bottom: 16px; }
+        .popup-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+        .popup-message { color: var(--gray-500); margin-bottom: 24px; white-space: pre-line; }
+        .popup-btn {
+            padding: 12px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 12px;
+                height: 56px;
+            }
+            .nav-logo-text { font-size: 18px; }
+            .close-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            .container { padding: 16px 12px; }
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            .card { padding: 16px; }
+        }
+
+        /* Dashboard Grid with Sidebar */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            height: fit-content;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .menu-title {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-500);
+            border-bottom: 1px solid var(--gray-100);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 8px 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid var(--gray-50);
+        }
+
+        .menu-item:last-child { border-bottom: none; }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .menu-link:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background: rgba(44, 74, 138, 0.08);
+            color: var(--primary);
+            font-weight: 600;
+            border-left: 3px solid var(--primary);
+        }
+
+        .main-content-area { min-width: 0; }
+
+        /* Download Cards */
+        .download-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .download-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .download-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .download-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-builder {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .badge-available {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .download-desc {
+            font-size: 14px;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover { opacity: 0.9; }
+
+        .download-btn.dev-package {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+        }
+
+        .download-btn.manual {
+            background: var(--primary);
+        }
+
+        .download-note {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <div class="nav-links">
+            <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+        </div>
+    </nav>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <a href="index.html">My Page</a>
+            <span>›</span>
+            <span>사용 매뉴얼 다운로드</span>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar Menu -->
+            <aside class="sidebar">
+                <div class="menu-card">
+                    <div class="menu-title">메뉴</div>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a href="profile.html" class="menu-link">내 프로필</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="subscription.html" class="menu-link">서비스 이용 현황</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="downloads.html" class="menu-link active">사용 매뉴얼 다운로드</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="credit.html" class="menu-link">크레딧 관리</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="security.html" class="menu-link">보안 설정</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="inquiries.html" class="menu-link">내 문의 내역</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content-area">
+                <h1 class="page-title">사용 매뉴얼 다운로드</h1>
+
+                <!-- 빌더 계정 사용 매뉴얼 카드 -->
+                <div class="download-card" id="manualDownloadCard">
+                    <div class="download-header">
+                        <h3 class="download-title">빌더 계정 사용 매뉴얼</h3>
+                        <span class="download-badge badge-builder" id="manualBuilderBadge">빌더 전용</span>
+                    </div>
+                    <p class="download-desc">
+                        SSAL Works 빌더 계정 사용 매뉴얼입니다.<br>
+                        계정 설정부터 프로젝트 관리까지 모든 기능을 상세히 안내합니다.
+                    </p>
+
+                    <!-- 매뉴얼 버튼 그룹 -->
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="download-btn manual" id="manualDownloadBtn" onclick="downloadManual()" style="flex: 1; min-width: 200px;">
+                            📄 PDF 다운로드
+                        </button>
+                        <a href="manual.html" class="download-btn" style="flex: 1; min-width: 200px; background: #4B5563 !important; color: white !important; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">
+                            📖 온라인으로 보기
+                        </a>
+                    </div>
+                    <p class="download-note">※ 매뉴얼은 정기적으로 업데이트됩니다.</p>
+                </div>
+            </div><!-- /main-content-area -->
+        </div><!-- /dashboard-grid -->
+    </div><!-- /container -->
+
+    <!-- Popup Modal -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <div class="popup-icon" id="popupIcon">⚠️</div>
+            <h3 class="popup-title" id="popupTitle">알림</h3>
+            <p class="popup-message" id="popupMessage">메시지</p>
+            <button class="popup-btn" onclick="closePopup()">확인</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== Supabase 설정 ==========
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== 전역 변수 ==========
+        let currentUser = null;
+        let userData = null;
+
+        // ========== 초기화 ==========
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        // ========== 인증 확인 ==========
+        async function checkAuth() {
+            showLoading();
+
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+                if (error || !session) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+
+                currentUser = session.user;
+                await loadUserData();
+
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = '../auth/login.html';
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 사용자 데이터 로드 ==========
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) {
+                    console.error('User data query error:', error);
+                    // 사용자 데이터 없어도 페이지는 작동 (비빌더로 처리)
+                    userData = { builder_id: null };
+                } else {
+                    userData = data;
+                }
+                updateDownloadButtons();
+
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+                // 에러 발생해도 비빌더로 처리하여 페이지 작동
+                userData = { builder_id: null };
+                updateDownloadButtons();
+            }
+        }
+
+        // ========== 다운로드 버튼 상태 업데이트 ==========
+        function updateDownloadButtons() {
+            if (!userData) return;
+
+            const manualBtn = document.getElementById('manualDownloadBtn');
+            const manualBadge = document.getElementById('manualBuilderBadge');
+
+            if (userData.builder_id) {
+                // 빌더 계정: 버튼 활성화
+                manualBtn.disabled = false;
+                manualBtn.style.opacity = '1';
+                manualBadge.textContent = '다운로드 가능';
+                manualBadge.className = 'download-badge badge-available';
+            } else {
+                // 일반 회원: 버튼 비활성화 스타일
+                manualBtn.style.opacity = '0.6';
+            }
+        }
+
+        // ========== 매뉴얼 다운로드 ==========
+        async function downloadManual() {
+            if (!userData || !userData.builder_id) {
+                showPopup('빌더 계정 전용', '빌더 계정 개설 후 다운로드할 수 있습니다.', 'warning');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                // 매뉴얼 파일 URL
+                const manualUrl = '/pages/mypage/manual.pdf';
+
+                // 다운로드 링크 생성 및 클릭
+                const link = document.createElement('a');
+                link.href = manualUrl;
+                link.download = 'SSAL_Works_빌더계정_사용매뉴얼.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                hideLoading();
+                showPopup('다운로드 완료', '빌더 계정 사용 매뉴얼 PDF 다운로드가 완료되었습니다.', 'success');
+
+                // 다운로드 기록 저장
+                try {
+                    await supabaseClient
+                        .from('user_activity_logs')
+                        .insert({
+                            user_id: userData.user_id,
+                            activity_type: 'manual_download',
+                            activity_data: { file: 'SSAL_Works_빌더계정_사용매뉴얼.pdf' },
+                            created_at: new Date().toISOString()
+                        });
+                } catch (logError) {
+                    console.log('다운로드 기록 저장 실패 (무시):', logError);
+                }
+
+            } catch (error) {
+                console.error('매뉴얼 다운로드 오류:', error);
+                showToast('매뉴얼 다운로드에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ========== 유틸리티 함수 ==========
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showPopup(title, message, type = 'info') {
+            const icons = {
+                'success': '✅',
+                'warning': '⚠️',
+                'error': '❌',
+                'info': 'ℹ️'
+            };
+            document.getElementById('popupIcon').textContent = icons[type] || 'ℹ️';
+            document.getElementById('popupTitle').textContent = title;
+            document.getElementById('popupMessage').textContent = message;
+            document.getElementById('popupOverlay').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('popupOverlay').classList.remove('active');
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>

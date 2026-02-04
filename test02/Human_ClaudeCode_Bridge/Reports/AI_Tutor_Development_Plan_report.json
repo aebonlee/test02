@@ -1,0 +1,98 @@
+{
+  "report_type": "implementation_plan",
+  "report_name": "AI 튜터 자체 개발 구현 계획",
+  "created_at": "2026-01-04",
+  "status": "계획 수립 완료",
+
+  "summary": {
+    "goal": "외부 서비스(aitalker.co.kr) iframe을 제거하고, RAG 기반 자체 AI 튜터 시스템 구축",
+    "stage": "S3 (개발 2차 - AI 연동)",
+    "total_new_tasks": 5,
+    "estimated_cost": "$0 (Gemini 무료)"
+  },
+
+  "new_tasks": [
+    {
+      "task_id": "S3D1",
+      "task_name": "AI 튜터 DB 스키마",
+      "area": "D",
+      "description": "content_embeddings, tutor_conversations, tutor_messages 테이블",
+      "order": 1
+    },
+    {
+      "task_id": "S3BI2",
+      "task_name": "RAG 파이프라인 구축",
+      "area": "BI",
+      "description": "Gemini 임베딩, 벡터 검색, 컨텍스트 증강",
+      "order": 2
+    },
+    {
+      "task_id": "S3BA3",
+      "task_name": "AI 튜터 API 개발",
+      "area": "BA",
+      "description": "채팅 API, 대화 관리 API",
+      "order": 3
+    },
+    {
+      "task_id": "S3F2",
+      "task_name": "AI 튜터 UI 개발",
+      "area": "F",
+      "description": "iframe 제거, 자체 채팅 모달, 스트리밍 렌더링",
+      "order": 4
+    },
+    {
+      "task_id": "S3T1",
+      "task_name": "AI 튜터 통합 테스트",
+      "area": "T",
+      "description": "E2E 테스트, 크레딧 검증",
+      "order": 5
+    }
+  ],
+
+  "technology_choices": {
+    "embedding": "Gemini Embedding (무료, 768차원)",
+    "llm": "Gemini 2.5 Flash만 (콘텐츠 기반이라 AI별 차별화 없음)",
+    "vector_db": "Supabase pgvector",
+    "streaming": "SSE (Server-Sent Events)",
+    "chunking": "1000자/200자 오버랩",
+    "conversation_storage": "Supabase DB",
+    "credits": "기존 방식 (1크레딧/질문)"
+  },
+
+  "files_to_create": [
+    "P3_프로토타입_제작/Database/ai_tutor_schema.sql",
+    "scripts/generate-embeddings.js",
+    "api/Backend_Infra/rag/index.js",
+    "api/Backend_Infra/rag/embeddings.js",
+    "api/Backend_Infra/rag/chunker.js",
+    "api/Backend_Infra/rag/prompt-builder.js",
+    "api/External/ai-tutor-chat.js",
+    "api/External/ai-tutor-conversations.js",
+    "S3_개발-2차/Backend_Infra/rag/",
+    "S3_개발-2차/External/"
+  ],
+
+  "files_to_modify": [
+    "index.html (AI Tutor UI 전면 교체)",
+    "api/Backend_Infra/ai/gemini-client.js (스트리밍 메서드 추가)",
+    "vercel.json (새 API 라우트 추가)"
+  ],
+
+  "content_for_rag": {
+    "tips": 67,
+    "books": 87,
+    "guides": 5,
+    "briefings": 35,
+    "total": 225
+  },
+
+  "execution_order": [
+    "1단계: S3D1 - DB 스키마 생성 → 테스트 → 검증",
+    "2단계: S3BI2 - RAG 파이프라인 → 임베딩 생성 → 테스트 → 검증",
+    "3단계: S3BA3 - API 개발 → 테스트 → 검증",
+    "4단계: S3F2 - UI 개발 → 테스트 → 검증",
+    "5단계: S3T1 - 통합 테스트 → Stage Gate 검증 → PO 승인"
+  ],
+
+  "next_action": "Task CRUD 프로세스에 따라 5개 Task 생성 시작"
+}

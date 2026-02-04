@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSAL Works 차별점 - 방법론</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            width: 1080px;
+            height: 1080px;
+            background: #FFFFFF;
+            border-radius: 0;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .badge {
+            display: inline-block;
+            background: #6B5CCC;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 48px;
+            font-weight: 900;
+            color: #6B5CCC;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 24px;
+            color: #333;
+        }
+        .items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .item {
+            background: #F8F9FA;
+            border-radius: 20px;
+            padding: 32px 36px;
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            border: 2px solid #E9ECEF;
+        }
+        .number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6B5CCC 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .item-category {
+            display: inline-block;
+            background: #6B5CCC;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        .item-desc {
+            font-size: 20px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #6B5CCC 0%, #764ba2 100%);
+            border-radius: 16px;
+        }
+        .footer-url {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+        .footer-sub {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="badge">1/2 방법론</div>
+            <div class="logo">SSAL Works</div>
+            <div class="subtitle">10가지 차별점 중 방법론 4가지</div>
+        </div>
+
+        <div class="items">
+            <div class="item">
+                <div class="number">1</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category">방법론 1</span>10단계 진행 프로세스</div>
+                    <div class="item-desc">P0~P3(기획 4단계) + S0~S5(개발 6단계)로 구성. 아이디어 구체화부터 실제 배포까지 전 과정을 단계별로 체계화하여 순차적으로 진행</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">2</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category">방법론 2</span>SAL Grid</div>
+                    <div class="item-desc">5 Stage × 11 Area × 3 Level의 3차원 좌표계. 70개 이상의 Task를 22개 속성으로 관리하여 복잡한 개발 과정을 한눈에 파악하고 체계적으로 추적</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">3</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category">방법론 3</span>3단계 검증</div>
+                    <div class="item-desc">작업 AI가 코드 작성 → 검증 AI가 품질 검토 → 빌더(인간)가 최종 승인. 작업자와 검증자를 분리하여 오류를 사전에 차단하고 품질 확보</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">4</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category">방법론 4</span>AI 규칙 체계</div>
+                    <div class="item-desc">7대 Rules + 3대 Methods + 12대 Compliance + 5대 절대 규칙 총 27개. AI가 일관된 방식으로 작업하도록 규칙을 정립하여 품질과 안정성 확보</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-url">www.ssalworks.ai.kr</div>
+            <div class="footer-sub">SSAL Works의 체계적인 개발 방법론을 적용하고 도구와 지식을 활용하여 Claude Code와 함께 스스로 풀스택 웹사이트를 만들어 보세요</div>
+        </div>
+    </div>
+</body>
+</html>

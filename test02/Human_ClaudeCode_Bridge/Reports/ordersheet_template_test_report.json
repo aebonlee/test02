@@ -1,0 +1,180 @@
+{
+  "test_date": "2025-12-11T16:44:13.944Z",
+  "test_target": "Order Sheet Template API",
+  "api_endpoint": "http://localhost:3030/ordersheet-templates",
+  "summary": {
+    "total_expected": 22,
+    "total_found": 22,
+    "valid": 22,
+    "missing": 0,
+    "invalid": 0,
+    "pass": true
+  },
+  "templates": [
+    {
+      "key": "P1-1_Vision_Mission",
+      "status": "valid",
+      "name": "P1-1 Vision & Mission 정의",
+      "phase": "P1_사업계획",
+      "size": 970
+    },
+    {
+      "key": "P1-2_Market_Analysis",
+      "status": "valid",
+      "name": "P1-2 시장 분석",
+      "phase": "P1_사업계획",
+      "size": 1000
+    },
+    {
+      "key": "P1-3_Business_Model",
+      "status": "valid",
+      "name": "P1-3 비즈니스 모델",
+      "phase": "P1_사업계획",
+      "size": 1240
+    },
+    {
+      "key": "P2-1_Directory_Structure",
+      "status": "valid",
+      "name": "P2-1 디렉토리 구조",
+      "phase": "P2_프로젝트_기획",
+      "size": 761
+    },
+    {
+      "key": "P2-2-1_Requirements",
+      "status": "valid",
+      "name": "P2-2-1 요구사항",
+      "phase": "P2_프로젝트_기획",
+      "size": 946
+    },
+    {
+      "key": "P2-2-2_User_Flows",
+      "status": "valid",
+      "name": "P2-2-2 사용자 플로우",
+      "phase": "P2_프로젝트_기획",
+      "size": 796
+    },
+    {
+      "key": "P2-2-3_Workflows",
+      "status": "valid",
+      "name": "P2-2-3 워크플로우",
+      "phase": "P2_프로젝트_기획",
+      "size": 830
+    },
+    {
+      "key": "P2-3-1_Design_Guidelines",
+      "status": "valid",
+      "name": "P2-3-1 디자인 가이드라인",
+      "phase": "P2_프로젝트_기획",
+      "size": 1134
+    },
+    {
+      "key": "P2-3-2_Mockup",
+      "status": "valid",
+      "name": "P2-3-2 목업",
+      "phase": "P2_프로젝트_기획",
+      "size": 990
+    },
+    {
+      "key": "P2-3-3_Prototype",
+      "status": "valid",
+      "name": "P2-3-3 프로토타입",
+      "phase": "P2_프로젝트_기획",
+      "size": 857
+    },
+    {
+      "key": "P2-4_Database_Design",
+      "status": "valid",
+      "name": "P2-4 데이터베이스 설계",
+      "phase": "P2_프로젝트_기획",
+      "size": 1049
+    },
+    {
+      "key": "P3-1-1_Frontend_Prototype",
+      "status": "valid",
+      "name": "P3-1-1 프론트엔드 프로토타입",
+      "phase": "P3_프로토타입_제작",
+      "size": 899
+    },
+    {
+      "key": "P3-1-2_Frontend_Pages",
+      "status": "valid",
+      "name": "P3-1-2 프론트엔드 페이지",
+      "phase": "P3_프로토타입_제작",
+      "size": 810
+    },
+    {
+      "key": "P3-2_Database",
+      "status": "valid",
+      "name": "P3-2 데이터베이스",
+      "phase": "P3_프로토타입_제작",
+      "size": 856
+    },
+    {
+      "key": "P3-3_Scripts",
+      "status": "valid",
+      "name": "P3-3 스크립트",
+      "phase": "P3_프로토타입_제작",
+      "size": 681
+    },
+    {
+      "key": "S1_개발_준비",
+      "status": "valid",
+      "name": "S1 개발 준비",
+      "phase": "S1_개발_준비",
+      "size": 425
+    },
+    {
+      "key": "S2_개발_1차",
+      "status": "valid",
+      "name": "S2 개발 1차",
+      "phase": "S2_개발_1차",
+      "size": 383
+    },
+    {
+      "key": "S3_개발_2차",
+      "status": "valid",
+      "name": "S3 개발 2차",
+      "phase": "S3_개발_2차",
+      "size": 430
+    },
+    {
+      "key": "S4_개발_3차",
+      "status": "valid",
+      "name": "S4 개발 3차",
+      "phase": "S4_개발_3차",
+      "size": 461
+    },
+    {
+      "key": "S5_운영",
+      "status": "valid",
+      "name": "S5 운영",
+      "phase": "S5_운영",
+      "size": 449
+    },
+    {
+      "key": "SP-1_디렉토리_구조_생성",
+      "status": "valid",
+      "name": "SP-1 디렉토리 구조 생성",
+      "phase": "특별단계",
+      "size": 926
+    },
+    {
+      "key": "SP-2_SAL_GRID_생성",
+      "status": "valid",
+      "name": "SP-2 SAL GRID 생성",
+      "phase": "특별단계",
+      "size": 1439
+    }
+  ],
+  "phase_distribution": {
+    "P1_사업계획": 3,
+    "P2_프로젝트_기획": 8,
+    "P3_프로토타입_제작": 4,
+    "S1_개발_준비": 1,
+    "S2_개발_1차": 1,
+    "S3_개발_2차": 1,
+    "S4_개발_3차": 1,
+    "S5_운영": 1,
+    "특별단계": 2
+  }
+}

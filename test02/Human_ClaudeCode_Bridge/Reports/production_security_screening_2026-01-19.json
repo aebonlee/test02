@@ -1,0 +1,141 @@
+{
+  "report_id": "SEC-SCREENING-2026-01-19",
+  "report_type": "Post-Incident Production Security Screening",
+  "report_date": "2026-01-19",
+  "application": "SSAL Works",
+  "auditor": "Claude Code Security Audit",
+
+  "executive_summary": {
+    "overall_status": "CLEAN",
+    "checks_passed": 6,
+    "checks_failed": 0,
+    "malware_found": false,
+    "backdoors_found": false,
+    "data_breach_detected": false,
+    "conclusion": "프로덕션 코드베이스에서 악성코드, 백도어, 데이터 침해 흔적 없음. 안전한 상태로 확인됨."
+  },
+
+  "screening_results": {
+    "1_malicious_code_patterns": {
+      "status": "CLEAN",
+      "patterns_searched": [
+        "eval\\s*\\(",
+        "new Function\\s*\\(",
+        "document.write\\s*\\(",
+        "exec\\s*\\(|spawn\\s*\\(|child_process",
+        "backdoor|webshell|c99|r57|shell_exec|passthru",
+        "base64_decode|atob (suspicious patterns)",
+        "fromCharCode (obfuscated code)"
+      ],
+      "findings": [
+        "eval(): Playwright test file에서만 발견 ($eval - 정상)",
+        "new Function(): 발견 없음",
+        "document.write(): 팝업 윈도우에서만 사용 (정상)",
+        "exec/spawn: 빌드 스크립트에서만 사용 (정상)",
+        "backdoor 키워드: 발견 없음",
+        "obfuscated code: 발견 없음"
+      ],
+      "evidence": "모든 매칭 항목이 정상적인 용도로 확인됨"
+    },
+
+    "2_external_url_analysis": {
+      "status": "CLEAN",
+      "suspicious_domains": false,
+      "verified_domains": [
+        "api.perplexity.ai - AI 서비스 (정상)",
+        "api.tosspayments.com - 결제 게이트웨이 (정상)",
+        "zwjmfewyshhwpgwdtrus.supabase.co - 데이터베이스 (정상)",
+        "ssalworks.com, ssalworks.ai.kr - 자사 도메인 (정상)",
+        "generativelanguage.googleapis.com - Google Gemini (정상)",
+        "cdn.jsdelivr.net, unpkg.com - CDN (정상)"
+      ],
+      "findings": "의심스러운 외부 연결 없음. 모든 URL이 정상 서비스"
+    },
+
+    "3_hidden_files_obfuscation": {
+      "status": "CLEAN",
+      "hidden_files": false,
+      "findings": [
+        ".php 파일: node_modules 외부에 없음",
+        ".sh 파일: node_modules 외부에 없음 (정상)",
+        "난독화된 코드: 발견 없음",
+        "Base64 인코딩 악성 페이로드: 발견 없음"
+      ]
+    },
+
+    "4_environment_variable_exposure": {
+      "status": "CLEAN",
+      "findings": [
+        ".env 파일: .gitignore에 포함 (정상)",
+        "SERVICE_ROLE_KEY: api/ 폴더 서버 코드에서만 사용 (정상)",
+        "ANON_KEY: 클라이언트 코드에 노출 (의도적, Supabase 설계)",
+        "하드코딩된 API 키 (sk-, AIza, pplx-): 발견 없음"
+      ],
+      "legacy_issue": {
+        "file": "S4_개발-3차/Frontend/index.html",
+        "issue": "ADMIN_PASSWORD 하드코딩",
+        "status": "개발 폴더 전용, 프로덕션 index.html에는 없음",
+        "risk": "LOW - 프로덕션 미영향"
+      }
+    },
+
+    "5_recent_file_modifications": {
+      "status": "CLEAN",
+      "analysis_period": "2026-01-17 ~ 2026-01-19",
+      "commits_analyzed": [
+        "308512d - OWASP Top 10 보안 감사 조치 (정상)",
+        "036e714 - 보안 사고 리포트 및 RLS 체크리스트 (정상)",
+        "a7ea11d - RLS 정책 강화 - 보안 침해 대응 (정상)"
+      ],
+      "findings": "해킹 이후 모든 커밋이 보안 강화 목적의 정상적인 변경"
+    },
+
+    "6_database_integrity": {
+      "status": "CLEAN",
+      "total_users": 33,
+      "admin_users": 1,
+      "admin_email": "wksun999@gmail.com",
+      "findings": [
+        "비정상 role 값: 없음 (admin 1명, 나머지 모두 user)",
+        "비정상 credit_balance: 없음 (최대 50,000 - 정상 범위)",
+        "의심스러운 계정: 없음",
+        "RLS 정책: 적용 완료 (30_users_rls_secure.sql, 31_all_tables_rls_secure.sql)"
+      ],
+      "note": "security_logs 테이블 미생성 상태 - 프로덕션 적용 필요"
+    }
+  },
+
+  "security_improvements_since_incident": [
+    "RLS 정책 전체 강화 (민감 필드 보호)",
+    "CORS 도메인 제한 적용",
+    "npm 취약점 패치 (0 vulnerabilities)",
+    "보안 헤더 강화 (CSP, HSTS, Referrer-Policy)",
+    "환경변수 검증 유틸리티 구현"
+  ],
+
+  "recommendations": [
+    {
+      "priority": "Medium",
+      "item": "security_logs 테이블 프로덕션 적용",
+      "description": "32_security_logs_table.sql을 Supabase 프로덕션에 실행"
+    },
+    {
+      "priority": "Low",
+      "item": "개발 폴더 하드코딩 패스워드 제거",
+      "description": "S4_개발-3차/Frontend/index.html의 ADMIN_PASSWORD 제거"
+    },
+    {
+      "priority": "Low",
+      "item": "정기 보안 스크리닝 스케줄",
+      "description": "월 1회 자동화된 보안 스크리닝 도입 권장"
+    }
+  ],
+
+  "conclusion": {
+    "status": "SECURE",
+    "summary": "해킹 사고 이후 프로덕션 전체 스크리닝 결과, 악성코드나 백도어가 발견되지 않았습니다. 모든 보안 조치가 정상 적용되어 있으며, 데이터베이스 무결성도 확인되었습니다. 시스템은 안전한 상태입니다."
+  },
+
+  "next_screening_date": "2026-02-19",
+  "screening_frequency": "monthly"
+}

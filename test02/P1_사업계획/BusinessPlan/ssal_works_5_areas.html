@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSAL Works 5대 핵심 영역</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fa;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .container {
+            width: 1200px;
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1F3563;
+            margin-bottom: 8px;
+        }
+        .logo span {
+            color: #4A7C59;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            font-weight: 500;
+        }
+        .diagram-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .diagram {
+            display: grid;
+            grid-template-columns: 180px 1fr 200px;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        .area-box {
+            padding: 24px 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .area-box.left {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 3px solid #3b82f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .center-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .area-box.control {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid #f59e0b;
+            flex: 1;
+        }
+        .area-box.management {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 3px solid #10b981;
+            flex: 1;
+        }
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .area-box.learning {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border: 3px solid #8b5cf6;
+            flex: 1;
+        }
+        .area-box.questions {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border: 3px solid #ec4899;
+            flex: 1;
+        }
+        .area-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .area-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .area-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .area-desc {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .left .area-title { color: #1e40af; }
+        .control .area-title { color: #92400e; }
+        .management .area-title { color: #065f46; }
+        .learning .area-title { color: #5b21b6; }
+        .questions .area-title { color: #9d174d; }
+
+        .comparison {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .comparison-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .comparison-table th {
+            background: #1F3563;
+            color: white;
+            font-weight: 600;
+        }
+        .comparison-table th:first-child {
+            border-radius: 8px 0 0 0;
+            text-align: left;
+        }
+        .comparison-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        .comparison-table tr:last-child {
+            background: #fef3c7;
+            font-weight: 600;
+        }
+        .comparison-table tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+        .comparison-table tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+        .check { color: #10b981; font-size: 18px; }
+        .partial { color: #f59e0b; font-size: 18px; }
+        .cross { color: #ef4444; font-size: 18px; }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #e5e7eb;
+        }
+        .tagline {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1F3563;
+            margin-bottom: 8px;
+        }
+        .tagline-sub {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"><span>SSAL</span> Works</div>
+            <div class="subtitle">AI 기반 웹사이트 개발 플랫폼</div>
+        </div>
+
+        <div class="diagram-title">5대 핵심 영역</div>
+
+        <div class="diagram">
+            <div class="area-box left">
+                <div class="area-icon">📋</div>
+                <div class="area-title">진행</div>
+                <div class="area-subtitle">Process</div>
+                <div class="area-desc">프로젝트 실행 프로세스<br>Stage별 진행 단계</div>
+            </div>
+
+            <div class="center-column">
+                <div class="area-box control">
+                    <div class="area-icon">🎮</div>
+                    <div class="area-title">통제</div>
+                    <div class="area-subtitle">Control Space</div>
+                    <div class="area-desc"><strong>핵심!</strong> Order Sheet 작성 → Claude Code에 작업 지시 → AI가 코드 생성</div>
+                </div>
+                <div class="area-box management">
+                    <div class="area-icon">📊</div>
+                    <div class="area-title">관리</div>
+                    <div class="area-subtitle">Grid</div>
+                    <div class="area-desc">PROJECT SAL Grid<br>Stage(X) × Area(Y) × Level(Z) 3차원 Task 관리</div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="area-box learning">
+                    <div class="area-icon">📚</div>
+                    <div class="area-title">학습</div>
+                    <div class="area-subtitle">Learning</div>
+                    <div class="area-desc">Books · Tips · FAQ<br>만들면서 배우기</div>
+                </div>
+                <div class="area-box questions">
+                    <div class="area-icon">❓</div>
+                    <div class="area-title">질문</div>
+                    <div class="area-subtitle">Questions</div>
+                    <div class="area-desc">AI Q&A + Human 멘토링<br>ChatGPT · Gemini · Perplexity</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-title">vs 기존 도구 비교</div>
+            <table class="comparison-table">
+                <tr>
+                    <th>플랫폼</th>
+                    <th>진행</th>
+                    <th>통제</th>
+                    <th>관리</th>
+                    <th>학습</th>
+                    <th>질문</th>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">Replit</td>
+                    <td><span class="partial">△</span></td>
+                    <td><span class="partial">△</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">Cursor</td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="partial">△</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">Notion</td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="check">○</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">v0.dev / bolt.new</td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="partial">△</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">Udemy / Codecademy</td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="cross">✗</span></td>
+                    <td><span class="check">○</span></td>
+                    <td><span class="cross">✗</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-weight: 700; color: #1F3563;">SSAL Works</td>
+                    <td><span class="check" style="font-weight: 700;">○</span></td>
+                    <td><span class="check" style="font-weight: 700;">○</span></td>
+                    <td><span class="check" style="font-weight: 700;">○</span></td>
+                    <td><span class="check" style="font-weight: 700;">○</span></td>
+                    <td><span class="check" style="font-weight: 700;">○</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            <div class="tagline">"기술은 몰라도, 내 사이트는 내가 만든다"</div>
+            <div class="tagline-sub">SSAL Works — Claude Code를 활용한 SAL Grid 기반 풀스택 웹사이트 개발 플랫폼</div>
+        </div>
+    </div>
+</body>
+</html>

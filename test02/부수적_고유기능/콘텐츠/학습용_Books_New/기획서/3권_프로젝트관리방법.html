@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3권: 프로젝트 관리 방법</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            padding: 40px 30px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #0066cc;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #e67700;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .episode-card {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        .episode-num {
+            min-width: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .episode-title {
+            flex: 1;
+            font-size: 0.95rem;
+            color: #212529;
+        }
+        .episode-desc {
+            color: #868e96;
+            font-size: 0.8rem;
+            max-width: 180px;
+            text-align: right;
+        }
+        .arrow {
+            text-align: center;
+            color: #0066cc;
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+        .section-divider {
+            border-top: 2px dashed #dee2e6;
+            margin: 15px 0;
+            position: relative;
+        }
+        .section-label {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e9ecef;
+            padding: 0 12px;
+            color: #e67700;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📙 3권: 프로젝트 관리 방법</h1>
+        <div class="subtitle">총 12편 (SSAL Grid 기반)</div>
+
+        <div class="flow-container">
+            <div class="episode-card">
+                <span class="episode-num">1편</span>
+                <span class="episode-title">SSAL Grid 개요와 핵심 개념</span>
+                <span class="episode-desc">22개 속성 소개</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">2편</span>
+                <span class="episode-title">22개 속성 정의</span>
+                <span class="episode-desc">속성 상세 정의</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">3편</span>
+                <span class="episode-title">5x11 Matrix (Stage × Area)</span>
+                <span class="episode-desc">Stage/Area 체계</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">4편</span>
+                <span class="episode-title">Task 생성과 의존성 관리</span>
+                <span class="episode-desc">Task 생성</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">5편</span>
+                <span class="episode-title">Task Instruction 작성법</span>
+                <span class="episode-desc">지시사항 작성</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">6편</span>
+                <span class="episode-title">Verification Instruction 작성법</span>
+                <span class="episode-desc">검증 기준 작성</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">7편</span>
+                <span class="episode-title">검증 시스템과 Stage Gate</span>
+                <span class="episode-desc">검증 가동</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">8편</span>
+                <span class="episode-title">Supabase + HTML Viewer</span>
+                <span class="episode-desc">DB, Viewer 확인</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">9편</span>
+                <span class="episode-title">SSAL Grid 매뉴얼 활용법</span>
+                <span class="episode-desc">전체 관리 매뉴얼</span>
+            </div>
+
+            <div class="section-divider"><span class="section-label">운영 체계</span></div>
+
+            <div class="episode-card">
+                <span class="episode-num">10편</span>
+                <span class="episode-title">Order Sheet 제도</span>
+                <span class="episode-desc">작업 지시 체계</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">11편</span>
+                <span class="episode-title">작업 규칙 반영 (5군데)</span>
+                <span class="episode-desc">CLAUDE.md 등</span>
+            </div>
+            <div class="arrow">↓</div>
+
+            <div class="episode-card">
+                <span class="episode-num">12편</span>
+                <span class="episode-title">Orders/Reports JSON 시스템</span>
+                <span class="episode-desc">Human-AI 통신</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

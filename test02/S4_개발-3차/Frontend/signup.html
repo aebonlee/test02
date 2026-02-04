@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - SSAL Works</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- DOMPurify for XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Theme - Navy Blue */
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+
+            /* Secondary Theme - Amber Gold */
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+
+            /* Accent - Emerald Green */
+            --accent: #10B981;
+            --accent-dark: #059669;
+
+            /* Status Colors */
+            --success: #10B981;
+            --warning: #ffc107;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --neutral: #64748B;
+
+            /* Background */
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        /* 로고 - prototype_index_최종개선.html 스타일 */
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            display: inline-block;
+        }
+
+        .rice-grain:nth-child(1) {
+            transform: rotate(-5deg);
+        }
+
+        .rice-grain:nth-child(2) {
+            transform: rotate(5deg);
+            margin-top: 2px;
+        }
+
+        .rice-grain:nth-child(3) {
+            transform: rotate(-3deg);
+            margin-top: -1px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 74, 138, 0.1);
+        }
+
+        input.error {
+            border-color: var(--danger);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .error-text {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .checkbox-group {
+            margin: 24px 0;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .btn-signup {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(44, 74, 138, 0.3);
+        }
+
+        .btn-signup:active {
+            transform: translateY(0);
+        }
+
+        .btn-signup:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .strength-text {
+            font-size: 11px;
+            margin-top: 4px;
+            color: #666;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <a href="../../index.html" class="logo-inner" style="text-decoration: none;">
+                <div class="rice-logo">
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                </div>
+                <span class="logo-text">SSAL Works</span>
+            </a>
+        </div>
+        <h1>회원가입</h1>
+        <p class="subtitle">무료로 시작하고 학습 콘텐츠를 이용하세요</p>
+
+        <div id="alertMessage" class="alert"></div>
+
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label for="email">이메일 <span class="required">*</span></label>
+                <input type="email" id="email" required placeholder="example@email.com" autocomplete="email">
+                <p id="emailError" class="error-text"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호 <span class="required">*</span></label>
+                <input type="password" id="password" required placeholder="8자 이상" autocomplete="new-password"
+                       oninput="checkPasswordStrength()">
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div id="strengthFill" class="strength-fill"></div>
+                    </div>
+                    <p id="strengthText" class="strength-text"></p>
+                </div>
+                <p class="help-text">영문, 숫자, 특수문자 포함 8자 이상</p>
+            </div>
+
+            <div class="form-group">
+                <label for="passwordConfirm">비밀번호 확인 <span class="required">*</span></label>
+                <input type="password" id="passwordConfirm" required placeholder="비밀번호 재입력" autocomplete="new-password"
+                       oninput="checkPasswordMatch()">
+                <p id="passwordMatchError" class="error-text"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">닉네임 <span class="required">*</span></label>
+                <input type="text" id="nickname" required placeholder="2-20자" maxlength="20" autocomplete="nickname">
+                <p class="help-text">서비스 내에서 표시되는 이름입니다</p>
+            </div>
+
+            <div class="form-group">
+                <label for="realName">실명 <span class="required">*</span></label>
+                <input type="text" id="realName" required placeholder="입금자명 확인용" autocomplete="name">
+                <p class="help-text">빌더 계정 개설비 납부 시 입금자명 확인에 사용됩니다</p>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">연락처 (선택)</label>
+                <input type="tel" id="phone" placeholder="010-0000-0000" autocomplete="tel">
+            </div>
+
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="agreeAll" onchange="toggleAllAgreements()">
+                    <label for="agreeAll"><strong>전체 동의</strong></label>
+                </div>
+                <hr style="border: none; border-top: 1px solid #dee2e6; margin: 12px 0;">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="agreeTerms" required onchange="updateAgreeAll()">
+                    <label for="agreeTerms"><a href="../legal/terms.html" target="_blank" style="color: var(--primary);">서비스 이용약관</a> 동의 <span class="required">*</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="agreePrivacy" required onchange="updateAgreeAll()">
+                    <label for="agreePrivacy"><a href="../legal/privacy.html" target="_blank" style="color: var(--primary);">개인정보 처리방침</a> 동의 <span class="required">*</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="agreeMarketing" onchange="updateAgreeAll()">
+                    <label for="agreeMarketing">마케팅 정보 수신 동의 (선택)</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-signup" id="submitBtn">회원가입</button>
+        </form>
+
+        <div class="login-link">
+            이미 계정이 있으신가요? <a href="login.html">로그인</a>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // ========== Supabase 초기화 ==========
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== 유틸리티 함수 ==========
+
+        // 회원 ID 생성 (8자리 영숫자)
+        function generateUserId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let userId = '';
+            for (let i = 0; i < 8; i++) {
+                userId += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return userId;
+        }
+
+        // 비밀번호 검증
+        function validatePassword(password) {
+            if (password.length < 8) {
+                return { valid: false, message: '비밀번호는 8자 이상이어야 합니다.' };
+            }
+
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+
+            if (!hasLetter) {
+                return { valid: false, message: '영문자를 포함해야 합니다.' };
+            }
+            if (!hasNumber) {
+                return { valid: false, message: '숫자를 포함해야 합니다.' };
+            }
+
+            return { valid: true };
+        }
+
+        // 비밀번호 강도 체크
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const fill = document.getElementById('strengthFill');
+            const text = document.getElementById('strengthText');
+
+            let strength = 0;
+            let strengthLabel = '';
+            let color = '';
+
+            // 기본 요구사항 체크
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-zA-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~]/.test(password)) strength++;
+
+            switch (strength) {
+                case 0:
+                case 1:
+                    strengthLabel = '약함';
+                    color = '#EF4444';
+                    break;
+                case 2:
+                    strengthLabel = '보통';
+                    color = '#F59E0B';
+                    break;
+                case 3:
+                case 4:
+                    strengthLabel = '강함';
+                    color = '#10B981';
+                    break;
+                case 5:
+                    strengthLabel = '매우 강함';
+                    color = '#059669';
+                    break;
+            }
+
+            fill.style.width = (strength / 5 * 100) + '%';
+            fill.style.background = color;
+            text.textContent = password ? `비밀번호 강도: ${strengthLabel}` : '';
+            text.style.color = color;
+        }
+
+        // 비밀번호 일치 확인
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('passwordConfirm').value;
+            const error = document.getElementById('passwordMatchError');
+            const input = document.getElementById('passwordConfirm');
+
+            if (confirm && password !== confirm) {
+                error.textContent = '비밀번호가 일치하지 않습니다.';
+                error.style.display = 'block';
+                input.classList.add('error');
+            } else {
+                error.style.display = 'none';
+                input.classList.remove('error');
+            }
+        }
+
+        // 전체 동의
+        function toggleAllAgreements() {
+            const agreeAll = document.getElementById('agreeAll').checked;
+            document.getElementById('agreeTerms').checked = agreeAll;
+            document.getElementById('agreePrivacy').checked = agreeAll;
+            document.getElementById('agreeMarketing').checked = agreeAll;
+        }
+
+        // 개별 동의 시 전체 동의 업데이트
+        function updateAgreeAll() {
+            const terms = document.getElementById('agreeTerms').checked;
+            const privacy = document.getElementById('agreePrivacy').checked;
+            const marketing = document.getElementById('agreeMarketing').checked;
+            document.getElementById('agreeAll').checked = terms && privacy && marketing;
+        }
+
+        // 알림 표시
+        function showAlert(message, type = 'error') {
+            const alert = document.getElementById('alertMessage');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+
+            if (type === 'error') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // 로딩 표시
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // ========== 회원가입 처리 ==========
+        async function handleSignup(event) {
+            event.preventDefault();
+
+            // 입력값 가져오기
+            const email = DOMPurify.sanitize(document.getElementById('email').value.trim());
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            const nickname = DOMPurify.sanitize(document.getElementById('nickname').value.trim());
+            const realName = DOMPurify.sanitize(document.getElementById('realName').value.trim());
+            const phone = DOMPurify.sanitize(document.getElementById('phone').value.trim());
+            const marketingAgreed = document.getElementById('agreeMarketing').checked;
+
+            // 유효성 검사
+            if (password !== passwordConfirm) {
+                showAlert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.valid) {
+                showAlert(passwordValidation.message);
+                return;
+            }
+
+            if (nickname.length < 2 || nickname.length > 20) {
+                showAlert('닉네임은 2-20자로 입력하세요.');
+                return;
+            }
+
+            if (realName.length < 2) {
+                showAlert('실명을 입력하세요.');
+                return;
+            }
+
+            try {
+                showLoading();
+
+                // 1. 회원 ID 생성
+                const userId = generateUserId();
+
+                // 2. 이메일 중복 확인
+                const { data: existingEmail } = await supabaseClient
+                    .from('users')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
+
+                if (existingEmail) {
+                    hideLoading();
+                    showAlert('이미 가입된 이메일입니다.');
+                    return;
+                }
+
+                // 3. Supabase Auth로 회원가입
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            nickname: nickname,
+                            real_name: realName
+                        }
+                    }
+                });
+
+                if (authError) throw authError;
+
+                // 5. users 테이블에 레코드 생성
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .insert({
+                        id: authData.user.id,
+                        user_id: userId,
+                        email: email,
+                        name: nickname,
+                        nickname: nickname,
+                        real_name: realName,
+                        phone: phone || null,
+                        subscription_status: 'free',
+                        installation_fee_paid: false,
+                        credit_balance: 0,
+                        marketing_agreed: marketingAgreed,
+                        role: 'user'
+                    });
+
+                if (userError) {
+                    console.error('users 테이블 삽입 오류:', userError);
+                    // Auth는 성공했지만 users 테이블 실패 - 경고만 표시
+                }
+
+                // 6. 성공
+                hideLoading();
+                showAlert(`회원가입이 완료되었습니다! 이메일 인증 링크를 발송했습니다.`, 'success');
+// 7. 관리자에게 신규 가입 알림 (비동기, 실패해도 무시)
+                fetch('/api/Backend_APIs/admin-notify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'signup',
+                        data: {
+                            email: email,
+                            nickname: nickname,
+                            real_name: realName,
+                            provider: 'Email'
+                        }
+                    })
+                }).catch(err => console.log('Admin notify skipped:', err));
+
+                // 3초 후 안내 팝업
+                setTimeout(() => {
+                    alert(`환영합니다, ${nickname}님!\n\n📧 이메일 인증이 필요합니다.\n${email}로 발송된 인증 링크를 클릭해주세요.\n\n(스팸 폴더도 확인해주세요)`);
+                    window.location.href = 'login.html';
+                }, 1500);
+
+            } catch (error) {
+                hideLoading();
+                console.error('회원가입 실패:', error);
+
+                if (error.message.includes('already registered')) {
+                    showAlert('이미 가입된 이메일입니다.');
+                } else if (error.message.includes('Password')) {
+                    showAlert('비밀번호가 보안 요구사항을 충족하지 않습니다.');
+                } else {
+                    showAlert('회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                }
+            }
+        }
+
+        // 페이지 로드 시 Supabase 연결 확인
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const { data, error } = await supabaseClient.from('users').select('count').limit(1);
+                if (error) {
+                    console.warn('Supabase 연결 경고:', error.message);
+                } else {
+                    console.log('✅ Supabase 연결 성공');
+                }
+            } catch (e) {
+                console.warn('Supabase 연결 확인 실패:', e);
+            }
+        });
+    </script>
+</body>
+</html>

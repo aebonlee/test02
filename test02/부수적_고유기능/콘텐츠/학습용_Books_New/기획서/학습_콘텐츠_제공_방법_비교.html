@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습 콘텐츠 제공 방법 비교 가이드 - SSALWorks 학습용 콘텐츠</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #10B981;
+            --secondary: #F59E0B;
+            --tertiary: #2C4A8A;
+            --tertiary-dark: #1F3563;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header-title { font-size: 20px; font-weight: 700; }
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.3); border-color: white; }
+
+        /* Main Content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Markdown Styles */
+        .markdown-body h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--tertiary);
+            margin: 40px 0 20px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        .markdown-body h1:first-child { margin-top: 0; }
+        .markdown-body h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 48px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .markdown-body h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 32px 0 16px;
+        }
+        .markdown-body h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 24px 0 12px;
+        }
+        .markdown-body p { margin-bottom: 16px; color: var(--text-dark); }
+        .markdown-body blockquote {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .markdown-body blockquote p { margin: 0; font-style: italic; }
+        .markdown-body pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .markdown-body code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #e83e8c;
+        }
+        .markdown-body pre code { background: none; padding: 0; color: inherit; }
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .markdown-body th, .markdown-body td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        .markdown-body th { background: #f1f3f5; color: var(--text-dark); font-weight: 600; }
+        .markdown-body tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-body tr:hover { background: #e9ecef; }
+        .markdown-body ul, .markdown-body ol { margin: 16px 0; padding-left: 24px; }
+        .markdown-body li { margin-bottom: 8px; }
+        .markdown-body hr { border: none; border-top: 2px solid var(--border-color); margin: 40px 0; }
+        .markdown-body a { color: var(--tertiary); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        .markdown-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+        /* Print */
+        @media print {
+            .header { display: none; }
+            .main-content { padding: 0; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">학습 콘텐츠 제공 방법 비교 가이드</div>
+        <a href="javascript:history.back()" class="close-btn">← 뒤로 가기</a>
+    </header>
+    <main class="main-content">
+        <article class="markdown-body">
+            <h1>학습 콘텐츠 제공 방법 비교 가이드</h1>
+<blockquote>
+<p><strong>작성일</strong>: 2025-11-18
+<strong>카테고리</strong>: 웹개발 기초지식
+<strong>주제</strong>: 클라우드 스토리지 vs 정적 파일 배포</p>
+</blockquote>
+<hr>
+<h2>📋 개요</h2>
+<p>웹 플랫폼에서 학습 콘텐츠(마크다운 파일)를 사용자에게 제공하는 여러 가지 방법을 비교 분석합니다.</p>
+<p><strong>핵심 질문:</strong></p>
+<ul>
+<li>마크다운 파일을 어디에 저장해야 하나?</li>
+<li>어떻게 예쁘게 보여줄 수 있나?</li>
+<li>사용자들이 쉽게 접근할 수 있게 하려면?</li>
+</ul>
+<hr>
+<h2>🎯 핵심 개념</h2>
+<h3>마크다운 → HTML 렌더링</h3>
+<p><strong>사용자가 보는 것:</strong></p>
+<pre><code>❌ 안 보임: # 제목\n## 소제목\n**굵게**
+✅ 보임:    예쁜 HTML 페이지 (색상, 폰트, 레이아웃)
+</code></pre>
+<p><strong>원리:</strong></p>
+<pre><code>마크다운 파일 (.md)
+    ↓
+React/Next.js (ReactMarkdown)
+    ↓
+예쁜 HTML + CSS
+    ↓
+사용자 브라우저
+</code></pre>
+<hr>
+<h2>📊 방법 비교</h2>
+<h3>방법 1: GitHub + Vercel (정적 파일 배포) ⭐⭐⭐⭐⭐</h3>
+<h4>구조</h4>
+<pre><code>[로컬 컴퓨터]
+학습용_Books/10편.md
+    ↓ 복사
+Next.js/public/guides/10편.md
+    ↓ git push
+[GitHub]
+github.com/프로젝트
+    ↓ 자동 배포
+[Vercel]
+ssalworks.com/guides/10편
+    ↓
+[전 세계 사용자] ✅
+</code></pre>
+<h4>프로젝트 구조</h4>
+<pre><code>Next.js 프로젝트/
+├── public/
+│   └── guides/           ← 마크다운 파일 저장
+│       ├── claude/
+│       │   ├── 10편.md
+│       │   └── 11편.md
+│       └── web-dev/
+│           └── html-기초.md
+├── app/
+│   └── guides/
+│       └── [category]/[slug]/
+│           └── page.tsx  ← 렌더링 페이지
+└── ...
+</code></pre>
+<h4>렌더링 코드 예시</h4>
+<pre><code class="language-typescript">// app/guides/[category]/[slug]/page.tsx
+import fs from &#39;fs&#39;
+import ReactMarkdown from &#39;react-markdown&#39;
+
+export default async function GuidePage({ params }) {
+  // 1. 마크다운 파일 읽기
+  const markdown = await fs.readFile(
+    `public/guides/${params.category}/${params.slug}.md`,
+    &#39;utf-8&#39;
+  )
+
+  // 2. 예쁜 HTML로 변환
+  return (
+    &lt;div className=&quot;guide-container&quot;&gt;
+      &lt;ReactMarkdown className=&quot;prose prose-lg&quot;&gt;
+        {markdown}
+      &lt;/ReactMarkdown&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<h4>워크플로우</h4>
+<pre><code class="language-bash"># 1. 마크다운 작성/수정
+vim public/guides/claude/10편.md
+
+# 2. Git 커밋
+git add .
+git commit -m &quot;가이드 업데이트&quot;
+git push
+
+# 3. Vercel 자동 배포 (30초)
+# 끝!
+</code></pre>
+<h4>장점</h4>
+<ul>
+<li>✅ <strong>가장 간단</strong> - 파일 복사만 하면 됨</li>
+<li>✅ <strong>가장 빠름</strong> - CDN 캐싱으로 초고속</li>
+<li>✅ <strong>안정적</strong> - 99.9% 업타임</li>
+<li>✅ <strong>무료</strong> - GitHub + Vercel 무료 플랜</li>
+<li>✅ <strong>버전 관리</strong> - Git 자동 버전 관리</li>
+<li>✅ <strong>SEO 좋음</strong> - 검색엔진 최적화 유리</li>
+<li>✅ <strong>마크다운 그대로</strong> - 변환 작업 불필요</li>
+<li>✅ <strong>코드 하이라이팅</strong> - 자동 문법 강조</li>
+<li>✅ <strong>반응형</strong> - 모바일/태블릿 자동 대응</li>
+</ul>
+<h4>단점</h4>
+<ul>
+<li>❌ 파일 수정 시 재배포 필요<ul>
+<li><strong>BUT</strong>: Vercel은 git push만 하면 자동 배포 (30초)</li>
+<li>실제로는 큰 단점 아님</li>
+</ul>
+</li>
+</ul>
+<h4>비용</h4>
+<pre><code>GitHub: 무료 (Public 레포)
+Vercel: 무료 (개인 프로젝트, 100GB 대역폭/월)
+총 비용: ₩0
+</code></pre>
+<hr>
+<h3>방법 2: Google Drive + API ⭐⭐</h3>
+<h4>구조</h4>
+<pre><code>[Google Drive]
+학습_콘텐츠/10편.md (공유 설정)
+    ↓
+[Next.js] Google Drive API 호출
+    ↓
+마크다운 다운로드
+    ↓
+HTML 렌더링
+    ↓
+[사용자] ✅
+</code></pre>
+<h4>구현 예시</h4>
+<pre><code class="language-typescript">import { google } from &#39;googleapis&#39;
+
+async function getGuideFromDrive(fileId) {
+  const drive = google.drive(&#39;v3&#39;)
+
+  // 1. Google Drive에서 파일 다운로드
+  const response = await drive.files.get({
+    fileId: fileId,
+    alt: &#39;media&#39;
+  })
+
+  // 2. 마크다운 내용
+  const markdown = response.data
+
+  // 3. HTML로 변환
+  return &lt;ReactMarkdown&gt;{markdown}&lt;/ReactMarkdown&gt;
+}
+</code></pre>
+<h4>워크플로우</h4>
+<pre><code>1. Google Drive에 파일 업로드 (2분)
+2. 파일 ID 확인 (2분)
+3. 코드에 파일 ID 입력 (3분)
+4. git push → 배포 (1분)
+총 소요: 8분
+</code></pre>
+<h4>장점</h4>
+<ul>
+<li>✅ Google Drive UI 친숙함</li>
+<li>✅ 파일 관리 쉬움</li>
+<li>✅ 협업 쉬움 (여러 사람이 수정)</li>
+</ul>
+<h4>단점</h4>
+<ul>
+<li>❌ <strong>Google API 설정 복잡</strong> - OAuth 인증 필요</li>
+<li>❌ <strong>API 호출 제한</strong> - 하루 1000회 제한</li>
+<li>❌ <strong>속도 느림</strong> - 매번 API 호출 필요</li>
+<li>❌ <strong>캐싱 어려움</strong> - CDN 캐싱 불가</li>
+<li>❌ <strong>Google Drive 장애 시 영향</strong> - 사이트 접근 불가</li>
+<li>❌ <strong>파일 ID 관리 번거로움</strong> - 파일마다 ID 확인 필요</li>
+</ul>
+<h4>비용</h4>
+<pre><code>Google Drive: 15GB 무료 (이후 유료)
+API 사용: 무료 (하루 1000회 제한)
+</code></pre>
+<hr>
+<h3>방법 3: Notion Database + API ⭐⭐⭐</h3>
+<h4>구조</h4>
+<pre><code>[Notion Database]
+┌──────────────────────────────┐
+│ 제목    │ 카테고리 │ 내용    │
+├──────────────────────────────┤
+│ 10편... │ Claude   │ [마크다운]│
+└──────────────────────────────┘
+    ↓
+[Next.js] Notion API 호출
+    ↓
+데이터 가져오기
+    ↓
+HTML 렌더링
+    ↓
+[사용자] ✅
+</code></pre>
+<h4>구현 예시</h4>
+<pre><code class="language-typescript">import { Client } from &#39;@notionhq/client&#39;
+
+const notion = new Client({ auth: process.env.NOTION_KEY })
+
+async function getGuides() {
+  const response = await notion.databases.query({
+    database_id: &#39;xxx&#39;
+  })
+
+  return response.results.map(page =&gt; ({
+    title: page.properties.제목,
+    content: page.properties.내용
+  }))
+}
+</code></pre>
+<h4>장점</h4>
+<ul>
+<li>✅ <strong>웹에서 쉽게 편집</strong> - Notion UI 사용</li>
+<li>✅ <strong>협업 좋음</strong> - 팀원과 공동 작업</li>
+<li>✅ <strong>이미지 삽입 쉬움</strong> - 드래그 앤 드롭</li>
+<li>✅ <strong>템플릿 기능</strong> - 일관된 포맷 유지</li>
+<li>✅ <strong>모바일 편집</strong> - 스마트폰에서도 수정 가능</li>
+</ul>
+<h4>단점</h4>
+<ul>
+<li>❌ <strong>API 제한</strong> - 무료 플랜 제한적</li>
+<li>❌ <strong>비용</strong> - 고급 기능은 유료 ($8/월)</li>
+<li>❌ <strong>Notion 문법</strong> - 표준 마크다운과 다름</li>
+<li>❌ <strong>속도</strong> - API 호출로 인한 지연</li>
+</ul>
+<hr>
+<h3>방법 4: Supabase Storage ⭐⭐⭐⭐</h3>
+<h4>구조</h4>
+<pre><code>[Supabase Storage]
+guides/claude/10편.md
+    ↓
+[Next.js] Supabase Client
+    ↓
+파일 다운로드
+    ↓
+HTML 렌더링
+    ↓
+[사용자] ✅
+</code></pre>
+<h4>구현 예시</h4>
+<pre><code class="language-typescript">import { createClient } from &#39;@supabase/supabase-js&#39;
+
+const supabase = createClient(url, key)
+
+async function getGuide(path) {
+  const { data } = await supabase
+    .storage
+    .from(&#39;guides&#39;)
+    .download(path)
+
+  const markdown = await data.text()
+  return &lt;ReactMarkdown&gt;{markdown}&lt;/ReactMarkdown&gt;
+}
+</code></pre>
+<h4>장점</h4>
+<ul>
+<li>✅ <strong>DB와 통합</strong> - 같은 Supabase 프로젝트</li>
+<li>✅ <strong>빠름</strong> - CDN 지원</li>
+<li>✅ <strong>권한 관리</strong> - RLS 정책 적용</li>
+<li>✅ <strong>무료 1GB</strong> - 충분한 용량</li>
+</ul>
+<h4>단점</h4>
+<ul>
+<li>❌ 용량 제한 (1GB 무료)</li>
+<li>❌ 파일 업로드 과정 필요</li>
+</ul>
+<hr>
+<h2>📊 종합 비교표</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>GitHub+Vercel</th>
+<th>Google Drive</th>
+<th>Notion</th>
+<th>Supabase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>속도</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>안정성</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>편의성</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>비용</strong></td>
+<td>무료</td>
+<td>무료(15GB)</td>
+<td>$8/월</td>
+<td>무료(1GB)</td>
+</tr>
+<tr>
+<td><strong>설정 난이도</strong></td>
+<td>쉬움</td>
+<td>복잡</td>
+<td>중간</td>
+<td>중간</td>
+</tr>
+<tr>
+<td><strong>버전 관리</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐</td>
+</tr>
+<tr>
+<td><strong>SEO</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>협업</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>🎯 추천 방법</h2>
+<h3>초보자 / 개인 프로젝트: <strong>GitHub + Vercel</strong> ⭐⭐⭐⭐⭐</h3>
+<p><strong>이유:</strong></p>
+<ol>
+<li><strong>가장 간단</strong> - 복잡한 API 설정 불필요</li>
+<li><strong>가장 빠름</strong> - CDN 캐싱</li>
+<li><strong>완전 무료</strong> - 비용 걱정 없음</li>
+<li><strong>안정적</strong> - 대기업 인프라</li>
+<li><strong>버전 관리 자동</strong> - Git 사용</li>
+</ol>
+<p><strong>사용 케이스:</strong></p>
+<ul>
+<li>개인 블로그</li>
+<li>학습 콘텐츠 플랫폼</li>
+<li>문서 사이트</li>
+<li>포트폴리오</li>
+</ul>
+<hr>
+<h3>팀 협업 / 빠른 업데이트: <strong>Notion</strong> ⭐⭐⭐⭐</h3>
+<p><strong>이유:</strong></p>
+<ol>
+<li><strong>편집 쉬움</strong> - 웹/모바일에서 즉시 수정</li>
+<li><strong>협업 최고</strong> - 팀원과 실시간 작업</li>
+<li><strong>이미지 관리</strong> - 드래그 앤 드롭</li>
+</ol>
+<p><strong>사용 케이스:</strong></p>
+<ul>
+<li>팀 위키</li>
+<li>지식 베이스</li>
+<li>자주 업데이트되는 콘텐츠</li>
+</ul>
+<hr>
+<h3>DB 통합 필요: <strong>Supabase Storage</strong> ⭐⭐⭐⭐</h3>
+<p><strong>이유:</strong></p>
+<ol>
+<li><strong>DB와 통합</strong> - 사용자 데이터와 함께 관리</li>
+<li><strong>권한 관리</strong> - 세밀한 접근 제어</li>
+<li><strong>빠름</strong> - CDN 지원</li>
+</ol>
+<p><strong>사용 케이스:</strong></p>
+<ul>
+<li>사용자별 콘텐츠</li>
+<li>권한 기반 접근</li>
+<li>대용량 파일 관리</li>
+</ul>
+<hr>
+<h2>💡 실전 가이드: GitHub + Vercel 방식</h2>
+<h3>1단계: 프로젝트 구조 설정</h3>
+<pre><code>Next.js 프로젝트/
+├── public/
+│   └── guides/
+│       ├── claude/
+│       │   ├── 10편_서브에이전트.md
+│       │   ├── 11편_비개발분야.md
+│       │   └── 12편_MCP기초.md
+│       └── web-dev/
+│           ├── html-기초.md
+│           └── css-기초.md
+├── app/
+│   └── guides/
+│       ├── page.tsx              ← 가이드 목록
+│       └── [category]/[slug]/
+│           └── page.tsx          ← 가이드 상세
+└── ...
+</code></pre>
+<h3>2단계: 가이드 목록 페이지</h3>
+<pre><code class="language-typescript">// app/guides/page.tsx
+import fs from &#39;fs&#39;
+import Link from &#39;next/link&#39;
+
+export default function GuidesPage() {
+  // public/guides/ 폴더 스캔
+  const categories = fs.readdirSync(&#39;public/guides&#39;)
+
+  return (
+    &lt;div className=&quot;guides-page&quot;&gt;
+      &lt;h1&gt;학습 가이드&lt;/h1&gt;
+      {categories.map(category =&gt; (
+        &lt;div key={category}&gt;
+          &lt;h2&gt;{category}&lt;/h2&gt;
+          &lt;ul&gt;
+            {/* 카테고리별 파일 목록 */}
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<h3>3단계: 가이드 상세 페이지</h3>
+<pre><code class="language-typescript">// app/guides/[category]/[slug]/page.tsx
+import fs from &#39;fs&#39;
+import path from &#39;path&#39;
+import ReactMarkdown from &#39;react-markdown&#39;
+import { Prism as SyntaxHighlighter } from &#39;react-syntax-highlighter&#39;
+import { vscDarkPlus } from &#39;react-syntax-highlighter/dist/esm/styles/prism&#39;
+
+export default async function GuidePage({ params }) {
+  const { category, slug } = params
+
+  // 1. 마크다운 파일 읽기
+  const filePath = path.join(
+    process.cwd(),
+    &#39;public/guides&#39;,
+    category,
+    `${slug}.md`
+  )
+  const markdown = await fs.readFile(filePath, &#39;utf-8&#39;)
+
+  // 2. HTML로 렌더링
+  return (
+    &lt;article className=&quot;guide-article prose prose-lg&quot;&gt;
+      &lt;ReactMarkdown
+        components={{
+          // 코드 블록 하이라이팅
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || &#39;&#39;)
+            return !inline &amp;&amp; match ? (
+              &lt;SyntaxHighlighter
+                style={vscDarkPlus}
+                language={match[1]}
+                PreTag=&quot;div&quot;
+              &gt;
+                {String(children).replace(/\n$/, &#39;&#39;)}
+              &lt;/SyntaxHighlighter&gt;
+            ) : (
+              &lt;code className={className} {...props}&gt;
+                {children}
+              &lt;/code&gt;
+            )
+          }
+        }}
+      &gt;
+        {markdown}
+      &lt;/ReactMarkdown&gt;
+    &lt;/article&gt;
+  )
+}
+</code></pre>
+<h3>4단계: 스타일링 (Tailwind CSS)</h3>
+<pre><code class="language-css">/* globals.css */
+
+/* Tailwind Typography 플러그인 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.prose {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.prose h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.prose pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+</code></pre>
+<h3>5단계: 배포</h3>
+<pre><code class="language-bash"># 1. 마크다운 파일 추가
+cp 학습용_Books/*.md Next.js프로젝트/public/guides/
+
+# 2. Git 커밋
+git add .
+git commit -m &quot;학습 가이드 추가&quot;
+git push origin main
+
+# 3. Vercel 자동 배포 (30초)
+# 완료!
+</code></pre>
+<hr>
+<h2>🔧 필요한 패키지</h2>
+<pre><code class="language-bash"># Next.js 프로젝트에 설치
+npm install react-markdown
+npm install react-syntax-highlighter
+npm install @types/react-syntax-highlighter --save-dev
+
+# Tailwind Typography (선택)
+npm install @tailwindcss/typography
+</code></pre>
+<hr>
+<h2>📱 사용자 경험</h2>
+<h3>URL 구조</h3>
+<pre><code>https://ssalworks.com/guides                    ← 가이드 목록
+https://ssalworks.com/guides/claude/10편        ← 가이드 읽기
+https://ssalworks.com/guides/web-dev/html-기초  ← 가이드 읽기
+</code></pre>
+<h3>화면 예시</h3>
+<pre><code>┌──────────────────────────────────────────────┐
+│  SSALWorks                    [홈] [가이드]  │
+├──────────────────────────────────────────────┤
+│                                              │
+│  Claude Code 서브 에이전트                    │
+│  ══════════════════════════                  │
+│                                              │
+│  ## 1. 개요                                  │
+│                                              │
+│  서브 에이전트는 특정 작업을 담당합니다.       │
+│                                              │
+│  ┌────────────────────────────────────┐     │
+│  │ claude code --agent backend        │     │
+│  └────────────────────────────────────┘     │
+│                                              │
+│  • Backend Developer                         │
+│  • Frontend Developer                        │
+│                                              │
+└──────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2>⚠️ 주의사항</h2>
+<h3>1. 파일명 규칙</h3>
+<pre><code>✅ 올바름: 10편_서브에이전트.md
+✅ 올바름: html-기초.md
+❌ 피할 것: 10편 (띄어쓰기).md
+❌ 피할 것: 특수문자@#$.md
+</code></pre>
+<h3>2. 이미지 처리</h3>
+<pre><code class="language-markdown">&lt;!-- 상대 경로 사용 --&gt;
+![이미지](./images/screenshot.png)
+
+&lt;!-- 또는 public 폴더 --&gt;
+![이미지](/guides/images/screenshot.png)
+</code></pre>
+<h3>3. 마크다운 문법</h3>
+<pre><code class="language-markdown"># H1 제목
+## H2 소제목
+### H3 소소제목
+
+**굵게**
+*기울임*
+`코드`
+
+```언어
+코드 블록
+</code></pre>
+<ul>
+<li>목록</li>
+<li>항목</li>
+</ul>
+<ol>
+<li>번호</li>
+<li>목록</li>
+</ol>
+<pre><code>
+---
+
+## 🎓 학습 포인트
+
+### 1. 정적 파일 vs 동적 파일
+
+**정적 파일 (Static):**
+- 미리 생성된 파일
+- CDN 캐싱 가능
+- 빠름
+- 예: HTML, CSS, 이미지, 마크다운
+
+**동적 파일 (Dynamic):**
+- 요청마다 생성
+- 서버 처리 필요
+- 느림
+- 예: API 응답, DB 쿼리 결과
+
+### 2. CDN (Content Delivery Network)
+</code></pre>
+<p>사용자 (한국)
+    ↓
+CDN (서울)  ← 캐시됨 (빠름!)
+    ↓
+원본 서버 (미국) ← 최초 1회만 접근</p>
+<pre><code>
+### 3. 마크다운 렌더링 라이브러리
+
+| 라이브러리 | 특징 | 인기도 |
+|-----------|------|--------|
+| **react-markdown** | 가볍고 안정적 | ⭐⭐⭐⭐⭐ |
+| **remark/rehype** | 플러그인 풍부 | ⭐⭐⭐⭐ |
+| **marked** | 빠름 | ⭐⭐⭐ |
+
+---
+
+## 🚀 다음 단계
+
+### 학습 추천 순서
+
+1. **Next.js 기초** 학습
+   - 라우팅
+   - 정적 파일 서빙
+   - 컴포넌트
+
+2. **마크다운 렌더링** 실습
+   - react-markdown 사용
+   - 스타일 커스터마이징
+
+3. **Git &amp; GitHub** 학습
+   - 기본 명령어
+   - 브랜치 전략
+
+4. **Vercel 배포** 실습
+   - GitHub 연동
+   - 자동 배포 설정
+
+---
+
+## 📚 참고 자료
+
+### 공식 문서
+- [Next.js 공식 문서](https://nextjs.org/docs)
+- [React Markdown](https://github.com/remarkjs/react-markdown)
+- [Vercel 문서](https://vercel.com/docs)
+- [Tailwind CSS Typography](https://tailwindcss.com/docs/typography-plugin)
+
+### 예제 프로젝트
+- [Next.js Blog Starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter)
+- [Markdown Blog Example](https://github.com/vercel/next.js/tree/canary/examples/with-markdown)
+
+---
+
+## 💡 실전 팁
+
+### 1. 검색 기능 추가
+```typescript
+// 빌드 시 검색 인덱스 생성
+const guides = fs.readdirSync(&#39;public/guides&#39;)
+const searchIndex = guides.map(file =&gt; ({
+  title: extractTitle(file),
+  path: file,
+  excerpt: extractExcerpt(file)
+}))
+// JSON으로 저장
+fs.writeFileSync(&#39;search-index.json&#39;, JSON.stringify(searchIndex))
+</code></pre>
+<h3>2. 목차 자동 생성</h3>
+<pre><code class="language-typescript">import remarkToc from &#39;remark-toc&#39;
+
+&lt;ReactMarkdown remarkPlugins={[remarkToc]}&gt;
+  {markdown}
+&lt;/ReactMarkdown&gt;
+</code></pre>
+<h3>3. 조회수 추적</h3>
+<pre><code class="language-typescript">// Supabase에 조회수 기록
+await supabase
+  .from(&#39;guide_views&#39;)
+  .insert({ guide_id: slug, viewed_at: new Date() })
+</code></pre>
+<hr>
+<h2>✅ 체크리스트</h2>
+<h3>학습 콘텐츠 제공 시스템 구축</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Next.js 프로젝트 생성</li>
+<li><input disabled="" type="checkbox"> public/guides/ 폴더 생성</li>
+<li><input disabled="" type="checkbox"> 마크다운 파일 복사</li>
+<li><input disabled="" type="checkbox"> 가이드 목록 페이지 구현</li>
+<li><input disabled="" type="checkbox"> 가이드 상세 페이지 구현</li>
+<li><input disabled="" type="checkbox"> 스타일링 적용</li>
+<li><input disabled="" type="checkbox"> 코드 하이라이팅 설정</li>
+<li><input disabled="" type="checkbox"> GitHub 레포지토리 생성</li>
+<li><input disabled="" type="checkbox"> Vercel 프로젝트 연결</li>
+<li><input disabled="" type="checkbox"> 자동 배포 테스트</li>
+<li><input disabled="" type="checkbox"> 도메인 연결 (선택)</li>
+<li><input disabled="" type="checkbox"> 검색 기능 추가 (선택)</li>
+<li><input disabled="" type="checkbox"> 조회수 추적 (선택)</li>
+</ul>
+<hr>
+<h2>🎯 결론</h2>
+<p><strong>학습 콘텐츠 제공 최선의 방법:</strong></p>
+<ol>
+<li><strong>간단한 플랫폼</strong>: GitHub + Vercel (정적 파일)</li>
+<li><strong>팀 협업 중시</strong>: Notion Database</li>
+<li><strong>DB 통합 필요</strong>: Supabase Storage</li>
+</ol>
+<p><strong>대부분의 경우 GitHub + Vercel 방식을 추천합니다!</strong></p>
+<p><strong>이유:</strong></p>
+<ul>
+<li>✅ 무료</li>
+<li>✅ 빠름</li>
+<li>✅ 안정적</li>
+<li>✅ 버전 관리 자동</li>
+<li>✅ SEO 최적화</li>
+<li>✅ 설정 간단</li>
+</ul>
+<hr>
+<p><strong>작성자</strong>: Claude Code
+<strong>버전</strong>: 1.0
+<strong>최종 수정</strong>: 2025-11-18</p>
+
+        </article>
+    </main>
+</body>
+</html>

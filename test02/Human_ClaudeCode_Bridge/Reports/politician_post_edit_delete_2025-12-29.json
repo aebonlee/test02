@@ -1,0 +1,76 @@
+{
+  "task_id": "P3BA_POLITICIAN_POST_EDIT_DELETE",
+  "task_name": "정치인 게시글 수정/삭제 API 기능 추가",
+  "date": "2025-12-29",
+  "status": "completed",
+  "summary": "정치인 세션 토큰을 사용한 게시글 수정/삭제 API 기능 구현 및 배포 테스트 완료.",
+  "completed_tasks": [
+    {
+      "task": "API 코드 수정",
+      "file": "src/app/api/posts/[id]/route.ts",
+      "changes": [
+        "validatePoliticianSession import 추가",
+        "politicianUpdatePostSchema 스키마 추가 (title, subject, content, politician_id, session_token)",
+        "politicianDeleteSchema 스키마 추가 (politician_id, session_token)",
+        "PATCH: 정치인 세션 토큰 인증 로직 추가 (기존 사용자 인증과 병행)",
+        "DELETE: 정치인 세션 토큰 인증 로직 추가 (기존 사용자 인증과 병행)"
+      ]
+    },
+    {
+      "task": "빌드 검증",
+      "result": "성공",
+      "details": "npm run build 완료, 에러 없음"
+    },
+    {
+      "task": "Git 커밋 & 푸시",
+      "commit": "09a7584",
+      "message": "feat: add politician session token support for post edit/delete"
+    },
+    {
+      "task": "배포 환경 테스트",
+      "result": "성공",
+      "details": [
+        "Vercel 환경변수 SUPABASE_SERVICE_ROLE_KEY 확인됨 (Production)",
+        "게시글 수정 (PATCH) 테스트: 성공",
+        "게시글 삭제 (DELETE) 테스트: 성공"
+      ],
+      "tested_at": "2025-12-28T19:55:10.190Z"
+    }
+  ],
+  "api_usage": {
+    "patch_endpoint": "PATCH /api/posts/[id]",
+    "patch_body": {
+      "politician_id": "8자리 정치인 ID",
+      "session_token": "64자리 세션 토큰",
+      "title": "수정할 제목 (선택)",
+      "content": "수정할 내용 (선택)"
+    },
+    "delete_endpoint": "DELETE /api/posts/[id]",
+    "delete_body": {
+      "politician_id": "8자리 정치인 ID",
+      "session_token": "64자리 세션 토큰"
+    }
+  },
+  "test_data": {
+    "politician": {
+      "id": "9dc9f3b4",
+      "name": "안태준",
+      "email": "wksun999@naver.com"
+    },
+    "session_token": "bc5c49781c73ea1c2bd7f4ad8c6a990c94b208a3d4c8dc2a79bcebe4cd1f6a4c",
+    "test_post_id": "1c531064-dd10-4a6f-b7c2-24ef5219843e"
+  },
+  "files_modified": [
+    "1_Frontend/src/app/api/posts/[id]/route.ts"
+  ],
+  "related_files": [
+    "1_Frontend/src/lib/auth/politicianSession.ts",
+    "1_Frontend/src/lib/supabase/server.ts"
+  ],
+  "resolved_issues": [
+    {
+      "issue": "politician_sessions 테이블 PostgREST 노출 문제",
+      "resolution": "스키마 캐시가 자동 갱신됨. Vercel 환경변수 정상 설정 확인."
+    }
+  ]
+}

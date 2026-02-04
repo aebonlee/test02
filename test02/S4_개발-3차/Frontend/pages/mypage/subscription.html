@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서비스 이용 현황 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-link { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 500; font-size: 14px; }
+        .nav-link:hover, .nav-link.active { color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 700px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-icon { font-size: 36px; margin-bottom: 12px; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--gray-900); }
+        .stat-label { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+
+        .stat-value.success { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-title { font-size: 18px; font-weight: 600; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        .info-item {
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .info-label { font-size: 13px; color: var(--gray-500); margin-bottom: 4px; }
+        .info-value { font-size: 16px; font-weight: 600; }
+
+        .notice-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+        }
+
+        .toast.error { background: var(--danger); }
+        .toast.success { background: var(--success); }
+
+        .profile-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #D1FAE5; color: #065F46; }
+        .badge-paused { background: #FEF3C7; color: #92400E; }
+        .badge-free { background: var(--gray-100); color: var(--gray-700); }
+
+        .btn-edit {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 14px;
+            background: var(--primary);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover { opacity: 0.9; }
+        .btn-edit.btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <div class="nav-links">
+            <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+        </div>
+    </nav>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>My Page</span>
+            <span>›</span>
+            <span>서비스 이용 현황</span>
+        </div>
+
+        <h1 class="page-title">📋 서비스 이용 현황</h1>
+
+        <!-- 서비스 이용 현황 메인 카드 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">서비스 이용 현황</h3>
+            </div>
+
+            <!-- 1. 서비스 상태 -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--gray-50); border-radius: 8px; margin-bottom: 20px;">
+                <div style="font-size: 28px;">📋</div>
+                <div style="flex: 1;">
+                    <div style="font-size: 14px; color: var(--gray-500); margin-bottom: 4px;">서비스 이용 상태</div>
+                    <div style="font-weight: 600; font-size: 18px;">
+                        <span class="profile-badge" id="serviceStatusBadge" style="font-size: 14px;">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 빌더 계정 개설비 섹션 -->
+            <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-weight: 600; color: var(--gray-700);">🏠 빌더 계정 개설비</div>
+                    <button class="btn-edit" id="installFeePayBtn" onclick="payInstallFee()" style="background: #2C4A8A;">
+                        💳 입금하기
+                    </button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <div class="info-item">
+                        <div class="info-label">납부 상태</div>
+                        <div class="info-value" id="installFeeStatusMain">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">납부일</div>
+                        <div class="info-value" id="installFeePaidDate">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 이용료 섹션 -->
+            <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-weight: 600; color: var(--gray-700);">📅 월 이용료</div>
+                    <button class="btn-edit" id="autoPayBtn" onclick="setupAutoPay()" style="background: var(--primary);">
+                        🔄 자동 결제 설정
+                    </button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <div class="info-item">
+                        <div class="info-label">무료 이용 기간</div>
+                        <div class="info-value" id="freePeriodRemaining">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">다음 결제일</div>
+                        <div class="info-value" id="nextPayDate">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 결제수단 관리 -->
+            <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-weight: 600; color: var(--gray-700);">💳 결제수단 관리</div>
+                    <button class="btn-edit btn-secondary" onclick="changePaymentMethod()">
+                        결제수단 변경
+                    </button>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">등록된 결제수단</div>
+                    <div class="info-value" id="paymentMethod">미등록</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이용 요금 안내 -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">이용 요금 안내</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-size: 24px;">🏠</div>
+                        <div>
+                            <div style="font-weight: 600;">빌더 계정 개설비</div>
+                            <div style="font-size: 12px; color: var(--gray-500);">1회 (무통장 입금)</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; color: var(--primary);">₩3,000,000</div>
+                        <div style="font-size: 12px; color: var(--gray-500);" id="installFeeStatus">미납</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-size: 24px;">📅</div>
+                        <div>
+                            <div style="font-weight: 600;">월 이용료</div>
+                            <div style="font-size: 12px; color: var(--gray-500);">4개월차부터 납부</div>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: var(--primary);">₩50,000/월</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-size: 24px;">🎁</div>
+                        <div>
+                            <div style="font-weight: 600;">초기 무료 크레딧</div>
+                            <div style="font-size: 12px; color: var(--gray-500);">빌더 계정 개설비 입금 확인 시 자동 지급</div>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: var(--success);">₩50,000</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--gray-50); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="font-size: 24px;">⏰</div>
+                        <div>
+                            <div style="font-weight: 600;">무료 이용 기간</div>
+                            <div style="font-size: 12px; color: var(--gray-500);">빌더 계정 개설비 입금 확인 후 1~3개월차</div>
+                        </div>
+                    </div>
+                    <div style="font-weight: 700; color: var(--accent);">3개월</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 무통장 입금 모달 -->
+    <div id="depositModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 420px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3 style="font-size: 20px; font-weight: 700;">🏦 무통장 입금 안내</h3>
+                <button onclick="closeDepositModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-500);">×</button>
+            </div>
+
+            <div style="background: var(--gray-50); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">입금 은행</span>
+                    <span style="font-weight: 600;">하나은행</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">계좌번호</span>
+                    <span style="font-weight: 600; font-family: monospace;">287-910921-40507</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">예금주</span>
+                    <span style="font-weight: 600;">선웅규</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                    <span style="color: var(--gray-500);">입금 금액</span>
+                    <span style="font-weight: 700; color: var(--primary); font-size: 18px;" id="depositAmount">₩3,000,000</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">입금자명</label>
+                <input type="text" id="depositorNameModal" placeholder="입금자명을 입력하세요"
+                    style="width: 100%; padding: 12px 16px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+
+            <div style="background: #FEF3C7; border-radius: 8px; padding: 14px; margin-bottom: 24px;">
+                <div style="font-size: 13px; color: #92400E;">
+                    ⚠️ 입금 후 아래 버튼을 눌러 입금 완료를 확인해 주세요.
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button onclick="closeDepositModal()" style="flex: 1; padding: 14px; border: 1px solid var(--gray-300); border-radius: 8px; background: white; font-weight: 600; cursor: pointer;">
+                    취소
+                </button>
+                <button onclick="submitDepositNotification()" style="flex: 2; padding: 14px; border: none; border-radius: 8px; background: #2C4A8A; color: white; font-weight: 600; cursor: pointer;">
+                    ✓ 입금 완료 확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        async function checkAuth() {
+            showLoading();
+            // 설치비 정보 먼저 로드 (병렬)
+            loadInstallationInfo();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    console.log('로그인되지 않음 - 샘플 데이터 표시');
+                    showSampleData();
+                    hideLoading();
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+            } catch (error) {
+                console.log('인증 확인 실패 - 샘플 데이터 표시');
+                showSampleData();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function showSampleData() {
+            // 서비스 상태
+            const badge = document.getElementById('serviceStatusBadge');
+            badge.textContent = '무료 체험';
+            badge.className = 'profile-badge badge-free';
+
+            // 빌더 계정 개설비
+            document.getElementById('installFeeStatusMain').textContent = '미납';
+            document.getElementById('installFeeStatusMain').style.color = 'var(--warning)';
+            document.getElementById('installFeePaidDate').textContent = '-';
+
+            // 월 이용료
+            document.getElementById('freePeriodRemaining').textContent = '-';
+            document.getElementById('nextPayDate').textContent = '-';
+
+            // 결제수단
+            document.getElementById('paymentMethod').textContent = '미등록';
+
+            // 이용 요금 안내 - 개설비 상태
+            document.getElementById('installFeeStatus').textContent = '미납';
+            document.getElementById('installFeeStatus').style.color = 'var(--warning)';
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+                renderSubscription();
+            } catch (error) {
+                showToast('서비스 이용 현황을 불러오는데 실패했습니다.', 'error');
+            }
+        }
+
+        function renderSubscription() {
+            if (!userData) return;
+
+            // 1. 서비스 상태 배지
+            const badge = document.getElementById('serviceStatusBadge');
+            const statusText = getStatusText(userData.subscription_status);
+            badge.textContent = statusText;
+            badge.className = 'profile-badge ' + getBadgeClass(userData.subscription_status);
+
+            // 2. 빌더 계정 개설비
+            const installText = userData.installation_fee_paid ? '완료' : '미납';
+            const installFeeMain = document.getElementById('installFeeStatusMain');
+            installFeeMain.textContent = installText;
+            installFeeMain.style.color = userData.installation_fee_paid ? 'var(--success)' : 'var(--warning)';
+
+            document.getElementById('installFeePaidDate').textContent = formatDate(userData.installation_date) || '-';
+
+            // 3. 무료 이용 기간 & 다음 결제일 계산
+            if (userData.installation_fee_paid && userData.installation_date) {
+                const installDate = new Date(userData.installation_date);
+                const freeEndDate = new Date(installDate);
+                freeEndDate.setMonth(freeEndDate.getMonth() + 3);
+
+                const today = new Date();
+                const daysRemaining = Math.ceil((freeEndDate - today) / (1000 * 60 * 60 * 24));
+
+                if (daysRemaining > 0) {
+                    document.getElementById('freePeriodRemaining').textContent = `${daysRemaining}일 남음`;
+                    document.getElementById('freePeriodRemaining').style.color = 'var(--success)';
+                } else {
+                    document.getElementById('freePeriodRemaining').textContent = '종료';
+                    document.getElementById('freePeriodRemaining').style.color = 'var(--gray-500)';
+                }
+
+                document.getElementById('nextPayDate').textContent = formatDate(freeEndDate);
+            } else {
+                document.getElementById('freePeriodRemaining').textContent = '-';
+                document.getElementById('nextPayDate').textContent = '-';
+            }
+
+            // 4. 결제수단
+            const paymentMethod = userData.payment_method || '미등록';
+            document.getElementById('paymentMethod').textContent = paymentMethod;
+
+            // 납부하기 버튼 숨김 (이미 납부 완료 시)
+            if (userData.installation_fee_paid) {
+                document.getElementById('installFeePayBtn').style.display = 'none';
+            }
+
+            // 5. 이용 요금 안내 - 개설비 상태
+            const installFeeStatus = document.getElementById('installFeeStatus');
+            installFeeStatus.textContent = userData.installation_fee_paid ? '납부 완료' : '미납';
+            installFeeStatus.style.color = userData.installation_fee_paid ? 'var(--success)' : 'var(--warning)';
+        }
+
+        function getBadgeClass(status) {
+            const map = {
+                'free': 'badge-free',
+                'active': 'badge-active',
+                'paused': 'badge-paused',
+                'suspended': 'badge-paused',
+                'cancelled': 'badge-paused'
+            };
+            return map[status] || 'badge-free';
+        }
+
+        let currentDepositType = 'install_fee'; // install_fee or credit
+        let currentDepositAmount = 3000000;
+        let installationFeeAmount = 3000000; // admin_settings에서 가져온 값
+
+        // 페이지 로드 시 설치비 정보 가져오기
+        async function loadInstallationInfo() {
+            try {
+                const res = await fetch('/api/Backend_APIs/payment/installation/info');
+                const data = await res.json();
+                if (data.success && data.installation_fee) {
+                    installationFeeAmount = data.installation_fee.amount;
+                }
+            } catch (e) {
+                console.log('Installation info fetch failed, using default');
+            }
+        }
+
+        // 빌더 계정 개설비 납부하기
+        function payInstallFee() {
+            currentDepositType = 'install_fee';
+            currentDepositAmount = installationFeeAmount;
+            document.getElementById('depositAmount').textContent = '₩' + installationFeeAmount.toLocaleString();
+            openDepositModal();
+        }
+
+        // 모달 열기/닫기
+        function openDepositModal() {
+            document.getElementById('depositModal').style.display = 'flex';
+            document.getElementById('depositorNameModal').value = '';
+        }
+
+        function closeDepositModal() {
+            document.getElementById('depositModal').style.display = 'none';
+        }
+
+        // 입금 완료 알림 제출
+        async function submitDepositNotification() {
+            const depositorName = document.getElementById('depositorNameModal').value.trim();
+            if (!depositorName) {
+                showToast('입금자명을 입력해주세요.', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                // deposit_notifications 테이블에 저장
+                const { error } = await supabaseClient
+                    .from('deposit_notifications')
+                    .insert({
+                        user_id: currentUser?.id || 'GUEST',
+                        deposit_type: currentDepositType,
+                        amount: currentDepositAmount,
+                        depositor_name: depositorName,
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+
+                // 관리자에게 입금 확인 요청 알림 발송 (비동기, 실패해도 무시)
+                fetch('/api/Backend_APIs/admin-notify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'installation_request',
+                        data: {
+                            email: currentUser?.email || 'Unknown',
+                            depositor_name: depositorName,
+                            amount: currentDepositAmount
+                        }
+                    })
+                }).catch(err => console.log('Admin notify skipped:', err));
+
+                closeDepositModal();
+                showToast('입금 완료 확인이 접수되었습니다.', 'success');
+            } catch (error) {
+                console.error('입금 알림 저장 실패:', error);
+                showToast('입금 알림 접수에 실패했습니다. 다시 시도해주세요.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 월 이용료 자동 결제 설정 (토스페이먼츠)
+        function setupAutoPay() {
+            alert('자동 결제 설정\n\n' +
+                  '토스페이먼츠를 통한 자동 결제 설정 페이지로 이동합니다.\n' +
+                  '(추후 구현 예정)');
+        }
+
+        // 결제수단 변경
+        function changePaymentMethod() {
+            alert('결제수단 변경\n\n' +
+                  '토스페이먼츠를 통한 결제수단 변경 페이지로 이동합니다.\n' +
+                  '(추후 구현 예정)');
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = 'login.html';
+        }
+
+        function getStatusText(status) {
+            const map = { 'free': '무료', 'active': '활성', 'paused': '일시정지', 'suspended': '정지', 'cancelled': '해지' };
+            return map[status] || '무료';
+        }
+
+        function formatDate(d) { return d ? new Date(d).toLocaleDateString('ko-KR') : null; }
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

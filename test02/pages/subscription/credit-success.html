@@ -1,0 +1,376 @@
+<!--
+@task S4F3
+@description 크레딧 충전 성공 페이지 - 결제 완료 후 크레딧 충전 처리
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 완료 - SSAL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .details {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .detail-value.highlight {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .error-state {
+            display: none;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+        }
+
+        .error-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: white;
+            stroke-width: 3;
+        }
+
+        .error-message {
+            font-size: 1rem;
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .button {
+            padding: 15px 35px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .button-secondary:hover {
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 480px) {
+            .success-card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .message {
+                font-size: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-card">
+            <!-- 로딩 상태 -->
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p class="loading-text">결제 확인 중...</p>
+            </div>
+
+            <!-- 성공 상태 -->
+            <div id="successState" style="display: none;">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <h1>결제가 완료되었습니다!</h1>
+                <p class="message">크레딧이 충전되었습니다.</p>
+
+                <div class="details">
+                    <div class="detail-row">
+                        <span class="detail-label">결제 금액</span>
+                        <span class="detail-value" id="paidAmount">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">충전 크레딧</span>
+                        <span class="detail-value highlight" id="chargedCredits">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">현재 잔액</span>
+                        <span class="detail-value" id="currentBalance">-</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a href="../../index.html" class="button button-primary">대시보드로</a>
+                    <a href="credit-purchase.html" class="button button-secondary">추가 충전</a>
+                </div>
+            </div>
+
+            <!-- 에러 상태 -->
+            <div id="errorState" class="error-state">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <h1>결제 처리 실패</h1>
+                <p class="error-message" id="errorMessage">결제 확인 중 오류가 발생했습니다.</p>
+
+                <div class="button-group">
+                    <a href="credit-purchase.html" class="button button-primary">다시 시도</a>
+                    <a href="../../index.html" class="button button-secondary">대시보드로</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from '../../supabase-client.js';
+
+        // URL 파라미터에서 결제 정보 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentKey = urlParams.get('paymentKey');
+        const orderId = urlParams.get('orderId');
+        const amount = urlParams.get('amount');
+
+        // Supabase 클라이언트
+        const supabase = createClient();
+
+        // 페이지 로드 시 결제 확인
+        async function confirmPayment() {
+            try {
+                // 필수 파라미터 확인
+                if (!paymentKey || !orderId || !amount) {
+                    throw new Error('결제 정보가 올바르지 않습니다.');
+                }
+
+                // 사용자 인증 확인
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                if (authError || !user) {
+                    throw new Error('로그인이 필요합니다.');
+                }
+
+                // 결제 확인 API 호출 (Backend API)
+                const response = await fetch('/api/Backend_APIs/credit-charge.js', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        paymentKey,
+                        orderId,
+                        amount: parseInt(amount)
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || '결제 확인에 실패했습니다.');
+                }
+
+                const result = await response.json();
+
+                // 성공 상태 표시
+                showSuccess(result);
+
+            } catch (error) {
+                console.error('결제 확인 오류:', error);
+                showError(error.message);
+            }
+        }
+
+        // 성공 상태 표시
+        function showSuccess(result) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+
+            document.getElementById('paidAmount').textContent =
+                `${result.amount?.toLocaleString() || '-'}원`;
+            document.getElementById('chargedCredits').textContent =
+                `+${result.charged_credits?.toLocaleString() || '-'} 크레딧`;
+            document.getElementById('currentBalance').textContent =
+                `${result.current_balance?.toLocaleString() || '-'} 크레딧`;
+        }
+
+        // 에러 상태 표시
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorState').classList.remove('error-state');
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // 페이지 로드 시 실행
+        confirmPayment();
+    </script>
+</body>
+</html>

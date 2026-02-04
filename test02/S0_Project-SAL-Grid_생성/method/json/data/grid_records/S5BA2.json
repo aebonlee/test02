@@ -1,0 +1,16 @@
+{
+  "task_id": "S5BA2",
+  "task_name": "예시 프로젝트 서약서 시스템",
+  "stage": 5,
+  "area": "BA",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "task_instruction": "SSAL Works 예시 프로젝트 열람 전 서약서 동의 시스템. 1회 연결 제한, DB 저장, 이메일 발송 기능.",
+  "task_agent": "backend-developer",
+  "execution_type": "AI-Only",
+  "generated_files": "index.html, api/Backend_APIs/send-agreement-email.js, S4_개발-3차/Database/30_download_agreements.sql",
+  "verification_instruction": "서약서 모달 표시, DB 저장, 이메일 발송, 1회 연결 제한 검증",
+  "verification_agent": "code-reviewer",
+  "remarks": "이미 완료된 작업. 2025-12-28 구현 완료."
+}

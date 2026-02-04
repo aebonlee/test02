@@ -1,0 +1,100 @@
+<!--
+@task S4F4
+@description 결제 수단 등록 UI - 카드/계좌 정보 입력 및 빌링키 발급
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 수단 관리 - SSAL</title>
+    <link rel="stylesheet" href="../../payment-methods.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="page-header">
+            <h1>결제 수단 관리</h1>
+            <p class="subtitle">구독 결제에 사용할 결제 수단을 등록하고 관리하세요</p>
+        </header>
+
+        <!-- 안내 섹션 -->
+        <section class="info-section">
+            <div class="info-card">
+                <div class="info-icon">ℹ️</div>
+                <div class="info-content">
+                    <h3>결제 수단 등록 안내</h3>
+                    <ul>
+                        <li>등록된 결제 수단은 구독 자동 결제에 사용됩니다</li>
+                        <li>결제 수단은 안전하게 암호화되어 저장됩니다</li>
+                        <li>기본 결제 수단을 설정하면 우선적으로 사용됩니다</li>
+                        <li>언제든지 결제 수단을 변경하거나 삭제할 수 있습니다</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 등록 버튼 -->
+        <div class="add-payment-section">
+            <button class="add-payment-button" id="addPaymentButton">
+                <span class="button-icon">+</span>
+                새 결제 수단 등록
+            </button>
+        </div>
+
+        <!-- 등록된 결제 수단 목록 -->
+        <section class="payment-methods-section">
+            <h2>등록된 결제 수단</h2>
+
+            <!-- 로딩 상태 -->
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p>결제 수단을 불러오는 중...</p>
+            </div>
+
+            <!-- 빈 상태 -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">💳</div>
+                <h3>등록된 결제 수단이 없습니다</h3>
+                <p>새 결제 수단을 등록하고 구독 서비스를 이용해보세요</p>
+            </div>
+
+            <!-- 결제 수단 목록 -->
+            <div class="payment-methods-grid" id="paymentMethodsGrid" style="display: none;">
+                <!-- 결제 수단 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </section>
+    </div>
+
+    <!-- 결제 수단 등록 모달 -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>새 결제 수단 등록</h2>
+                <button class="modal-close" id="modalCloseButton">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 토스 빌링 위젯이 여기에 렌더링됩니다 -->
+                <div id="payment-widget"></div>
+                <div id="agreement"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="cancel-button" id="cancelButton">취소</button>
+                <button class="register-button" id="registerButton" disabled>등록하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>처리 중...</p>
+    </div>
+
+    <!-- Toss Payments SDK -->
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+    <script type="module" src="../../payment-methods.js"></script>
+</body>
+</html>

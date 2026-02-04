@@ -1,0 +1,35 @@
+{
+  "report_name": "RLS 프로덕션 적용",
+  "date": "2026-01-03",
+  "status": "completed",
+  "summary": "learning_contents, faqs 테이블에 프로덕션용 RLS 정책 적용 완료",
+  "tables_updated": [
+    {
+      "table": "learning_contents",
+      "policies_applied": [
+        "learning_contents_insert_auth (INSERT - authenticated only)",
+        "learning_contents_update_auth (UPDATE - authenticated only)",
+        "learning_contents_delete_auth (DELETE - authenticated only)"
+      ],
+      "test_result": "✅ anon INSERT 차단됨 (401)"
+    },
+    {
+      "table": "faqs",
+      "policies_applied": [
+        "faqs_insert_authenticated (INSERT - authenticated only)",
+        "faqs_update_authenticated (UPDATE - authenticated only)",
+        "faqs_delete_authenticated (DELETE - authenticated only)"
+      ],
+      "test_result": "✅ anon INSERT 차단됨 (401)"
+    }
+  ],
+  "security_improvement": {
+    "before": "anon 사용자가 INSERT/UPDATE/DELETE 가능 (보안 취약)",
+    "after": "authenticated 사용자만 INSERT/UPDATE/DELETE 가능 (보안 강화)"
+  },
+  "files_updated": [
+    ".claude/CAUTION.md - RLS 항목 완료 표시",
+    "S1_개발_준비/Database/RLS_PRODUCTION_APPLY.sql - 적용 스크립트"
+  ],
+  "verification_method": "Node.js https 모듈로 anon key 사용하여 INSERT 시도 → 401 응답 확인"
+}

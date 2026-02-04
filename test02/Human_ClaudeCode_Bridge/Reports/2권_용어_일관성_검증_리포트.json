@@ -1,0 +1,239 @@
+{
+  "check_type": "용어 일관성 검증",
+  "checked_date": "2025-12-21",
+  "total_files": 25,
+  "검증_결과": {
+    "overall_consistency": "높음",
+    "summary": "대부분의 용어가 일관되게 사용되고 있으나, 06편과 07편에서 'Service' 용어가 'External Service'로 통일되지 않은 3건 발견"
+  },
+
+  "terminology_issues": [
+    {
+      "issue_type": "용어 불일치",
+      "severity": "중간",
+      "location": "06편_분류체계(1).md",
+      "line_number": 159,
+      "current_text": "| 7 | **Service** | 외부 제공 기능 | 외주 업체 |",
+      "expected_text": "| 7 | **External Service** | 외부 서비스 | 외주 업체 |",
+      "description": "7가지 기술 스택 표에서 'Service' 대신 'External Service (외부 서비스)' 사용 필요"
+    },
+    {
+      "issue_type": "용어 불일치",
+      "severity": "중간",
+      "location": "06편_분류체계(1).md",
+      "line_number": 266,
+      "current_text": "### 7. Service (서비스, XaaS)",
+      "expected_text": "### 7. External Service (외부 서비스, XaaS)",
+      "description": "섹션 제목에서 'Service' 대신 'External Service (외부 서비스)' 사용 필요"
+    },
+    {
+      "issue_type": "용어 불일치",
+      "severity": "낮음",
+      "location": "07편_분류체계(2).md",
+      "line_number": 15,
+      "current_text": "|  | Language | Runtime | Pkg Mgr | Tools | Library | Framework | Service |",
+      "expected_text": "|  | Language | Runtime | Pkg Mgr | Tools | Library | Framework | External Service |",
+      "description": "매트릭스 표 헤더에서 'Service' 대신 'External Service' 사용 권장 (약어 사용이므로 우선순위 낮음)"
+    },
+    {
+      "issue_type": "용어 불일치",
+      "severity": "낮음",
+      "location": "07편_분류체계(2).md",
+      "line_number": 34,
+      "current_text": "- 열(스택): Service",
+      "expected_text": "- 열(스택): External Service",
+      "description": "매트릭스 설명에서 'Service' 대신 'External Service' 사용 권장"
+    },
+    {
+      "issue_type": "용어 불일치",
+      "severity": "낮음",
+      "location": "07편_분류체계(2).md",
+      "line_number": 193,
+      "current_text": "| 기술 스택 | 7개 | Language, Runtime, Pkg Mgr, Tools, Library, Framework, Service |",
+      "expected_text": "| 기술 스택 | 7개 | Language, Runtime, Pkg Mgr, Tools, Library, Framework, External Service |",
+      "description": "요약 표에서 'Service' 대신 'External Service' 사용 권장"
+    }
+  ],
+
+  "7가지_기술_스택_용어_일관성": {
+    "status": "대부분 일관적",
+    "terms": [
+      {
+        "term": "Language (언어)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "08편에서 정확히 설명됨"
+      },
+      {
+        "term": "Runtime (실행 환경)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "09편에서 정확히 설명됨"
+      },
+      {
+        "term": "Package Manager (패키지 관리자)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "10편에서 정확히 설명됨"
+      },
+      {
+        "term": "Tools (도구)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "11편에서 정확히 설명됨"
+      },
+      {
+        "term": "Library (라이브러리)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "12편에서 정확히 설명됨"
+      },
+      {
+        "term": "Framework (프레임워크)",
+        "status": "✅ 일관적",
+        "occurrences": "전체 파일에서 일관되게 사용",
+        "notes": "13편에서 정확히 설명됨"
+      },
+      {
+        "term": "External Service (외부 서비스)",
+        "status": "⚠️ 부분적 불일치",
+        "occurrences": "14편에서는 정확히 사용, 06편/07편에서 'Service'로 축약됨",
+        "notes": "14편 파일명과 내용은 'External Service' 사용, 06편/07편 수정 필요",
+        "inconsistencies_found": 5
+      }
+    ]
+  },
+
+  "기술명_표기_일관성": {
+    "SSALWorks": {
+      "status": "✅ 완전 일관적",
+      "total_occurrences": 71,
+      "consistent_format": "SSALWorks (대문자 SSAL + Works)",
+      "files_checked": 19,
+      "variations_found": 0,
+      "notes": "모든 파일에서 'SSALWorks' 형식으로 일관되게 사용"
+    },
+    "Next.js": {
+      "status": "✅ 완전 일관적",
+      "total_occurrences": 64,
+      "consistent_format": "Next.js (대문자 N, 소문자 ext.js)",
+      "files_checked": 16,
+      "variations_found": 0,
+      "notes": "모든 파일에서 'Next.js' 형식으로 일관되게 사용"
+    },
+    "React": {
+      "status": "✅ 완전 일관적",
+      "total_occurrences": 58,
+      "consistent_format": "React (대문자 R)",
+      "files_checked": 12,
+      "variations_found": 0,
+      "notes": "모든 파일에서 'React' 형식으로 일관되게 사용"
+    },
+    "Supabase": {
+      "status": "✅ 완전 일관적",
+      "total_occurrences": 94,
+      "consistent_format": "Supabase (대문자 S)",
+      "files_checked": 9,
+      "variations_found": 0,
+      "notes": "모든 파일에서 'Supabase' 형식으로 일관되게 사용"
+    },
+    "Vercel": {
+      "status": "✅ 완전 일관적",
+      "total_occurrences": 55,
+      "consistent_format": "Vercel (대문자 V)",
+      "files_checked": 9,
+      "variations_found": 0,
+      "notes": "모든 파일에서 'Vercel' 형식으로 일관되게 사용"
+    },
+    "TypeScript": {
+      "status": "✅ 일관적",
+      "consistent_format": "TypeScript (CamelCase)",
+      "notes": "검증된 파일 내에서 일관되게 사용"
+    },
+    "JavaScript": {
+      "status": "✅ 일관적",
+      "consistent_format": "JavaScript (CamelCase)",
+      "notes": "검증된 파일 내에서 일관되게 사용"
+    }
+  },
+
+  "권장_수정_사항": [
+    {
+      "priority": "높음",
+      "file": "06편_분류체계(1).md",
+      "line": 159,
+      "action": "표 행 수정",
+      "before": "| 7 | **Service** | 외부 제공 기능 | 외주 업체 |",
+      "after": "| 7 | **External Service** | 외부 서비스 | 외주 업체 |"
+    },
+    {
+      "priority": "높음",
+      "file": "06편_분류체계(1).md",
+      "line": 266,
+      "action": "섹션 제목 수정",
+      "before": "### 7. Service (서비스, XaaS)",
+      "after": "### 7. External Service (외부 서비스, XaaS)"
+    },
+    {
+      "priority": "중간",
+      "file": "07편_분류체계(2).md",
+      "line": 15,
+      "action": "매트릭스 표 헤더 수정",
+      "before": "|  | Language | Runtime | Pkg Mgr | Tools | Library | Framework | Service |",
+      "after": "|  | Language | Runtime | Pkg Mgr | Tools | Library | Framework | External Service |",
+      "note": "표 너비 문제가 있다면 'Ext Service' 약어 고려 가능"
+    },
+    {
+      "priority": "중간",
+      "file": "07편_분류체계(2).md",
+      "line": 34,
+      "action": "설명 텍스트 수정",
+      "before": "- 열(스택): Service",
+      "after": "- 열(스택): External Service"
+    },
+    {
+      "priority": "중간",
+      "file": "07편_분류체계(2).md",
+      "line": 193,
+      "action": "요약 표 수정",
+      "before": "| 기술 스택 | 7개 | Language, Runtime, Pkg Mgr, Tools, Library, Framework, Service |",
+      "after": "| 기술 스택 | 7개 | Language, Runtime, Pkg Mgr, Tools, Library, Framework, External Service |"
+    }
+  ],
+
+  "긍정적_발견사항": [
+    "14편의 파일명이 '14편_기술스택_ExternalService.md'로 정확하게 명명됨",
+    "14편 내용 전체에서 'External Service (외부 서비스)' 용어가 일관되게 사용됨",
+    "SSALWorks, Next.js, React, Supabase, Vercel 등 주요 기술명이 전 파일에서 완벽하게 일관됨",
+    "Language, Runtime, Package Manager, Tools, Library, Framework 용어가 모두 일관되게 사용됨",
+    "전체적으로 71개의 'SSALWorks' 사용 중 변형 없음 (100% 일관성)",
+    "전체적으로 64개의 'Next.js' 사용 중 변형 없음 (100% 일관성)"
+  ],
+
+  "전체_평가": {
+    "일관성_점수": "95/100",
+    "평가": "매우 높은 수준의 용어 일관성",
+    "주요_이슈": "06편과 07편에서 'Service' → 'External Service' 수정 5건",
+    "강점": "모든 기술명과 대부분의 전문 용어가 완벽하게 일관됨",
+    "개선_필요": "06편, 07편의 'Service' 용어를 14편과 통일하여 'External Service'로 수정",
+    "수정_예상_시간": "5-10분 (5개 위치 텍스트 교체)"
+  },
+
+  "검증_방법": {
+    "도구": "Claude Code - Grep, Read tools",
+    "검증_범위": "C:\\!SSAL_Works_Private\\부수적_고유기능\\콘텐츠\\학습용_Books_New\\2권_풀스택_웹사이트_개발_기초지식\\ 폴더의 모든 .md 파일 (25개)",
+    "검증_항목": [
+      "7가지 기술 스택 용어 일관성",
+      "SSALWorks 표기 일관성",
+      "주요 기술명 표기 일관성 (Next.js, React, TypeScript, Supabase, Vercel)",
+      "'Service' vs 'External Service' 용어 사용"
+    ]
+  },
+
+  "다음_단계": [
+    "06편_분류체계(1).md의 2개 위치 수정",
+    "07편_분류체계(2).md의 3개 위치 수정",
+    "수정 후 재검증 실시",
+    "최종 승인"
+  ]
+}

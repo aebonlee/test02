@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크레딧 관리 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 500px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-icon { font-size: 32px; margin-bottom: 8px; }
+        .stat-value { font-size: 24px; font-weight: 700; }
+        .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+        .stat-value.credit { color: var(--secondary); }
+        .stat-value.success { color: var(--success); }
+
+        /* Main Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-title { font-size: 18px; font-weight: 600; }
+
+        /* Charge Options */
+        .charge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-charge {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+
+        .btn-charge:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-charge.selected {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 0 0 2px var(--secondary-dark);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            margin-top: 16px;
+            padding: 14px;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        /* AI Service Prices */
+        .price-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .price-service {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .service-icon.chatgpt { background: #74AA9C; }
+        .service-icon.gemini { background: #4285F4; }
+        .service-icon.perplexity { background: #1FB8CD; }
+        .service-icon.claude { background: #CC785C; }
+
+        .service-name { font-weight: 600; }
+        .service-desc { font-size: 12px; color: var(--gray-500); }
+        .price-value { font-weight: 700; color: var(--secondary); }
+
+        /* Transaction History */
+        .history-list { max-height: 400px; overflow-y: auto; }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .history-item:last-child { border-bottom: none; }
+
+        .history-info { flex: 1; }
+        .history-desc { font-weight: 500; margin-bottom: 4px; }
+        .history-date { font-size: 12px; color: var(--gray-500); }
+        .history-service {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .history-amount { font-weight: 700; text-align: right; }
+        .history-amount.charge { color: var(--success); }
+        .history-amount.spend { color: var(--danger); }
+        .history-amount.bonus { color: var(--secondary); }
+        .history-amount.refund { color: var(--primary); }
+
+        .history-balance { font-size: 12px; color: var(--gray-500); }
+
+        .history-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-500);
+        }
+
+        /* AI Q&A Section */
+        .ai-qa-section {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 900px) {
+            .ai-qa-section { grid-column: span 1; }
+        }
+
+        .ai-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .ai-tab {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--gray-100);
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .ai-tab:hover { background: var(--gray-200); }
+        .ai-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .ai-chat-area {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .chat-message.user { flex-direction: row-reverse; }
+
+        .chat-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .chat-avatar.ai { background: var(--primary); color: white; }
+        .chat-avatar.user { background: var(--secondary); color: white; }
+
+        .chat-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-message.ai .chat-bubble {
+            background: white;
+            border: 1px solid var(--gray-200);
+        }
+
+        .chat-message.user .chat-bubble {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-send {
+            padding: 14px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+        }
+
+        .btn-send:hover { background: var(--primary-dark); }
+        .btn-send:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        .credit-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #FEF3C7;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--secondary-dark);
+            margin-top: 12px;
+        }
+
+        /* Loading & Toast */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.error { background: var(--danger); }
+        .toast.success { background: var(--success); }
+        .toast.info { background: var(--primary); }
+
+        /* Notice Box */
+        .notice-box {
+            margin-top: 16px;
+            padding: 14px;
+            background: #EFF6FF;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--gray-400);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 12px;
+                height: 56px;
+            }
+            .nav-logo-text {
+                font-size: 18px;
+            }
+            .close-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            .container {
+                padding: 16px 12px;
+            }
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .stat-card {
+                padding: 16px;
+            }
+            .stat-icon {
+                font-size: 28px;
+            }
+            .stat-value {
+                font-size: 20px;
+            }
+            .btn {
+                min-height: 44px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Dashboard Grid with Sidebar */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 24px;
+            height: fit-content;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .menu-title {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-500);
+            border-bottom: 1px solid var(--gray-100);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 8px 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid var(--gray-50);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .menu-link:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .menu-link.active {
+            background: rgba(44, 74, 138, 0.08);
+            color: var(--primary);
+            font-weight: 600;
+            border-left: 3px solid var(--primary);
+        }
+
+        .main-content-area {
+            min-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <div class="nav-links">
+            <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+        </div>
+    </nav>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>My Page</span>
+            <span>›</span>
+            <span>크레딧 관리</span>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar Menu -->
+            <aside class="sidebar">
+                <div class="menu-card">
+                    <div class="menu-title">메뉴</div>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a href="profile.html" class="menu-link">내 프로필</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="subscription.html" class="menu-link">서비스 이용 현황</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="downloads.html" class="menu-link">파일 다운로드</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="credit.html" class="menu-link active">크레딧 관리</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="security.html" class="menu-link">보안 설정</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="inquiries.html" class="menu-link">내 문의 내역</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content-area">
+                <h1 class="page-title">크레딧 관리</h1>
+
+                <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value credit" id="creditBalance">₩0</div>
+                <div class="stat-label">현재 크레딧</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="creditUsedMonth">₩0</div>
+                <div class="stat-label">이번 달 사용</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value success" id="creditCharged">₩0</div>
+                <div class="stat-label">총 충전액</div>
+            </div>
+        </div>
+
+        <!-- Token Usage Stats -->
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+            <div class="stat-card">
+                <div class="stat-icon">📥</div>
+                <div class="stat-value" id="inputTokens" style="color: #3B82F6;">0</div>
+                <div class="stat-label">인풋 토큰</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📤</div>
+                <div class="stat-value" id="outputTokens" style="color: #8B5CF6;">0</div>
+                <div class="stat-label">아웃풋 토큰</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-value" id="totalTokens" style="color: #10B981;">0</div>
+                <div class="stat-label">총 토큰 사용량</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Charge Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">크레딧 충전</h3>
+                </div>
+                <div class="charge-grid" id="chargeGrid">
+                    <button class="btn btn-charge" data-amount="10000">₩10,000</button>
+                    <button class="btn btn-charge" data-amount="30000">₩30,000</button>
+                    <button class="btn btn-charge" data-amount="50000">₩50,000</button>
+                    <button class="btn btn-charge" data-amount="100000">₩100,000</button>
+                    <button class="btn btn-charge" data-amount="200000">₩200,000</button>
+                    <button class="btn btn-charge" data-amount="500000">₩500,000</button>
+                </div>
+                <button class="btn" id="chargeBtn" style="margin-top: 20px; width: 100%; padding: 14px; background: #2C4A8A; color: white; font-size: 16px; font-weight: 600;" onclick="openCreditDepositModal()">
+                    💳 입금하기
+                </button>
+            </div>
+
+            <!-- AI Service Prices -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">AI 서비스 가격표</h3>
+                </div>
+                <div class="price-list" id="priceList">
+                    <div class="history-empty">가격 정보를 불러오는 중...</div>
+                </div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">크레딧 거래 내역</h3>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">거래 내역이 없습니다.</div>
+                </div>
+            </div>
+
+            <!-- AI Usage Log -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">AI 사용 기록</h3>
+                </div>
+                <div class="history-list" id="usageList">
+                    <div class="history-empty">사용 기록이 없습니다.</div>
+                </div>
+            </div>
+
+        </div>
+            </div><!-- /main-content-area -->
+        </div><!-- /dashboard-grid -->
+    </div><!-- /container -->
+
+    <!-- 무통장 입금 모달 -->
+    <div id="depositModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 420px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3 style="font-size: 20px; font-weight: 700;">🏦 무통장 입금 안내</h3>
+                <button onclick="closeDepositModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-500);">×</button>
+            </div>
+
+            <div style="background: var(--gray-50); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">입금 은행</span>
+                    <span style="font-weight: 600;">하나은행</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">계좌번호</span>
+                    <span style="font-weight: 600; font-family: monospace;">287-910921-40507</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span style="color: var(--gray-500);">예금주</span>
+                    <span style="font-weight: 600;">파인더월드</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                    <span style="color: var(--gray-500);">입금 금액</span>
+                    <span style="font-weight: 700; color: var(--secondary); font-size: 18px;" id="depositAmount">₩0</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">입금자명</label>
+                <input type="text" id="depositorNameModal" placeholder="입금자명을 입력하세요"
+                    style="width: 100%; padding: 12px 16px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+
+            <div style="background: #FEF3C7; border-radius: 8px; padding: 14px; margin-bottom: 24px;">
+                <div style="font-size: 13px; color: #92400E;">
+                    ⚠️ 입금 후 아래 버튼을 눌러 입금 완료를 확인해 주세요.
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button onclick="closeDepositModal()" style="flex: 1; padding: 14px; border: 1px solid var(--gray-300); border-radius: 8px; background: white; font-weight: 600; cursor: pointer;">
+                    취소
+                </button>
+                <button onclick="submitDepositNotification()" style="flex: 2; padding: 14px; border: none; border-radius: 8px; background: #2C4A8A; color: white; font-weight: 600; cursor: pointer;">
+                    ✓ 입금 완료 확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+        let selectedAmount = 0;
+        let selectedService = 'ChatGPT';
+        let aiPricing = {};
+
+        // Service prices (default)
+        const defaultPrices = {
+            'ChatGPT': 100,
+            'Gemini': 80,
+            'Perplexity': 50
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupChargeButtons();
+            setupChatInput();
+            loadApiPrices();
+        });
+
+        // API 가격 정보 로드 (api_costs 테이블에서)
+        async function loadApiPrices() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/api_costs?select=*&is_active=eq.true&order=provider,model_name`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                if (!response.ok) throw new Error('Failed to fetch API costs');
+
+                const costs = await response.json();
+                renderApiPrices(costs);
+            } catch (error) {
+                console.error('API 가격 로드 실패:', error);
+                // 실패 시 기본값 표시
+                renderDefaultPrices();
+            }
+        }
+
+        // 가격 계산 함수 (admin-dashboard.html과 동일한 공식)
+        function calculatePriceKRW(costPer1M, usdToKrw, marginPercent) {
+            // 1M 토큰당 가격을 1K 토큰당 가격으로 변환
+            const pricePerMillion = costPer1M * usdToKrw * (1 + marginPercent / 100);
+            const pricePerK = pricePerMillion / 1000;
+            // 1원 미만은 소수점 표시, 1원 이상은 정수로 표시
+            if (pricePerK < 1) {
+                return pricePerK.toFixed(2);
+            }
+            return Math.round(pricePerK);
+        }
+
+        // 서비스 아이콘 및 설명 매핑 (provider는 소문자)
+        const serviceInfo = {
+            'openai': { icon: '🤖', iconClass: 'chatgpt', desc: '코드 작성, 기술 문서' },
+            'google': { icon: '✨', iconClass: 'gemini', desc: '코드 리뷰, 분석' },
+            'perplexity': { icon: '🔍', iconClass: 'perplexity', desc: '실시간 검색' },
+            'anthropic': { icon: '🧠', iconClass: 'claude', desc: 'AI 분석, 대화' }
+        };
+
+        // API 가격 렌더링
+        function renderApiPrices(costs) {
+            const priceList = document.getElementById('priceList');
+
+            if (!costs || costs.length === 0) {
+                renderDefaultPrices();
+                return;
+            }
+
+            let html = '';
+            costs.forEach(cost => {
+                const info = serviceInfo[cost.provider] || { icon: '🤖', iconClass: 'chatgpt', desc: 'AI 서비스' };
+                const inputPrice = calculatePriceKRW(cost.input_cost_per_1m, cost.usd_to_krw_rate, cost.margin_percent);
+                const outputPrice = calculatePriceKRW(cost.output_cost_per_1m, cost.usd_to_krw_rate, cost.margin_percent);
+
+                html += `
+                    <div class="price-item">
+                        <div class="price-service">
+                            <div class="service-icon ${info.iconClass}">${info.icon}</div>
+                            <div>
+                                <div class="service-name">${cost.model_name}</div>
+                                <div class="service-desc">${info.desc}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="price-value">입력: ₩${inputPrice.toLocaleString()}/1K토큰</div>
+                            <div class="price-value">출력: ₩${outputPrice.toLocaleString()}/1K토큰</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            priceList.innerHTML = html;
+        }
+
+        // 기본 가격 표시 (DB 연결 실패 시)
+        function renderDefaultPrices() {
+            const priceList = document.getElementById('priceList');
+            priceList.innerHTML = `
+                <div class="price-item">
+                    <div class="price-service">
+                        <div class="service-icon chatgpt">🤖</div>
+                        <div>
+                            <div class="service-name">ChatGPT (GPT-4o)</div>
+                            <div class="service-desc">코드 작성, 기술 문서</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="price-value">입력: ₩5/1K토큰</div>
+                        <div class="price-value">출력: ₩19/1K토큰</div>
+                    </div>
+                </div>
+                <div class="price-item">
+                    <div class="price-service">
+                        <div class="service-icon gemini">✨</div>
+                        <div>
+                            <div class="service-name">Gemini Pro</div>
+                            <div class="service-desc">코드 리뷰, 분석</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="price-value">입력: ₩2/1K토큰</div>
+                        <div class="price-value">출력: ₩8/1K토큰</div>
+                    </div>
+                </div>
+                <div class="price-item">
+                    <div class="price-service">
+                        <div class="service-icon perplexity">🔍</div>
+                        <div>
+                            <div class="service-name">Perplexity</div>
+                            <div class="service-desc">실시간 검색</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="price-value">입력: ₩1/1K토큰</div>
+                        <div class="price-value">출력: ₩5/1K토큰</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupChargeButtons() {
+            const buttons = document.querySelectorAll('#chargeGrid .btn-charge');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedAmount = parseInt(btn.dataset.amount);
+                });
+            });
+        }
+
+        function setupChatInput() {
+            const input = document.getElementById('chatInput');
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuestion();
+                }
+            });
+        }
+
+        // 크레딧 충전 모달 열기
+        function openCreditDepositModal() {
+            if (selectedAmount <= 0) {
+                showToast('충전 금액을 선택해주세요.', 'error');
+                return;
+            }
+            document.getElementById('depositAmount').textContent = `₩${selectedAmount.toLocaleString()}`;
+            document.getElementById('depositModal').style.display = 'flex';
+            document.getElementById('depositorNameModal').value = '';
+        }
+
+        function closeDepositModal() {
+            document.getElementById('depositModal').style.display = 'none';
+        }
+
+        // 입금 완료 알림 제출
+        async function submitDepositNotification() {
+            const depositorName = document.getElementById('depositorNameModal').value.trim();
+            if (!depositorName) {
+                showToast('입금자명을 입력해주세요.', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                // deposit_notifications 테이블에 저장
+                if (!currentUser) {
+                    showToast('로그인이 필요합니다.', 'error');
+                    return;
+                }
+
+                const { error } = await supabaseClient
+                    .from('deposit_notifications')
+                    .insert({
+                        user_id: currentUser.id,
+                        deposit_type: 'credit',
+                        amount: selectedAmount,
+                        depositor_name: depositorName,
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+
+                closeDepositModal();
+                showToast('입금 완료 확인이 접수되었습니다.', 'success');
+
+                // 선택 초기화
+                selectedAmount = 0;
+                document.querySelectorAll('#chargeGrid .btn-charge').forEach(b => b.classList.remove('selected'));
+            } catch (error) {
+                console.error('입금 알림 저장 실패:', error);
+                showToast('입금 알림 접수에 실패했습니다. 다시 시도해주세요.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    console.log('로그인되지 않음 - 샘플 데이터 표시');
+                    showSampleDataFallback();
+                    hideLoading();
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+            } catch (error) {
+                console.error('인증 확인 실패:', error);
+                showSampleDataFallback();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            // Load AI pricing
+            try {
+                const { data: pricing } = await supabaseClient
+                    .from('ai_service_pricing')
+                    .select('*')
+                    .eq('is_active', true);
+
+                if (pricing && pricing.length > 0) {
+                    pricing.forEach(p => {
+                        aiPricing[p.service_name] = p.price_per_use;
+                    });
+                }
+            } catch (e) {
+                console.log('가격 정보 로드 실패 - 기본값 사용');
+                aiPricing = defaultPrices;
+            }
+
+            // Load actual user data
+            try {
+                const { data: user, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (user) {
+                    userData = user;
+                    renderStats();
+                }
+            } catch (e) {
+                console.log('사용자 데이터 로드 실패:', e);
+            }
+
+            // Load transaction history for logged-in user
+            await loadTransactionHistory();
+
+            // Load AI usage log for logged-in user
+            await loadUsageLog();
+        }
+
+        function showSampleDataFallback() {
+            document.getElementById('creditBalance').textContent = '₩0';
+            document.getElementById('creditUsedMonth').textContent = '₩0';
+            document.getElementById('creditCharged').textContent = '₩0';
+            document.getElementById('inputTokens').textContent = '0';
+            document.getElementById('outputTokens').textContent = '0';
+            document.getElementById('totalTokens').textContent = '0';
+        }
+
+        function renderStats() {
+            if (!userData) return;
+
+            const balance = userData.credit_balance || 0;
+            document.getElementById('creditBalance').textContent = `₩${balance.toLocaleString()}`;
+        }
+
+        function renderPriceList(pricing) {
+            const container = document.getElementById('priceList');
+            const iconMap = {
+                'ChatGPT': { icon: '🤖', class: 'chatgpt' },
+                'Gemini': { icon: '✨', class: 'gemini' },
+                'Perplexity': { icon: '🔍', class: 'perplexity' }
+            };
+
+            container.innerHTML = pricing.map(p => `
+                <div class="price-item">
+                    <div class="price-service">
+                        <div class="service-icon ${iconMap[p.service_name]?.class || ''}">${iconMap[p.service_name]?.icon || '🤖'}</div>
+                        <div>
+                            <div class="service-name">${DOMPurify.sanitize(p.service_name)}</div>
+                            <div class="service-desc">${DOMPurify.sanitize(p.description || '')}</div>
+                        </div>
+                    </div>
+                    <div class="price-value">₩${p.price_per_use.toLocaleString()}/회</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadTransactionHistory() {
+            if (!currentUser) return;
+
+            try {
+                const { data: transactions, error } = await supabaseClient
+                    .from('credit_transactions')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+
+                if (error) {
+                    console.log('거래 내역 로드 오류:', error);
+                    return;
+                }
+
+                if (transactions && transactions.length > 0) {
+                    renderTransactionHistory(transactions);
+                    calculateStats(transactions);
+                } else {
+                    document.getElementById('historyList').innerHTML = '<div class="history-empty">거래 내역이 없습니다.</div>';
+                }
+            } catch (e) {
+                console.log('거래 내역 로드 실패:', e);
+            }
+        }
+
+        function renderTransactionHistory(transactions) {
+            const container = document.getElementById('historyList');
+            const typeLabels = {
+                'charge': '충전',
+                'spend': '사용',
+                'refund': '환불',
+                'bonus': '보너스',
+                'expire': '만료'
+            };
+
+            container.innerHTML = transactions.map(t => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <div class="history-desc">${DOMPurify.sanitize(t.description || '-')}</div>
+                        <div class="history-date">${formatDate(t.created_at)}</div>
+                        ${t.related_service ? `<span class="history-service">${DOMPurify.sanitize(t.related_service)}</span>` : ''}
+                    </div>
+                    <div>
+                        <div class="history-amount ${t.type}">${t.amount > 0 ? '+' : ''}₩${Math.abs(t.amount).toLocaleString()}</div>
+                        ${t.balance_after != null ? `<div class="history-balance">잔액: ₩${t.balance_after.toLocaleString()}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calculateStats(transactions) {
+            // Calculate monthly usage
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            const monthlySpend = transactions
+                .filter(t => t.type === 'spend' && new Date(t.created_at) >= monthStart)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+            const totalCharged = transactions
+                .filter(t => t.type === 'charge')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            document.getElementById('creditUsedMonth').textContent = `₩${monthlySpend.toLocaleString()}`;
+            document.getElementById('creditCharged').textContent = `₩${totalCharged.toLocaleString()}`;
+        }
+
+        async function loadUsageLog() {
+            if (!currentUser) return;
+
+            try {
+                const { data: usage, error } = await supabaseClient
+                    .from('ai_usage_log')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+
+                if (error) {
+                    console.log('사용 로그 로드 오류:', error);
+                    return;
+                }
+
+                if (usage && usage.length > 0) {
+                    renderUsageLog(usage);
+                    // 토큰 사용량 계산 (인풋, 아웃풋, 총)
+                    const inputTokens = usage.reduce((sum, u) => sum + (u.input_tokens || 0), 0);
+                    const outputTokens = usage.reduce((sum, u) => sum + (u.output_tokens || 0), 0);
+                    const totalTokens = usage.reduce((sum, u) => sum + (u.tokens_used || u.input_tokens + u.output_tokens || 0), 0);
+
+                    document.getElementById('inputTokens').textContent = inputTokens.toLocaleString();
+                    document.getElementById('outputTokens').textContent = outputTokens.toLocaleString();
+                    document.getElementById('totalTokens').textContent = totalTokens.toLocaleString();
+                } else {
+                    document.getElementById('usageList').innerHTML = '<div class="history-empty">사용 기록이 없습니다.</div>';
+                    document.getElementById('inputTokens').textContent = '0';
+                    document.getElementById('outputTokens').textContent = '0';
+                    document.getElementById('totalTokens').textContent = '0';
+                }
+            } catch (e) {
+                console.log('사용 로그 로드 실패:', e);
+            }
+        }
+
+        function renderUsageLog(usage) {
+            const container = document.getElementById('usageList');
+
+            container.innerHTML = usage.map(u => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <div class="history-desc">${DOMPurify.sanitize(u.prompt.substring(0, 40))}...</div>
+                        <div class="history-date">${formatDate(u.created_at)} · ${u.response_time_ms}ms</div>
+                        <span class="history-service">${DOMPurify.sanitize(u.service_name)}</span>
+                    </div>
+                    <div>
+                        <div class="history-amount spend">-₩${u.cost.toLocaleString()}</div>
+                        <div class="history-balance">${u.tokens_used?.toLocaleString() || '-'} 토큰</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function processCharge() {
+            if (selectedAmount <= 0) return;
+
+            showLoading();
+            try {
+                // Get current balance
+                const { data: user } = await supabaseClient
+                    .from('users')
+                    .select('credit_balance')
+                    .eq('user_id', 'TEST0001')
+                    .single();
+
+                const currentBalance = user?.credit_balance || 0;
+                const newBalance = currentBalance + selectedAmount;
+
+                // Insert transaction
+                const { error: transError } = await supabaseClient
+                    .from('credit_transactions')
+                    .insert({
+                        user_id: 'TEST0001',
+                        type: 'charge',
+                        amount: selectedAmount,
+                        balance_after: newBalance,
+                        description: '테스트 충전 - 프로토타입'
+                    });
+
+                if (transError) throw transError;
+
+                // Update user balance
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .update({ credit_balance: newBalance })
+                    .eq('user_id', 'TEST0001');
+
+                if (userError) throw userError;
+
+                showToast(`₩${selectedAmount.toLocaleString()} 충전 완료!`, 'success');
+
+                // Refresh data
+                await loadSampleData();
+
+                // Reset selection
+                selectedAmount = 0;
+                document.querySelectorAll('#chargeGrid .btn-charge').forEach(b => b.classList.remove('selected'));
+                document.getElementById('chargeBtn').disabled = true;
+                document.getElementById('chargeBtn').textContent = '충전하기';
+
+            } catch (error) {
+                console.error('충전 실패:', error);
+                showToast('충전에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function selectAIService(service) {
+            selectedService = service;
+            document.querySelectorAll('.ai-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.service === service);
+            });
+
+            // Update chat intro message
+            const messages = {
+                'ChatGPT': '안녕하세요! 무엇을 도와드릴까요? 코드 작성, 기술 문서, 디버깅 등 다양한 질문에 답변해 드립니다.',
+                'Gemini': '안녕하세요! Gemini입니다. 코드 리뷰, 아키텍처 설계, 복잡한 문제 분석을 도와드립니다.',
+                'Perplexity': '안녕하세요! 최신 정보와 실시간 검색 결과를 기반으로 답변해 드립니다.'
+            };
+
+            const icons = { 'ChatGPT': '🤖', 'Gemini': '✨', 'Perplexity': '🔍' };
+
+            document.getElementById('chatArea').innerHTML = `
+                <div class="chat-message ai">
+                    <div class="chat-avatar ai">${icons[service]}</div>
+                    <div class="chat-bubble">${messages[service]}</div>
+                </div>
+            `;
+        }
+
+        async function sendQuestion() {
+            const input = document.getElementById('chatInput');
+            const question = input.value.trim();
+
+            if (!question) return;
+
+            const price = aiPricing[selectedService] || defaultPrices[selectedService];
+
+            // Check credit
+            const currentBalance = userData?.credit_balance || 0;
+            if (currentBalance < price) {
+                document.getElementById('creditWarning').style.display = 'flex';
+                showToast('크레딧이 부족합니다.', 'error');
+                return;
+            }
+
+            document.getElementById('creditWarning').style.display = 'none';
+
+            const icons = { 'ChatGPT': '🤖', 'Gemini': '✨', 'Perplexity': '🔍' };
+            const chatArea = document.getElementById('chatArea');
+
+            // Add user message
+            chatArea.innerHTML += `
+                <div class="chat-message user">
+                    <div class="chat-avatar user">👤</div>
+                    <div class="chat-bubble">${DOMPurify.sanitize(question)}</div>
+                </div>
+            `;
+
+            // Clear input
+            input.value = '';
+
+            // Show typing indicator
+            chatArea.innerHTML += `
+                <div class="chat-message ai" id="typingIndicator">
+                    <div class="chat-avatar ai">${icons[selectedService]}</div>
+                    <div class="chat-bubble">
+                        <div class="typing-indicator">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            // Disable send button
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                // Simulate AI response (프로토타입)
+                await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+
+                const responses = {
+                    'ChatGPT': generateChatGPTResponse(question),
+                    'Gemini': generateGeminiResponse(question),
+                    'Perplexity': generatePerplexityResponse(question)
+                };
+
+                const response = responses[selectedService];
+                const tokensUsed = Math.floor(100 + Math.random() * 400);
+                const responseTime = Math.floor(1500 + Math.random() * 2000);
+
+                // Deduct credit
+                const newBalance = currentBalance - price;
+
+                // Insert transaction
+                await supabaseClient.from('credit_transactions').insert({
+                    user_id: 'TEST0001',
+                    type: 'spend',
+                    amount: -price,
+                    balance_after: newBalance,
+                    description: `${selectedService} 사용`,
+                    related_service: selectedService
+                });
+
+                // Insert usage log
+                await supabaseClient.from('ai_usage_log').insert({
+                    user_id: 'TEST0001',
+                    service_name: selectedService,
+                    prompt: question,
+                    response: response,
+                    tokens_used: tokensUsed,
+                    cost: price,
+                    response_time_ms: responseTime
+                });
+
+                // Update user balance
+                await supabaseClient.from('users')
+                    .update({ credit_balance: newBalance })
+                    .eq('user_id', 'TEST0001');
+
+                // Remove typing indicator and add response
+                document.getElementById('typingIndicator').remove();
+
+                chatArea.innerHTML += `
+                    <div class="chat-message ai">
+                        <div class="chat-avatar ai">${icons[selectedService]}</div>
+                        <div class="chat-bubble">${DOMPurify.sanitize(response)}</div>
+                    </div>
+                `;
+
+                // Update stats
+                userData.credit_balance = newBalance;
+                document.getElementById('creditBalance').textContent = `₩${newBalance.toLocaleString()}`;
+
+                // Refresh history
+                await loadTransactionHistory();
+                await loadUsageLog();
+
+            } catch (error) {
+                console.error('AI 질문 처리 실패:', error);
+                document.getElementById('typingIndicator')?.remove();
+                showToast('질문 처리에 실패했습니다.', 'error');
+            } finally {
+                document.getElementById('sendBtn').disabled = false;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        }
+
+        function generateChatGPTResponse(question) {
+            const responses = [
+                `좋은 질문입니다! "${question}"에 대해 답변드리겠습니다.\n\n이 문제는 여러 접근 방법이 있습니다. 가장 일반적인 방법은 단계별로 분석하는 것입니다.\n\n1. 먼저 문제를 명확히 정의합니다.\n2. 관련 자료를 조사합니다.\n3. 해결책을 구현합니다.\n\n더 자세한 설명이 필요하시면 말씀해 주세요!`,
+                `네, 도와드리겠습니다. "${question}"와 관련하여:\n\n이 주제는 개발에서 자주 다루는 내용입니다. 핵심 포인트는 다음과 같습니다:\n\n• 구조적 설계가 중요합니다\n• 테스트 코드를 함께 작성하세요\n• 문서화를 잊지 마세요\n\n구체적인 예제가 필요하시면 알려주세요!`,
+                `흥미로운 질문이네요! "${question}"에 대한 제 생각을 공유하겠습니다.\n\n최근 트렌드를 보면, 이 분야는 빠르게 발전하고 있습니다. 특히 다음 사항들을 고려해 보시기 바랍니다:\n\n1. 성능 최적화\n2. 사용자 경험 개선\n3. 유지보수성\n\n추가 질문이 있으시면 편하게 물어보세요!`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function generateGeminiResponse(question) {
+            const responses = [
+                `분석해 보겠습니다. "${question}"에 대해:\n\n이 코드/문제를 리뷰한 결과, 몇 가지 개선점을 제안드립니다:\n\n1. 코드 구조 개선: 모듈화를 고려해 보세요\n2. 에러 처리: try-catch 블록 추가 권장\n3. 성능: 불필요한 연산을 줄이세요\n\n전체적으로 좋은 접근입니다. 위 제안사항을 적용하면 더 좋은 코드가 될 것입니다.`,
+                `네, "${question}"에 대해 분석해 드리겠습니다.\n\n아키텍처 관점에서 보면:\n\n• 레이어 분리가 잘 되어 있습니다\n• 의존성 주입 패턴을 사용하면 테스트가 용이해집니다\n• 인터페이스 기반 설계를 권장합니다\n\n더 깊은 분석이 필요하시면 말씀해 주세요.`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function generatePerplexityResponse(question) {
+            const responses = [
+                `"${question}"에 대한 최신 정보를 찾았습니다.\n\n2025년 현재 기준으로:\n\n• 관련 기술 트렌드: AI 통합, 클라우드 네이티브\n• 주요 업데이트: 성능 개선, 보안 강화\n• 커뮤니티 반응: 긍정적\n\n출처: 공식 문서, 기술 블로그, Stack Overflow 등\n\n더 자세한 정보가 필요하시면 질문해 주세요!`,
+                `"${question}"에 대해 실시간 검색 결과입니다.\n\n최근 동향:\n\n1. 새로운 버전이 릴리즈되었습니다\n2. 주요 기업들이 채택하고 있습니다\n3. 학습 자료가 풍부합니다\n\n관련 링크와 자료를 더 찾아드릴까요?`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

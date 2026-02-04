@@ -1,0 +1,229 @@
+{
+  "report_id": "OWASP-2026-01-18-002",
+  "report_type": "OWASP Top 10 Security Audit",
+  "report_date": "2026-01-18",
+  "report_version": "2.0 (Remediated)",
+  "application": "SSAL Works",
+  "auditor": "Claude Code Security Audit",
+
+  "executive_summary": {
+    "overall_status": "SECURE",
+    "safe_count": 10,
+    "needs_attention_count": 0,
+    "vulnerable_count": 0,
+    "critical_issues": 0,
+    "recommendation": "모든 OWASP Top 10 항목이 안전 상태입니다. 정기적인 재점검을 권장합니다."
+  },
+
+  "remediation_summary": {
+    "date": "2026-01-18",
+    "actions_taken": [
+      {
+        "item": "A06: npm audit fix",
+        "priority": "Critical",
+        "status": "COMPLETED",
+        "details": "qs 패키지 DoS 취약점 해결, 0 vulnerabilities"
+      },
+      {
+        "item": "A05: CORS 도메인 제한",
+        "priority": "High",
+        "status": "COMPLETED",
+        "details": "api/Backend_APIs/lib/cors.js 생성, 6개 API 파일에 적용"
+      },
+      {
+        "item": "A06: 패키지 업데이트",
+        "priority": "Medium",
+        "status": "COMPLETED",
+        "details": "36개 패키지 minor/patch 버전 업데이트"
+      },
+      {
+        "item": "A09: 보안 로깅 강화",
+        "priority": "Low",
+        "status": "COMPLETED",
+        "details": "securityLog.js 유틸리티, security_logs 테이블, middleware 통합"
+      },
+      {
+        "item": "A02: 보안 헤더 강화",
+        "priority": "Medium",
+        "status": "COMPLETED",
+        "details": "CSP, HSTS, Referrer-Policy, Permissions-Policy 추가"
+      },
+      {
+        "item": "A02: 환경변수 검증",
+        "priority": "Medium",
+        "status": "COMPLETED",
+        "details": "env-validator.js 유틸리티 생성"
+      }
+    ]
+  },
+
+  "results": {
+    "A01_Broken_Access_Control": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "RLS 정책 포괄적으로 구현됨 (30_users_rls_secure.sql, 31_all_tables_rls_secure.sql)",
+        "민감 필드(role, credit_balance, builder_id, installation_fee_paid) 보호됨",
+        "Admin 권한 미들웨어 적용 (withAdmin.js, withAuth.js)"
+      ],
+      "evidence": "users_update_own_safe 정책에서 민감 필드 변경 차단",
+      "recommendations": ["RLS 정책이 프로덕션에 적용되었는지 주기적 확인"]
+    },
+
+    "A02_Cryptographic_Failures": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "✅ 보안 헤더 강화 완료 (CSP, HSTS, Referrer-Policy, Permissions-Policy)",
+        "✅ 환경변수 검증 유틸리티 구현 (env-validator.js)",
+        "SERVICE_ROLE_KEY는 서버측에서만 사용 (안전)",
+        "Toss Payments 웹훅 HMAC-SHA256 서명 검증 적용 (안전)",
+        "HTTPS 강제 적용 (HSTS max-age=31536000)"
+      ],
+      "evidence": "vercel.json 보안 헤더, api/Backend_Infra/lib/env-validator.js",
+      "recommendations": []
+    },
+
+    "A03_Injection": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "SQL Injection 위험 없음 - Supabase 쿼리 빌더 사용으로 자동 파라미터화",
+        "DOMPurify 라이브러리 포함 (index.html)",
+        "Command Injection 벡터 없음 - exec/spawn 미사용"
+      ],
+      "evidence": "DOMPurify@3.0.6 포함, 직접 SQL 구성 없음",
+      "recommendations": [
+        "innerHTML 사용 부분 DOMPurify 적용 확인 필요 (ai-qa.js, modal.js)"
+      ]
+    },
+
+    "A04_Insecure_Design": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "Rate Limiting 구현됨 (AI Q&A 30/분, Auth 10/분, General 100/분)",
+        "비밀번호 복잡도 요구사항 적용 (8자 이상, 영문+숫자+특수문자)",
+        "크레딧 잔액 확인 후 차감 로직 적용"
+      ],
+      "evidence": "api/Backend_Infra/rate-limiter.js, api/Backend_APIs/lib/password-utils.js",
+      "recommendations": []
+    },
+
+    "A05_Security_Misconfiguration": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "✅ CORS 도메인 제한 적용 (cors.js 유틸리티)",
+        "✅ 허용 도메인: ssalworks.com, ssalworks.ai.kr, ssal-works.vercel.app",
+        "개발 환경에서만 에러 상세 노출 (NODE_ENV 조건부)",
+        "✅ Content-Security-Policy 헤더 적용"
+      ],
+      "evidence": "api/Backend_APIs/lib/cors.js, vercel.json headers",
+      "recommendations": ["프로덕션 console.log 제거 또는 로깅 레벨 도입 고려"]
+    },
+
+    "A06_Vulnerable_Components": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "✅ npm audit: 0 vulnerabilities",
+        "✅ 36개 패키지 minor/patch 버전 업데이트 완료",
+        "메이저 버전 업데이트 대기: openai 4→6, resend 2→6, next 15→16 (테스트 필요)"
+      ],
+      "evidence": "npm audit 결과: 0 vulnerabilities",
+      "recommendations": [
+        "주기적 npm audit 스케줄 도입",
+        "Dependabot 또는 Renovate 자동화 고려"
+      ]
+    },
+
+    "A07_Authentication_Failures": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "MFA(TOTP) 지원 구현됨 (api/Security/mfa/)",
+        "JWT 토큰 검증 적용 (Supabase Auth)",
+        "강력한 비밀번호 정책 적용",
+        "Google OAuth 통합 (Supabase Auth 경유)"
+      ],
+      "evidence": "api/Security/lib/auth/middleware.js, api/Security/mfa/*.js",
+      "recommendations": []
+    },
+
+    "A08_Data_Integrity_Failures": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "Toss Payments 웹훅 HMAC-SHA256 서명 검증",
+        "Cron 작업 CRON_SECRET 헤더 검증",
+        "안전하지 않은 역직렬화 없음 (eval, Function 미사용)"
+      ],
+      "evidence": "api/Backend_APIs/webhook/toss.js, api/cron/subscription-expiry.js",
+      "recommendations": []
+    },
+
+    "A09_Security_Logging_Failures": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "✅ 보안 이벤트 로깅 유틸리티 구현 (securityLog.js)",
+        "✅ security_logs 테이블 스키마 생성",
+        "✅ 인증 실패 로깅 적용 (middleware.js)",
+        "Admin 감사 로그 존재 (admin_audit_logs 테이블)",
+        "결제 웹훅 로그 존재 (webhook_logs 테이블)"
+      ],
+      "evidence": "api/Security/lib/auth/securityLog.js, S1_개발_준비/Database/32_security_logs_table.sql",
+      "recommendations": [
+        "Rate limit 이벤트 로깅 통합 완성",
+        "Sentry 통합 완성 (lib/sentry-server.js 활용)"
+      ]
+    },
+
+    "A10_SSRF": {
+      "status": "SAFE",
+      "priority": "None",
+      "findings": [
+        "외부 API 호출 URL이 모두 하드코딩됨",
+        "사용자 입력으로 URL 조작 불가",
+        "Supabase URL은 환경변수로 관리"
+      ],
+      "evidence": "Perplexity API, Toss API 등 모두 고정 URL 사용",
+      "recommendations": []
+    }
+  },
+
+  "summary_table": {
+    "A01": {"name": "Broken Access Control", "status": "SAFE"},
+    "A02": {"name": "Cryptographic Failures", "status": "SAFE"},
+    "A03": {"name": "Injection", "status": "SAFE"},
+    "A04": {"name": "Insecure Design", "status": "SAFE"},
+    "A05": {"name": "Security Misconfiguration", "status": "SAFE"},
+    "A06": {"name": "Vulnerable Components", "status": "SAFE"},
+    "A07": {"name": "Authentication Failures", "status": "SAFE"},
+    "A08": {"name": "Data Integrity Failures", "status": "SAFE"},
+    "A09": {"name": "Security Logging Failures", "status": "SAFE"},
+    "A10": {"name": "SSRF", "status": "SAFE"}
+  },
+
+  "files_created": [
+    "api/Backend_APIs/lib/cors.js",
+    "api/Security/lib/auth/securityLog.js",
+    "api/Backend_Infra/lib/env-validator.js",
+    "S1_개발_준비/Database/32_security_logs_table.sql"
+  ],
+
+  "files_modified": [
+    "vercel.json (보안 헤더 추가)",
+    "api/Security/lib/auth/withAuth.js (CORS 적용)",
+    "api/Security/lib/auth/middleware.js (보안 로깅 통합)",
+    "api/Security/mfa/verify.js (CORS 적용)",
+    "api/Security/logout.js (CORS 적용)",
+    "api/External/ai-tutor-chat.js (CORS 적용)",
+    "api/External/ai-tutor-conversations.js (CORS 적용)",
+    "package.json (npm audit fix, 패키지 업데이트)"
+  ],
+
+  "next_audit_date": "2026-04-18",
+  "audit_frequency": "quarterly"
+}

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설치비 안내 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .card-title { font-size: 20px; font-weight: 700; color: var(--primary); }
+
+        .price-box {
+            text-align: center;
+            padding: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .price-label { font-size: 16px; opacity: 0.9; margin-bottom: 8px; }
+        .price-value { font-size: 48px; font-weight: 800; }
+        .price-note { font-size: 14px; opacity: 0.8; margin-top: 8px; }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .feature-list li:last-child { border-bottom: none; }
+
+        .feature-icon { font-size: 20px; }
+        .feature-text { flex: 1; }
+        .feature-text strong { color: var(--primary); }
+
+        .bank-info {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .bank-info-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--gray-200);
+        }
+
+        .bank-row:last-child { border-bottom: none; }
+
+        .bank-label { color: var(--gray-500); }
+        .bank-value { font-weight: 600; }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .copy-btn:hover { background: var(--primary-dark); }
+
+        .special-offer {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .special-offer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .special-offer-text {
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+        }
+
+        .status-box {
+            text-align: center;
+            padding: 24px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .status-icon { font-size: 48px; margin-bottom: 12px; }
+        .status-text { font-size: 18px; font-weight: 600; color: var(--gray-700); }
+        .status-subtext { font-size: 14px; color: var(--gray-500); margin-top: 8px; }
+
+        .status-box.success { background: rgba(16, 185, 129, 0.1); }
+        .status-box.success .status-text { color: var(--success); }
+
+        .status-box.pending { background: rgba(245, 158, 11, 0.1); }
+        .status-box.pending .status-text { color: var(--warning); }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+    </nav>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>설치비 안내</span>
+        </div>
+
+        <h1 class="page-title">🏠 설치비 안내</h1>
+
+        <!-- 이미 납부 완료 상태 -->
+        <div class="status-box success" id="paidStatus" style="display: none;">
+            <div class="status-icon">✅</div>
+            <div class="status-text">설치비 납부 완료</div>
+            <div class="status-subtext">설치비가 정상적으로 납부되었습니다. 프로젝트를 등록해주세요.</div>
+            <a href="../projects/index.html" class="btn btn-primary" style="margin-top: 16px; display: inline-block; width: auto; padding: 12px 32px;">프로젝트 등록하기</a>
+        </div>
+
+        <!-- 승인 대기 상태 -->
+        <div class="status-box pending" id="pendingStatus" style="display: none;">
+            <div class="status-icon">⏳</div>
+            <div class="status-text">입금 확인 대기 중</div>
+            <div class="status-subtext">입금 확인 요청이 접수되었습니다. 영업일 기준 1-2일 내에 확인됩니다.</div>
+        </div>
+
+        <!-- 미납 상태 -->
+        <div id="unpaidContent">
+            <!-- 가격 -->
+            <div class="card">
+                <div class="price-box">
+                    <div class="price-label">설치비 (1회)</div>
+                    <div class="price-value">₩3,000,000</div>
+                    <div class="price-note">부가세 별도</div>
+                    <div class="price-note" style="margin-top: 8px; color: var(--primary); font-weight: 600;">※ 입금 금액: 3,300,000원 (부가세 10% 포함)</div>
+                    <div class="price-note" style="margin-top: 4px;">세금계산서가 필요하시면 고객센터로 요청해 주세요.</div>
+                </div>
+
+                <!-- 포함 내용 -->
+                <div class="card-header">
+                    <h3 class="card-title">포함 내용</h3>
+                </div>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">📁</span>
+                        <span class="feature-text"><strong>프로젝트 1개</strong> 완전한 풀스택 웹사이트 개발</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🤖</span>
+                        <span class="feature-text"><strong>AI 협업</strong> Claude Code 기반 개발 지원</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        <span class="feature-text"><strong>PROJECT SAL Grid</strong> 체계적인 5단계 개발 프로세스</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🪙</span>
+                        <span class="feature-text"><strong>무료 크레딧 ₩5,000</strong> 설치비 납부 시 자동 지급</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📚</span>
+                        <span class="feature-text"><strong>학습 콘텐츠</strong> 웹 개발 기초부터 배포까지</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 특별 혜택 -->
+            <div class="special-offer">
+                <div class="special-offer-title">
+                    🎁 특별 혜택: 50% 환불 보장
+                </div>
+                <div class="special-offer-text">
+                    프로젝트를 끝까지 완료하면 설치비의 <strong>50% (₩1,500,000)</strong>를 돌려받을 수 있습니다!
+                    <br><br>
+                    <strong>환불 조건:</strong>
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>PROJECT SAL Grid 5단계 모두 완료</li>
+                        <li>최종 웹사이트 배포 완료</li>
+                        <li>완료 후 30일 이내 환불 신청</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 입금 정보 -->
+            <div class="bank-info">
+                <div class="bank-info-title">💳 입금 정보</div>
+                <div class="bank-row">
+                    <span class="bank-label">은행</span>
+                    <span class="bank-value">하나은행</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">계좌번호</span>
+                    <span class="bank-value">
+                        287-910921-40507
+                        <button class="copy-btn" onclick="copyToClipboard('287-910921-40507')">복사</button>
+                    </span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">예금주</span>
+                    <span class="bank-value">선웅규</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-label">입금자명</span>
+                    <span class="bank-value" id="depositorName">회원가입 시 입력한 실명</span>
+                </div>
+            </div>
+
+            <!-- 버튼 -->
+            <button class="btn btn-primary" onclick="confirmPayment()" id="confirmBtn">
+                입금 완료 확인 요청
+            </button>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    console.log('로그인되지 않음 - 미납 상태로 표시');
+                    hideLoading();
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+            } catch (error) {
+                console.log('인증 확인 실패');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+                updateUI();
+            } catch (error) {
+                console.error('사용자 정보 로드 실패:', error);
+            }
+        }
+
+        async function updateUI() {
+            if (!userData) return;
+
+            // 입금자명 표시
+            if (userData.real_name) {
+                document.getElementById('depositorName').textContent = userData.real_name;
+            }
+
+            // 이미 납부 완료
+            if (userData.installation_fee_paid) {
+                document.getElementById('unpaidContent').style.display = 'none';
+                document.getElementById('paidStatus').style.display = 'block';
+                return;
+            }
+
+            // 대기 중인 요청 확인
+            const { data: requests, error } = await supabaseClient
+                .from('installation_payment_requests')
+                .select('*')
+                .eq('user_id', userData.user_id)
+                .eq('status', 'pending')
+                .order('requested_at', { ascending: false })
+                .limit(1);
+
+            if (requests && requests.length > 0) {
+                document.getElementById('unpaidContent').style.display = 'none';
+                document.getElementById('pendingStatus').style.display = 'block';
+            }
+        }
+
+        async function confirmPayment() {
+            if (!currentUser || !userData) {
+                showToast('로그인이 필요합니다.', 'error');
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            const depositorName = userData.real_name || prompt('입금자명을 입력해주세요:');
+            if (!depositorName) {
+                showToast('입금자명을 입력해주세요.', 'error');
+                return;
+            }
+
+            if (!confirm(`입금자명: ${depositorName}\n금액: ₩3,300,000 (부가세 포함)\n\n입금 확인을 요청하시겠습니까?`)) {
+                return;
+            }
+
+            showLoading();
+            try {
+                const { error } = await supabaseClient
+                    .from('installation_payment_requests')
+                    .insert({
+                        user_id: userData.user_id,
+                        depositor_name: depositorName,
+                        amount: 3300000,
+                        status: 'pending'
+                    });
+
+                if (error) throw error;
+
+                showToast('입금 확인 요청이 접수되었습니다!', 'success');
+
+                // 대기 상태로 UI 변경
+                document.getElementById('unpaidContent').style.display = 'none';
+                document.getElementById('pendingStatus').style.display = 'block';
+
+            } catch (error) {
+                console.error('요청 실패:', error);
+                showToast('요청 실패: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('계좌번호가 복사되었습니다.', 'success');
+            }).catch(() => {
+                showToast('복사에 실패했습니다.', 'error');
+            });
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

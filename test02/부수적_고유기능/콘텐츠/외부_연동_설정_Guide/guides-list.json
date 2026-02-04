@@ -1,0 +1,41 @@
+{
+  "basePath": "부수적_고유기능/콘텐츠/외부_연동_설정_Guide",
+  "githubRawBase": "https://raw.githubusercontent.com/SUNWOONGKYU/SSALWorks/master",
+  "guides": [
+    {
+      "id": "database",
+      "file": "01_데이터베이스_설정.md",
+      "title": "데이터베이스 설정 (Supabase DB + RLS)",
+      "icon": "🗄️",
+      "order": 1
+    },
+    {
+      "id": "auth",
+      "file": "02_회원인증_설정.md",
+      "title": "회원인증 설정 (Google OAuth + Supabase)",
+      "icon": "🔐",
+      "order": 2
+    },
+    {
+      "id": "email",
+      "file": "03_이메일_시스템_설정.md",
+      "title": "이메일 시스템 설정 (Resend + SMTP)",
+      "icon": "📧",
+      "order": 3
+    },
+    {
+      "id": "deploy",
+      "file": "04_배포_도메인_설정.md",
+      "title": "배포/도메인 설정 (Vercel + Whois)",
+      "icon": "🚀",
+      "order": 4
+    },
+    {
+      "id": "payment",
+      "file": "05_결제_시스템_설정.md",
+      "title": "결제 시스템 설정 (토스페이먼츠)",
+      "icon": "💳",
+      "order": 5
+    }
+  ]
+}

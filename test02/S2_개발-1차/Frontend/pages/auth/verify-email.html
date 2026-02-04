@@ -1,0 +1,192 @@
+<!-- @task S2F3 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 확인 - SSAL Works</title>
+    <link rel="stylesheet" href="../../assets/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- 로고 -->
+        <div class="logo">
+            <div class="logo-inner">
+                <div class="rice-logo">
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                    <span class="rice-grain"></span>
+                </div>
+                <span class="logo-text">SSAL Works</span>
+            </div>
+        </div>
+
+        <!-- 이메일 확인 안내 -->
+        <div style="text-align: center;">
+            <!-- 메일 아이콘 -->
+            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+            </div>
+
+            <h1 style="font-size: 24px; color: #333; margin-bottom: 12px;">이메일을 확인해주세요</h1>
+
+            <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 8px;">
+                회원가입을 완료하려면 이메일 인증이 필요합니다.
+            </p>
+
+            <p id="userEmail" style="color: var(--primary); font-size: 16px; font-weight: 600; margin-bottom: 20px;">
+                <!-- JavaScript로 채워짐 -->
+            </p>
+
+            <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 32px;">
+                위 주소로 인증 이메일을 발송했습니다.<br>
+                받은 메일에서 <strong>이메일 인증</strong> 버튼을 클릭해주세요.<br>
+                <span style="color: #999; font-size: 13px;">(메일이 보이지 않으면 스팸함을 확인해주세요)</span>
+            </p>
+
+            <!-- 메일 재발송 버튼 -->
+            <button
+                id="resendBtn"
+                onclick="resendEmail()"
+                class="btn-primary"
+                style="margin-bottom: 16px;"
+            >
+                인증 메일 재발송
+            </button>
+
+            <!-- 로그인 페이지 링크 -->
+            <div class="auth-link">
+                <a href="login.html">로그인 페이지로 이동</a>
+            </div>
+
+            <!-- 이메일 변경 안내 -->
+            <div style="margin-top: 24px; padding: 16px; background: #f8f9fa; border-radius: 10px; text-align: left;">
+                <p style="font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 8px;">
+                    💡 <strong>이메일을 잘못 입력하셨나요?</strong>
+                </p>
+                <p style="font-size: 13px; color: #999; line-height: 1.5;">
+                    회원가입 페이지로 돌아가서 올바른 이메일 주소로 다시 가입해주세요.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script>
+        /**
+         * @task S2F3
+         */
+        // ================================================================
+        // 1. URL에서 이메일 주소 가져오기
+        // ================================================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        if (email) {
+            document.getElementById('userEmail').textContent = email;
+        } else {
+            document.getElementById('userEmail').textContent = '(이메일 주소를 확인할 수 없습니다)';
+        }
+
+        // ================================================================
+        // 2. 인증 메일 재발송 함수
+        // ================================================================
+        async function resendEmail() {
+            if (!email) {
+                showToast('error', '이메일 주소를 확인할 수 없습니다.');
+                return;
+            }
+
+            const resendBtn = document.getElementById('resendBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            try {
+                loadingOverlay.style.display = 'flex';
+                resendBtn.disabled = true;
+
+                const response = await fetch('/api/auth/resend-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const errorMessage = data.error?.message || '메일 재발송에 실패했습니다.';
+                    showToast('error', errorMessage);
+                    return;
+                }
+
+                showToast('success', '인증 메일이 재발송되었습니다! 이메일함을 확인해주세요.');
+
+                // 60초 동안 버튼 비활성화
+                let countdown = 60;
+                const originalText = resendBtn.textContent;
+                resendBtn.textContent = `재발송 가능 (${countdown}초)`;
+
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        resendBtn.textContent = originalText;
+                        resendBtn.disabled = false;
+                    } else {
+                        resendBtn.textContent = `재발송 가능 (${countdown}초)`;
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error('Resend email error:', error);
+                showToast('error', '서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                resendBtn.disabled = false;
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        // ================================================================
+        // 3. Toast 알림 함수
+        // ================================================================
+        function showToast(type, message) {
+            const container = document.getElementById('toast-container');
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icon = type === 'success' ? '✓' :
+                         type === 'error' ? '✗' :
+                         type === 'warning' ? '⚠' : 'ℹ';
+
+            toast.innerHTML = `
+                <div class="toast-icon" style="font-size: 20px;">${icon}</div>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            container.appendChild(toast);
+
+            // 애니메이션
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // 5초 후 자동 제거
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

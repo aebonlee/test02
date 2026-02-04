@@ -1,0 +1,80 @@
+{
+  "report_id": "2026-01-02_notice_css_fix",
+  "date": "2026-01-02",
+  "task_type": "Bug Fix",
+  "title": "우측 사이드바 공지사항 줄바꿈 문제 수정",
+
+  "problem": {
+    "description": "우측 사이드바 상단 공지사항 제목이 줄바꿈 없이 길게 표시되는 문제",
+    "location": "우측 사이드바 > 공지사항 섹션",
+    "symptom": "긴 공지사항 제목이 컨테이너를 벗어나 UI가 깨짐"
+  },
+
+  "analysis": {
+    "root_cause": [
+      ".notice-item에 width 제한 없음",
+      ".notice-title에 word-wrap 관련 속성 없음",
+      ".notice-item CSS에 중복 display: flex 및 오류 텍스트 'REMOVED' 존재"
+    ],
+    "affected_file": "assets/css/main.css",
+    "affected_lines": "2524-2564"
+  },
+
+  "solution": {
+    "notice-item": {
+      "added_properties": [
+        "width: 100%",
+        "max-width: 100%",
+        "box-sizing: border-box"
+      ],
+      "removed": [
+        "중복 display: flex",
+        "오류 텍스트 'REMOVED'"
+      ]
+    },
+    "notice-title": {
+      "added_properties": [
+        "width: 100%",
+        "word-wrap: break-word",
+        "overflow-wrap: break-word",
+        "word-break: break-word"
+      ],
+      "existing_properties": [
+        "display: -webkit-box",
+        "-webkit-line-clamp: 2",
+        "-webkit-box-orient: vertical",
+        "overflow: hidden",
+        "text-overflow: ellipsis",
+        "line-height: 1.3"
+      ]
+    }
+  },
+
+  "deployment": {
+    "commit_hash": "e00cb64",
+    "commit_message": "fix: 우측 사이드바 공지사항 줄바꿈 문제 수정",
+    "branch": "master",
+    "push_status": "success",
+    "deployment_verified": true,
+    "production_url": "https://www.ssalworks.ai.kr"
+  },
+
+  "verification": {
+    "css_deployed": true,
+    "properties_confirmed": {
+      "notice-item_width": true,
+      "notice-title_word-wrap": true,
+      "notice-title_overflow-wrap": true,
+      "notice-title_word-break": true
+    }
+  },
+
+  "result": {
+    "status": "완료",
+    "effect": [
+      "공지사항 제목이 사이드바 너비 내에서 자동 줄바꿈됨",
+      "긴 단어도 컨테이너를 넘지 않고 줄바꿈됨",
+      "최대 2줄까지 표시, 초과 시 '...'로 생략"
+    ]
+  }
+}

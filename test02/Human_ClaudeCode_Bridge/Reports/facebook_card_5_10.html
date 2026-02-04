@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSAL Works 차별점 - 도구/학습/서비스</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            width: 1080px;
+            height: 1080px;
+            background: #FFFFFF;
+            border-radius: 0;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .badge {
+            display: inline-block;
+            background: #E85A71;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .logo {
+            font-size: 42px;
+            font-weight: 900;
+            color: #6B5CCC;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 20px;
+            color: #333;
+        }
+        .items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .item {
+            background: #F8F9FA;
+            border-radius: 16px;
+            padding: 20px 26px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border: 2px solid #E9ECEF;
+        }
+        .number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #E85A71 0%, #F5576C 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .item-category {
+            display: inline-block;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        .item-category.tool {
+            background: #E85A71;
+        }
+        .item-category.learn {
+            background: #4ECDC4;
+        }
+        .item-category.service {
+            background: #6B5CCC;
+        }
+        .item-desc {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #6B5CCC 0%, #764ba2 100%);
+            border-radius: 16px;
+        }
+        .footer-price {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .footer-url {
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="badge">2/2 도구 / 학습 / 서비스</div>
+            <div class="logo">SSAL Works</div>
+            <div class="subtitle">10가지 차별점 중 도구 3 + 학습 2 + 서비스 1</div>
+        </div>
+
+        <div class="items">
+            <div class="item">
+                <div class="number">5</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category tool">도구 1</span>Dev Package</div>
+                    <div class="item-desc">프로젝트 등록 시 자동 다운로드하여 한 번에 개발 환경을 세팅</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">6</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category tool">도구 2</span>Order Sheet</div>
+                    <div class="item-desc">단계별 AI 작업 지시서 템플릿. Claude Code에 전달하면 바로 작업 시작</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">7</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category tool">도구 3</span>SAL Grid Viewer</div>
+                    <div class="item-desc">70개 이상 Task의 작업/검증 상태를 Stage별 시각화. 진행 현황 한눈에 파악</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">8</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category learn">학습 1</span>학습 콘텐츠 151개</div>
+                    <div class="item-desc">Books 80편 + 실전 Tips 66개 + 외부 연동 Guide 5개. 초보자도 따라하기 가능</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">9</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category learn">학습 2</span>AI Tutor</div>
+                    <div class="item-desc">궁금한 사항에 대한 맞춤형 답변을 제공</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">10</div>
+                <div class="item-content">
+                    <div class="item-title"><span class="item-category service">서비스</span>Sunny 1:1 코칭 3개월</div>
+                    <div class="item-desc">개발 + 창업 전반 전문가 1:1 맞춤 코칭. 실전 노하우 전수로 시간 단축</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-price">빌더 계정을 개설하여 3개월 이내에 자신만의 창의적인 아이디어가 구현된 풀스택 웹사이트를 만들어보세요!</div>
+            <div class="footer-url">www.ssalworks.ai.kr</div>
+        </div>
+    </div>
+</body>
+</html>

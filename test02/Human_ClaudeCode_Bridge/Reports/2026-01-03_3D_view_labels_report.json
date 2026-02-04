@@ -1,0 +1,49 @@
+{
+  "report_id": "3D_VIEW_LABELS_20260103",
+  "date": "2026-01-03",
+  "title": "3D 뷰 Task ID 라벨 추가",
+  "status": "completed",
+  "summary": "3D Block View에서 각 블록 위에 Task ID 라벨이 표시되도록 수정",
+  "problem": {
+    "description": "3D 뷰가 나오기는 하지만 각 블록에 Task ID가 표시되지 않아 어떤 블록이 어떤 Task인지 구분 불가",
+    "user_report": "각 블록에 무슨 숫자 같은 거 아주 저 테스크 아이디가 표시되고 해야 되는데 그런 게 표시가 안되고 있어"
+  },
+  "solution": {
+    "method": "Canvas + THREE.Sprite 방식으로 텍스트 라벨 구현",
+    "implementation": [
+      "createTextSprite() 함수 추가 - Canvas에 배경, 테두리, 텍스트를 렌더링하여 Sprite로 변환",
+      "각 블록 생성 시 블록 위에 Task ID 라벨 자동 배치",
+      "상태별 배경색 적용으로 시각적 구분"
+    ]
+  },
+  "files_modified": [
+    {
+      "path": "index.html",
+      "changes": "fullscreen 3D 뷰에 createTextSprite() 함수 추가, create3DBlocks() 함수에서 라벨 생성 로직 추가"
+    },
+    {
+      "path": "S0_Project-SAL-Grid_생성/viewer/viewer_database.html",
+      "changes": "Supabase 뷰어 3D 블록에 createTextSprite() 함수 및 라벨 추가"
+    },
+    {
+      "path": "S0_Project-SAL-Grid_생성/viewer/viewer_json.html",
+      "changes": "JSON 뷰어 3D 블록에 createTextSprite() 함수 및 라벨 추가"
+    }
+  ],
+  "label_colors": {
+    "Completed": "#28a745",
+    "Executed": "#3B82F6",
+    "In Progress": "#ffc107",
+    "Fixing": "#dc3545",
+    "Pending": "#6c757d"
+  },
+  "commit": {
+    "hash": "895e42f",
+    "message": "feat: 3D 뷰에 Task ID 라벨 추가"
+  },
+  "deployment": {
+    "pushed": true,
+    "remote": "https://github.com/SUNWOONGKYU/SSALWorks.git",
+    "branch": "master"
+  }
+}

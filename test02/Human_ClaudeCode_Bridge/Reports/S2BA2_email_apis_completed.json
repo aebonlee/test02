@@ -1,0 +1,249 @@
+{
+  "task_id": "S2BA2",
+  "task_name": "이메일 발송 Serverless API 구현",
+  "status": "완료",
+  "completed_at": "2025-12-14T01:55:00Z",
+
+  "summary": {
+    "description": "Resend를 사용한 이메일 발송 Serverless API 3개 구현 완료",
+    "apis_implemented": [
+      "POST /api/email/send - 일반 이메일 발송",
+      "POST /api/email/welcome - 환영 이메일 발송",
+      "POST /api/email/password-reset - 비밀번호 재설정 이메일 발송"
+    ],
+    "storage_locations": [
+      "S2_개발-1차/Backend_APIs/api/email/",
+      "Production/Backend_APIs/api/email/"
+    ]
+  },
+
+  "files_created": {
+    "stage": [
+      "C:\\!SSAL_Works_Private\\S2_개발-1차\\Backend_APIs\\api\\email\\send.js",
+      "C:\\!SSAL_Works_Private\\S2_개발-1차\\Backend_APIs\\api\\email\\welcome.js",
+      "C:\\!SSAL_Works_Private\\S2_개발-1차\\Backend_APIs\\api\\email\\password-reset.js",
+      "C:\\!SSAL_Works_Private\\S2_개발-1차\\Backend_APIs\\api\\email\\README.md"
+    ],
+    "production": [
+      "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\email\\send.js",
+      "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\email\\welcome.js",
+      "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\email\\password-reset.js",
+      "C:\\!SSAL_Works_Private\\Production\\Backend_APIs\\api\\email\\README.md"
+    ]
+  },
+
+  "implementation_details": {
+    "1_general_email": {
+      "endpoint": "POST /api/email/send",
+      "file": "send.js",
+      "authentication": "Bearer Token (Required)",
+      "request_body": {
+        "to": "string (required)",
+        "subject": "string (required)",
+        "html": "string (required)"
+      },
+      "response": {
+        "success": "{ success: true, data: { id, to, subject } }",
+        "error": "{ error: { code, message } }"
+      },
+      "features": [
+        "이메일 형식 검증",
+        "Bearer Token 인증",
+        "Resend sendEmail() 모듈 사용",
+        "상세한 에러 처리"
+      ]
+    },
+    "2_welcome_email": {
+      "endpoint": "POST /api/email/welcome",
+      "file": "welcome.js",
+      "authentication": "Bearer Token (Required)",
+      "request_body": {
+        "to": "string (required)",
+        "name": "string (required)",
+        "dashboardUrl": "string (optional)"
+      },
+      "response": {
+        "success": "{ success: true, data: { id, to, name } }",
+        "error": "{ error: { code, message } }"
+      },
+      "features": [
+        "신규 가입자 환영 이메일",
+        "환영 템플릿 자동 적용",
+        "대시보드 URL 자동 설정",
+        "Resend sendWelcomeEmail() 모듈 사용"
+      ]
+    },
+    "3_password_reset_email": {
+      "endpoint": "POST /api/email/password-reset",
+      "file": "password-reset.js",
+      "authentication": "Bearer Token OR Internal Call Header",
+      "request_body": {
+        "to": "string (required)",
+        "name": "string (required)",
+        "resetToken": "string (required, min 20 chars)",
+        "expiryMinutes": "number (optional, default: 30)"
+      },
+      "response": {
+        "success": "{ success: true, data: { id, to, name, expiresIn } }",
+        "error": "{ error: { code, message } }"
+      },
+      "features": [
+        "비밀번호 재설정 이메일",
+        "Bearer Token 또는 내부 호출 지원",
+        "리셋 토큰 검증 (최소 20자)",
+        "리셋 URL 자동 생성",
+        "Resend sendPasswordResetEmail() 모듈 사용"
+      ]
+    }
+  },
+
+  "technical_implementation": {
+    "dependencies_used": [
+      "S2_개발-1차/Backend_Infra/api/lib/email/ (S2BI1)",
+      "S2_개발-1차/Security/api/lib/auth/middleware.js (S2S1)"
+    ],
+    "authentication": {
+      "primary": "Bearer Token (verifyAuth middleware)",
+      "secondary": "X-Internal-Call header (password-reset only)"
+    },
+    "validation": {
+      "email_format": "정규식 검증 (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/)",
+      "required_fields": "필수 필드 누락 시 400 에러",
+      "token_length": "리셋 토큰 최소 20자 검증"
+    },
+    "error_handling": {
+      "http_method": "405 - METHOD_NOT_ALLOWED",
+      "authentication": "401 - AUTH_001, AUTH_002, AUTH_003",
+      "validation": "400 - VALIDATION_ERROR",
+      "email_send": "500 - EMAIL_SEND_ERROR",
+      "internal": "500 - INTERNAL_ERROR"
+    }
+  },
+
+  "api_specifications": {
+    "send_endpoint": {
+      "url": "/api/email/send",
+      "method": "POST",
+      "auth": "Required",
+      "rate_limit": "Resend 플랜 기준",
+      "timeout": "10초 (Vercel Serverless 기본값)"
+    },
+    "welcome_endpoint": {
+      "url": "/api/email/welcome",
+      "method": "POST",
+      "auth": "Required",
+      "template": "S2_개발-1차/Backend_Infra/api/lib/email/templates/welcome.js",
+      "auto_dashboard_url": "true"
+    },
+    "password_reset_endpoint": {
+      "url": "/api/email/password-reset",
+      "method": "POST",
+      "auth": "Required OR Internal",
+      "template": "S2_개발-1차/Backend_Infra/api/lib/email/templates/password-reset.js",
+      "token_expiry_default": "30 minutes"
+    }
+  },
+
+  "environment_variables_required": [
+    "RESEND_API_KEY - Resend API 키",
+    "SUPABASE_URL - Supabase 프로젝트 URL",
+    "SUPABASE_SERVICE_ROLE_KEY - Supabase Service Role 키",
+    "NEXT_PUBLIC_SITE_URL - 사이트 URL (리셋 URL 생성용)",
+    "INTERNAL_API_SECRET - 내부 API 호출 시크릿 (password-reset용)"
+  ],
+
+  "documentation": {
+    "readme_created": true,
+    "location": "api/email/README.md (Stage + Production)",
+    "includes": [
+      "API 명세",
+      "요청/응답 예시",
+      "에러 코드 표",
+      "인증 방법",
+      "테스트 방법",
+      "배포 가이드",
+      "주의사항"
+    ]
+  },
+
+  "dual_storage_compliance": {
+    "stage_folder": "✅ S2_개발-1차/Backend_APIs/api/email/",
+    "production_folder": "✅ Production/Backend_APIs/api/email/",
+    "files_synced": true,
+    "readme_synced": true
+  },
+
+  "code_quality": {
+    "task_id_comment": "✅ 모든 파일 첫 줄에 Task ID: S2BA2 주석",
+    "error_handling": "✅ 포괄적인 에러 처리 구현",
+    "validation": "✅ 입력 검증 및 형식 체크",
+    "documentation": "✅ JSDoc 주석 포함",
+    "security": "✅ 인증/인가 구현",
+    "modularity": "✅ S2BI1 email 모듈 재사용"
+  },
+
+  "testing_recommendations": {
+    "unit_tests": [
+      "이메일 형식 검증 테스트",
+      "필수 필드 검증 테스트",
+      "인증 토큰 검증 테스트",
+      "리셋 토큰 길이 검증 테스트"
+    ],
+    "integration_tests": [
+      "Resend API 연동 테스트",
+      "Supabase Auth 연동 테스트",
+      "이메일 발송 성공/실패 테스트"
+    ],
+    "e2e_tests": [
+      "전체 플로우 테스트 (회원가입 → 환영 이메일)",
+      "비밀번호 재설정 플로우 테스트"
+    ]
+  },
+
+  "deployment_readiness": {
+    "vercel_compatible": true,
+    "serverless_function": true,
+    "environment_variables": "설정 필요",
+    "dependencies": "package.json에 추가 필요 (@supabase/supabase-js, resend)",
+    "vercel_json_config": {
+      "functions": {
+        "api/email/*.js": {
+          "memory": 1024,
+          "maxDuration": 10
+        }
+      }
+    }
+  },
+
+  "next_steps": [
+    "Vercel 환경 변수 설정 (RESEND_API_KEY, SUPABASE_URL, etc.)",
+    "Resend 계정 생성 및 API 키 발급",
+    "package.json에 resend 패키지 추가",
+    "Postman/Insomnia로 API 테스트",
+    "프론트엔드에서 API 호출 연동",
+    "에러 로깅 및 모니터링 설정"
+  ],
+
+  "notes": [
+    "모든 API는 Bearer Token 인증 필수 (password-reset은 내부 호출도 지원)",
+    "이메일 템플릿은 S2BI1에서 구현된 템플릿 사용",
+    "Resend 무료 플랜은 월 100개 제한 (업그레이드 고려 필요)",
+    "프로덕션 배포 시 .env가 아닌 Vercel 환경 변수 사용",
+    "Stage와 Production 폴더에 동일한 파일 저장 완료"
+  ],
+
+  "validation_checklist": {
+    "task_id_in_files": "✅",
+    "dual_storage": "✅",
+    "authentication": "✅",
+    "error_handling": "✅",
+    "email_validation": "✅",
+    "documentation": "✅",
+    "module_reuse": "✅",
+    "security": "✅"
+  },
+
+  "completion_status": "✅ 완료",
+  "ready_for_deployment": true,
+  "ready_for_testing": true
+}

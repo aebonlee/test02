@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 등록 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 700px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 32px; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .card-title { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .card-subtitle { font-size: 14px; color: var(--gray-500); margin-top: 8px; }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .form-label .required {
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 74, 138, 0.1);
+        }
+
+        .form-input::placeholder { color: var(--gray-300); }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 8px;
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 8px;
+            display: none;
+        }
+
+        .form-group.error .form-input {
+            border-color: var(--danger);
+        }
+
+        .form-group.error .form-error {
+            display: block;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .char-counter.warning { color: var(--warning); }
+        .char-counter.danger { color: var(--danger); }
+
+        /* 프로젝트 유형 선택 */
+        .project-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .project-type-option {
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .project-type-option:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .project-type-option.selected {
+            border-color: var(--primary);
+            background: rgba(44, 74, 138, 0.05);
+        }
+
+        .project-type-icon { font-size: 32px; margin-bottom: 8px; }
+        .project-type-name { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+        .project-type-desc { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+        /* 단계 안내 */
+        .stages-info {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stages-info-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .stages-list {
+            display: flex;
+            gap: 8px;
+        }
+
+        .stage-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .stage-number {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stage-name { font-size: 11px; color: var(--gray-700); }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+
+        /* 성공 화면 */
+        .success-screen {
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .success-icon { font-size: 72px; margin-bottom: 24px; }
+        .success-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: var(--success); }
+        .success-message { font-size: 16px; color: var(--gray-700); margin-bottom: 32px; line-height: 1.6; }
+        .success-project-id {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 32px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'" title="닫기">✕ 닫기</button>
+    </nav>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <a href="index.html">내 프로젝트</a>
+            <span>›</span>
+            <span>새 프로젝트</span>
+        </div>
+
+        <!-- 등록 폼 -->
+        <div id="formSection">
+            <h1 class="page-title">📝 새 프로젝트 등록</h1>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">프로젝트 정보</h2>
+                    <p class="card-subtitle">만들고 싶은 웹사이트에 대해 알려주세요</p>
+                </div>
+
+                <form id="projectForm" onsubmit="submitProject(event)">
+                    <div class="form-group">
+                        <label class="form-label">
+                            프로젝트 이름 <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-input" id="projectName"
+                               placeholder="예: 나만의 포트폴리오 웹사이트" maxlength="100" required>
+                        <div class="char-counter"><span id="nameCount">0</span>/100</div>
+                        <div class="form-error" id="nameError">프로젝트 이름을 입력해주세요.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">프로젝트 설명</label>
+                        <textarea class="form-input form-textarea" id="projectDesc"
+                                  placeholder="어떤 웹사이트를 만들고 싶으신가요? 주요 기능이나 목적을 설명해주세요." maxlength="500"></textarea>
+                        <div class="char-counter"><span id="descCount">0</span>/500</div>
+                        <div class="form-help">프로젝트의 목적과 주요 기능을 간략히 설명해주세요.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">프로젝트 유형</label>
+                        <div class="project-type-grid">
+                            <div class="project-type-option selected" data-type="portfolio" onclick="selectType(this)">
+                                <div class="project-type-icon">💼</div>
+                                <div class="project-type-name">포트폴리오</div>
+                                <div class="project-type-desc">개인 작품 소개</div>
+                            </div>
+                            <div class="project-type-option" data-type="blog" onclick="selectType(this)">
+                                <div class="project-type-icon">📝</div>
+                                <div class="project-type-name">블로그</div>
+                                <div class="project-type-desc">콘텐츠 발행</div>
+                            </div>
+                            <div class="project-type-option" data-type="business" onclick="selectType(this)">
+                                <div class="project-type-icon">🏢</div>
+                                <div class="project-type-name">비즈니스</div>
+                                <div class="project-type-desc">회사/서비스 소개</div>
+                            </div>
+                            <div class="project-type-option" data-type="other" onclick="selectType(this)">
+                                <div class="project-type-icon">🎨</div>
+                                <div class="project-type-name">기타</div>
+                                <div class="project-type-desc">자유 형식</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="projectType" value="portfolio">
+                    </div>
+
+                    <!-- 단계 안내 -->
+                    <div class="stages-info">
+                        <div class="stages-info-title">📊 PROJECT SAL Grid - 5단계 개발 프로세스</div>
+                        <div class="stages-list">
+                            <div class="stage-item">
+                                <div class="stage-number">1</div>
+                                <div class="stage-name">기획</div>
+                            </div>
+                            <div class="stage-item">
+                                <div class="stage-number">2</div>
+                                <div class="stage-name">디자인</div>
+                            </div>
+                            <div class="stage-item">
+                                <div class="stage-number">3</div>
+                                <div class="stage-name">프론트엔드</div>
+                            </div>
+                            <div class="stage-item">
+                                <div class="stage-number">4</div>
+                                <div class="stage-name">백엔드</div>
+                            </div>
+                            <div class="stage-item">
+                                <div class="stage-number">5</div>
+                                <div class="stage-name">배포</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        🚀 프로젝트 등록하기
+                    </button>
+                    <a href="index.html" class="btn btn-secondary">취소</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- 성공 화면 -->
+        <div id="successSection" style="display: none;">
+            <div class="card success-screen">
+                <div class="success-icon">🎉</div>
+                <div class="success-title">프로젝트가 등록되었습니다!</div>
+                <div class="success-message">
+                    이제 AI와 함께 웹사이트 개발을 시작할 수 있습니다.<br>
+                    PROJECT SAL Grid를 따라 단계별로 진행해보세요.
+                </div>
+                <div class="success-project-id" id="newProjectId"></div>
+                <div class="btn-group">
+                    <a href="index.html" class="btn btn-secondary">프로젝트 목록</a>
+                    <a href="../../index.html" class="btn btn-primary">홈으로</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupCharCounters();
+        });
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    showToast('로그인이 필요합니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../auth/login.html';
+                    }, 1500);
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+            } catch (error) {
+                console.error('인증 확인 실패:', error);
+                showToast('인증 확인에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+
+                // 설치비 미납 확인
+                if (!userData.installation_fee_paid) {
+                    showToast('설치비 납부 후 이용 가능합니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../payment/installation.html';
+                    }, 1500);
+                    return;
+                }
+
+                // 진행 중인 프로젝트 확인
+                await checkExistingProject();
+            } catch (error) {
+                console.error('사용자 정보 로드 실패:', error);
+                showToast('사용자 정보를 불러올 수 없습니다.', 'error');
+            }
+        }
+
+        async function checkExistingProject() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .eq('status', 'in_progress')
+                    .limit(1);
+
+                if (data && data.length > 0) {
+                    showToast('이미 진행 중인 프로젝트가 있습니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('기존 프로젝트 확인 실패:', error);
+            }
+        }
+
+        function setupCharCounters() {
+            const nameInput = document.getElementById('projectName');
+            const descInput = document.getElementById('projectDesc');
+
+            nameInput.addEventListener('input', () => {
+                updateCounter('nameCount', nameInput.value.length, 100);
+            });
+
+            descInput.addEventListener('input', () => {
+                updateCounter('descCount', descInput.value.length, 500);
+            });
+        }
+
+        function updateCounter(counterId, current, max) {
+            const counter = document.getElementById(counterId).parentElement;
+            document.getElementById(counterId).textContent = current;
+
+            counter.classList.remove('warning', 'danger');
+            if (current > max * 0.9) {
+                counter.classList.add('danger');
+            } else if (current > max * 0.7) {
+                counter.classList.add('warning');
+            }
+        }
+
+        function selectType(element) {
+            document.querySelectorAll('.project-type-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('projectType').value = element.dataset.type;
+        }
+
+        async function submitProject(e) {
+            e.preventDefault();
+
+            const projectName = document.getElementById('projectName').value.trim();
+            const projectDesc = document.getElementById('projectDesc').value.trim();
+            const projectType = document.getElementById('projectType').value;
+
+            // 유효성 검사
+            if (!projectName) {
+                document.getElementById('projectName').parentElement.classList.add('error');
+                showToast('프로젝트 이름을 입력해주세요.', 'error');
+                return;
+            }
+
+            document.getElementById('projectName').parentElement.classList.remove('error');
+
+            // 프로젝트 ID 생성
+            const projectId = await generateProjectId();
+
+            showLoading();
+            try {
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .insert({
+                        user_id: userData.user_id,
+                        project_id: projectId,
+                        project_name: projectName,
+                        description: projectDesc ? `[${projectType}] ${projectDesc}` : `[${projectType}]`,
+                        status: 'in_progress',
+                        progress: 0,
+                        current_stage: 0,
+                        total_stages: 5
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // 성공 화면 표시
+                document.getElementById('formSection').style.display = 'none';
+                document.getElementById('successSection').style.display = 'block';
+                document.getElementById('newProjectId').textContent = projectId;
+
+                showToast('프로젝트가 등록되었습니다!', 'success');
+
+            } catch (error) {
+                console.error('프로젝트 등록 실패:', error);
+                if (error.message.includes('idx_one_in_progress_per_user')) {
+                    showToast('이미 진행 중인 프로젝트가 있습니다.', 'error');
+                } else {
+                    showToast('프로젝트 등록에 실패했습니다: ' + error.message, 'error');
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function generateProjectId() {
+            // 기존 프로젝트 수 확인
+            const { data, error } = await supabaseClient
+                .from('projects')
+                .select('id')
+                .eq('user_id', userData.user_id);
+
+            const count = data ? data.length + 1 : 1;
+            return `${userData.user_id}-P${String(count).padStart(3, '0')}`;
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

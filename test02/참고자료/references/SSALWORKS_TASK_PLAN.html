@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSALWorks Task 기획서 [★ 실전용 ★] - SSALWorks 매뉴얼</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #10B981;
+            --secondary: #F59E0B;
+            --tertiary: #2C4A8A;
+            --tertiary-dark: #1F3563;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2C4A8A 0%, #1F3563 100%);
+            color: white;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header-title { font-size: 20px; font-weight: 700; }
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.3); border-color: white; }
+
+        /* Main Content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Markdown Styles */
+        .markdown-body h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--tertiary);
+            margin: 40px 0 20px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--secondary);
+        }
+        .markdown-body h1:first-child { margin-top: 0; }
+        .markdown-body h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 48px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .markdown-body h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--tertiary);
+            margin: 32px 0 16px;
+        }
+        .markdown-body h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 24px 0 12px;
+        }
+        .markdown-body p { margin-bottom: 16px; color: var(--text-dark); }
+        .markdown-body blockquote {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .markdown-body blockquote p { margin: 0; font-style: italic; }
+        .markdown-body pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .markdown-body code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #e83e8c;
+        }
+        .markdown-body pre code { background: none; padding: 0; color: inherit; }
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .markdown-body th, .markdown-body td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        .markdown-body th { background: #f1f3f5; color: var(--text-dark); font-weight: 600; }
+        .markdown-body tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-body tr:hover { background: #e9ecef; }
+        .markdown-body ul, .markdown-body ol { margin: 16px 0; padding-left: 24px; }
+        .markdown-body li { margin-bottom: 8px; }
+        .markdown-body hr { border: none; border-top: 2px solid var(--border-color); margin: 40px 0; }
+        .markdown-body a { color: var(--tertiary); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        .markdown-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+        /* Print */
+        @media print {
+            .header { display: none; }
+            .main-content { padding: 0; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">SSALWorks Task 기획서 [★ 실전용 ★]</div>
+        <a href="javascript:history.back()" class="close-btn">← 뒤로 가기</a>
+    </header>
+    <main class="main-content">
+        <article class="markdown-body">
+            <h1>SSALWorks Task 기획서 [★ 실전용 ★]</h1>
+<blockquote>
+<p><strong>작성일</strong>: 2025-11-27
+<strong>수정일</strong>: 2025-12-12
+<strong>버전</strong>: v3.0
+<strong>프로젝트</strong>: SSALWorks v1.0 (프로덕션)
+<strong>총 Task 수</strong>: 42개 (GRID 관리 범위: S1-S5)
+<strong>유형</strong>: ★ 실전용 (템플릿 아님) ★
+<strong>아키텍처</strong>: HTML + Serverless Functions (Vercel)</p>
+</blockquote>
+<hr>
+<h2>1. 개요</h2>
+<p>이 문서는 SSALWorks v1.0 프로덕션 개발을 위한 <strong>실전용</strong> 상세 Task 기획서입니다.
+PROJECT SAL GRID 5×11 매트릭스 체계에 따라 작성되었습니다.</p>
+<blockquote>
+<p><strong>중요 변경사항 (v3.0)</strong>:</p>
+<ul>
+<li><strong>아키텍처 확정</strong>: HTML + Serverless (Next.js 전환 불필요)</li>
+<li><strong>P3 중복 제거</strong>: 이미 완료된 UI 관련 Task 제거</li>
+<li><strong>누락 항목 추가</strong>: Vercel, Google OAuth, Resend, 결제, 도메인 등</li>
+<li><strong>PoliticianFinder 프로젝트 참조하여 실전 검증됨</strong></li>
+<li><strong>50 tasks → 42 tasks</strong>로 최적화 (GRID 자체 기능 6개 제거)</li>
+</ul>
+</blockquote>
+<h3>아키텍처 결정 배경</h3>
+<p><strong>P3에서 완료된 것:</strong></p>
+<ul>
+<li>✅ 모든 프론트엔드 UI (HTML/CSS/JS)</li>
+<li>✅ Supabase 직접 연결 (공개 데이터)</li>
+<li>✅ 기본 인증 플로우</li>
+<li>✅ 그리드 뷰어 UI</li>
+<li>✅ Books 콘텐츠 뷰어</li>
+</ul>
+<p><strong>S1-S5에서 해야 할 것:</strong></p>
+<ul>
+<li>Serverless API (결제, AI 등 보안 필요 기능)</li>
+<li>Google OAuth 연동</li>
+<li>Resend 이메일 서비스</li>
+<li>AI 연동 (Gemini, ChatGPT, Perplexity 3개)</li>
+<li>결제 시스템 (토스 페이먼트)</li>
+<li>Vercel 배포 및 도메인 연결</li>
+<li>테스트 및 품질 보증</li>
+</ul>
+<h3>프로세스 구조</h3>
+<pre><code>╔═══════════════════════════════════════════════════════════════════════╗
+║              PRELIMINARY (예비단계) - GRID 범위 밖                     ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║   [P1 사업계획] ──→ [P2 프로젝트 기획] ──→ [P3 프로토타입 제작] ✅     ║
+║                                                     (완료됨)           ║
+║   - 모든 HTML/CSS/JS UI 완성                                          ║
+║   - Supabase 직접 연결 완성                                            ║
+║   - 기본 인증 완성                                                     ║
+╚═══════════════════════════════════════════════════════════════════════╝
+                              │
+                              ▼
+╔═══════════════════════════════════════════════════════════════════════╗
+║                PROJECT SAL GRID 관리 범위 (S1-S5)                     ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║   Stage 1: 개발 준비 (8 tasks) - Vercel/도메인/환경 설정              ║
+║   Stage 2: 개발 1차 (12 tasks) - OAuth/이메일/핵심 API                ║
+║   Stage 3: 개발 2차 (4 tasks) - AI연동/구독권한                       ║
+║   Stage 4: 개발 3차 (10 tasks) - 결제/관리자/테스트                   ║
+║   Stage 5: 운영 (8 tasks) - 배포/도메인연결/운영                      ║
+║                                                                       ║
+║   ※ GRID 자체 기능(뷰어, Task CRUD)은 GRID 생성 단계에서 별도 처리   ║
+╚═══════════════════════════════════════════════════════════════════════╝
+</code></pre>
+<h3>Task 분포 요약</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>설명</th>
+<th>Task 수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1 개발 준비</td>
+<td>Vercel 설정 + 환경 준비</td>
+<td>8</td>
+</tr>
+<tr>
+<td>S2 개발 1차</td>
+<td>OAuth + 이메일 + 핵심 API</td>
+<td>12</td>
+</tr>
+<tr>
+<td>S3 개발 2차</td>
+<td>AI 연동 + 구독 권한</td>
+<td>4</td>
+</tr>
+<tr>
+<td>S4 개발 3차</td>
+<td>결제 + 관리자 + QA</td>
+<td>10</td>
+</tr>
+<tr>
+<td>S5 운영</td>
+<td>배포 + 도메인 + 유지보수</td>
+<td>8</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td></td>
+<td><strong>42</strong></td>
+</tr>
+</tbody></table>
+<h3>Area별 분포</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>M</th>
+<th>U</th>
+<th>F</th>
+<th>BI</th>
+<th>BA</th>
+<th>D</th>
+<th>S</th>
+<th>T</th>
+<th>O</th>
+<th>E</th>
+<th>C</th>
+<th>합계</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1</td>
+<td>1</td>
+<td>-</td>
+<td>2</td>
+<td>1</td>
+<td>-</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>-</td>
+<td><strong>8</strong></td>
+</tr>
+<tr>
+<td>S2</td>
+<td>1</td>
+<td>-</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>-</td>
+<td>1</td>
+<td><strong>12</strong></td>
+</tr>
+<tr>
+<td>S3</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>1</td>
+<td>-</td>
+<td>-</td>
+<td>1</td>
+<td>-</td>
+<td><strong>4</strong></td>
+</tr>
+<tr>
+<td>S4</td>
+<td>1</td>
+<td>-</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>-</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>-</td>
+<td>-</td>
+<td><strong>10</strong></td>
+</tr>
+<tr>
+<td>S5</td>
+<td>1</td>
+<td>-</td>
+<td>1</td>
+<td>-</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>3</td>
+<td>-</td>
+<td>-</td>
+<td><strong>8</strong></td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td>4</td>
+<td>0</td>
+<td>7</td>
+<td>5</td>
+<td>7</td>
+<td>3</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td><strong>42</strong></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>참고</strong>:</p>
+<ul>
+<li>Area U (UI/UX)는 P3에서 모두 완료되어 S1-S5에서는 Task 없음</li>
+<li>Project SAL GRID 자체 기능(그리드 뷰어, Task CRUD 등)은 GRID 생성 단계에서 별도 처리</li>
+</ul>
+</blockquote>
+<hr>
+<h2>2. Stage 1: 개발 준비 (8 Tasks)</h2>
+<blockquote>
+<p><strong>목표</strong>: Vercel 배포 환경 + 도메인 + 인프라 설정
+<strong>Areas</strong>: M(1), F(2), BI(1), D(1), S(1), T(1), O(1)</p>
+</blockquote>
+<h3>Area M - Manual/Documentation (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1M1</td>
+<td>개발 가이드</td>
+<td>코딩 컨벤션, 파일 명명 규칙, Serverless API 구조</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3>Area F - Frontend (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1F1</td>
+<td>Vercel 프로젝트 설정</td>
+<td>Vercel 프로젝트 생성, Git 연결, 프레임워크 설정</td>
+<td>-</td>
+</tr>
+<tr>
+<td>S1F2</td>
+<td>vercel.json 설정</td>
+<td>빌드 설정, 라우팅, 보안 헤더, CORS 설정</td>
+<td>S1F1</td>
+</tr>
+</tbody></table>
+<h3>Area BI - Backend Infrastructure (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1BI1</td>
+<td>환경변수 설정</td>
+<td>.env 파일 구조, Vercel 환경변수 설정</td>
+<td>S1F1</td>
+</tr>
+</tbody></table>
+<h3>Area D - Database (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1D1</td>
+<td>DB 스키마 확정</td>
+<td>마이그레이션 파일 점검, RLS 정책 확인</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3>Area S - Security (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1S1</td>
+<td>Supabase Auth Provider 설정</td>
+<td>Google OAuth Provider 설정, Redirect URL 등록</td>
+<td>S1BI1</td>
+</tr>
+</tbody></table>
+<h3>Area T - Test (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1T1</td>
+<td>테스트 환경 설정</td>
+<td>Jest/Vitest 설정, Playwright 설정</td>
+<td>S1F1</td>
+</tr>
+</tbody></table>
+<h3>Area O - Operations (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S1O1</td>
+<td>DNS 설정</td>
+<td>DNS 레코드 설정, Vercel 연결 준비 (도메인은 P2에서 구매 완료)</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Stage 2: 개발 1차 (12 Tasks)</h2>
+<blockquote>
+<p><strong>목표</strong>: Google OAuth + 이메일 서비스 + 핵심 API 완성
+<strong>Areas</strong>: M(1), F(2), BI(2), BA(3), D(1), S(1), T(1), C(1)</p>
+</blockquote>
+<h3>Area M - Manual/Documentation (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2M1</td>
+<td>API 문서 v1</td>
+<td>Serverless API 명세서 (인증/구독 API)</td>
+<td>S2BA1, S2BA2, S2BA3</td>
+</tr>
+</tbody></table>
+<h3>Area F - Frontend (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2F1</td>
+<td>Google 소셜 로그인 UI</td>
+<td>Google 로그인 버튼, OAuth 콜백 페이지</td>
+<td>S2BA1</td>
+</tr>
+<tr>
+<td>S2F2</td>
+<td>비밀번호 재설정 UI</td>
+<td>이메일 인증 기반 재설정 폼 + 이메일 전송 연동</td>
+<td>S2BA2</td>
+</tr>
+</tbody></table>
+<h3>Area BI - Backend Infrastructure (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2BI1</td>
+<td>Resend 이메일 서비스 설정</td>
+<td>Resend API 키 설정, 도메인 인증, 발신자 설정</td>
+<td>S1BI1</td>
+</tr>
+<tr>
+<td>S2BI2</td>
+<td>에러 핸들링 시스템</td>
+<td>전역 에러 처리, 토스트 알림, 에러 로깅</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3>Area BA - Backend APIs (3)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2BA1</td>
+<td>Google OAuth Serverless API</td>
+<td>/api/auth/google, /api/auth/google/callback</td>
+<td>S1S1</td>
+</tr>
+<tr>
+<td>S2BA2</td>
+<td>이메일 발송 API (Resend)</td>
+<td>비밀번호 재설정, 환영 메일 API</td>
+<td>S2BI1</td>
+</tr>
+<tr>
+<td>S2BA3</td>
+<td>구독 관리 API</td>
+<td>구독 신청/상태 조회/해지 API</td>
+<td>S1D1</td>
+</tr>
+</tbody></table>
+<h3>Area D - Database (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2D1</td>
+<td>인덱스 최적화</td>
+<td>자주 사용 쿼리 인덱스 추가</td>
+<td>S1D1</td>
+</tr>
+</tbody></table>
+<h3>Area S - Security (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2S1</td>
+<td>인증 미들웨어</td>
+<td>Serverless API 인증 미들웨어, 토큰 검증</td>
+<td>S2BA1</td>
+</tr>
+</tbody></table>
+<h3>Area T - Test (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2T1</td>
+<td>인증 API 테스트</td>
+<td>OAuth/이메일 API 유닛 테스트</td>
+<td>S2BA1, S2BA2</td>
+</tr>
+</tbody></table>
+<h3>Area C - Content (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2C1</td>
+<td>Books 콘텐츠 업로드</td>
+<td>Claude 사용법 기초 콘텐츠 등록</td>
+<td>S1D1</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Stage 3: 개발 2차 (4 Tasks)</h2>
+<blockquote>
+<p><strong>목표</strong>: AI 연동 + 구독 권한
+<strong>Areas</strong>: BI(1), BA(1), S(1), E(1)
+<strong>참고</strong>: Project SAL GRID 자체 기능(그리드 뷰어, Task CRUD 등)은 GRID 생성 단계에서 별도 처리</p>
+</blockquote>
+<h3>Area BI - Backend Infrastructure (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S3BI1</td>
+<td>AI API 클라이언트 통합</td>
+<td>Gemini, ChatGPT, Perplexity 3개 서비스 연동 구조</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3>Area BA - Backend APIs (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S3BA1</td>
+<td>AI Q&amp;A API</td>
+<td>Gemini, ChatGPT, Perplexity 프록시 API, 크레딧 차감</td>
+<td>S3BI1</td>
+</tr>
+</tbody></table>
+<h3>Area S - Security (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S3S1</td>
+<td>구독 권한 체크</td>
+<td>Books/AI 접근 권한 검증</td>
+<td>S2S1</td>
+</tr>
+</tbody></table>
+<h3>Area E - External (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S3E1</td>
+<td>AI API 키 설정</td>
+<td>Gemini, ChatGPT, Perplexity API 키 환경변수 설정</td>
+<td>S1BI1</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>5. Stage 4: 개발 3차 (10 Tasks)</h2>
+<blockquote>
+<p><strong>목표</strong>: 결제 시스템 + 관리자 대시보드 + 품질 보증
+<strong>Areas</strong>: M(1), F(2), BI(1), BA(2), S(1), T(2), O(1)</p>
+</blockquote>
+<h3>Area M - Manual/Documentation (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4M1</td>
+<td>관리자 가이드</td>
+<td>Admin Dashboard 사용법</td>
+<td>S4F1</td>
+</tr>
+</tbody></table>
+<h3>Area F - Frontend (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4F1</td>
+<td>관리자 대시보드 강화</td>
+<td>통계, 사용자 관리, 구독 승인</td>
+<td>S4BA2</td>
+</tr>
+<tr>
+<td>S4F2</td>
+<td>AI Q&amp;A 인터페이스</td>
+<td>Gemini/ChatGPT/Perplexity 선택, 질문 입력, 답변 표시, 크레딧</td>
+<td>S3BA2</td>
+</tr>
+</tbody></table>
+<h3>Area BI - Backend Infrastructure (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4BI1</td>
+<td>Sentry 에러 트래킹 설정</td>
+<td>클라이언트/서버 에러 모니터링</td>
+<td>S1BI1</td>
+</tr>
+</tbody></table>
+<h3>Area BA - Backend APIs (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4BA1</td>
+<td>결제 API (토스 페이먼트)</td>
+<td>결제 요청/확인 Serverless API</td>
+<td>S2BA3</td>
+</tr>
+<tr>
+<td>S4BA2</td>
+<td>결제 웹훅 API</td>
+<td>토스 결제 완료 콜백, 구독 상태 업데이트</td>
+<td>S4BA1</td>
+</tr>
+</tbody></table>
+<h3>Area S - Security (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4S1</td>
+<td>관리자 권한 체크</td>
+<td>Admin 전용 라우트 보호, 역할 검증</td>
+<td>S2S1</td>
+</tr>
+</tbody></table>
+<h3>Area T - Test (2)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4T1</td>
+<td>E2E 테스트</td>
+<td>주요 사용자 시나리오 (회원가입→결제→그리드)</td>
+<td>S4F1</td>
+</tr>
+<tr>
+<td>S4T2</td>
+<td>API 통합 테스트</td>
+<td>모든 Serverless API 엔드포인트 테스트</td>
+<td>S4BA2</td>
+</tr>
+</tbody></table>
+<h3>Area O - Operations (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S4O1</td>
+<td>Cron Jobs 설정</td>
+<td>정기 작업 (구독 만료 체크, 통계 집계 등)</td>
+<td>S1F2</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Stage 5: 운영 (8 Tasks)</h2>
+<blockquote>
+<p><strong>목표</strong>: 프로덕션 배포 및 지속적 운영
+<strong>Areas</strong>: M(1), F(1), BA(1), D(1), S(1), O(3)</p>
+</blockquote>
+<h3>Area M - Manual/Documentation (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5M1</td>
+<td>운영 매뉴얼</td>
+<td>시스템 관리, 백업, 복구 절차, 장애 대응</td>
+<td>S5O1</td>
+</tr>
+</tbody></table>
+<h3>Area F - Frontend (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5F1</td>
+<td>버그 수정 (프론트엔드)</td>
+<td>보고된 버그 수정, UI/UX 개선</td>
+<td>S5O1</td>
+</tr>
+</tbody></table>
+<h3>Area BA - Backend APIs (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5BA1</td>
+<td>API 버그 수정 및 최적화</td>
+<td>Serverless API 성능 개선, 버그 수정</td>
+<td>S5O1</td>
+</tr>
+</tbody></table>
+<h3>Area D - Database (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5D1</td>
+<td>데이터 백업 설정</td>
+<td>Supabase 자동 백업 확인, 복구 테스트</td>
+<td>S5O1</td>
+</tr>
+</tbody></table>
+<h3>Area S - Security (1)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5S1</td>
+<td>보안 점검 및 패치</td>
+<td>취약점 스캔, 보안 패치, 의존성 업데이트</td>
+<td>S5O1</td>
+</tr>
+</tbody></table>
+<h3>Area O - Operations (3)</h3>
+<table>
+<thead>
+<tr>
+<th>Task ID</th>
+<th>Task명</th>
+<th>설명</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S5O1</td>
+<td>프로덕션 배포</td>
+<td>Vercel 프로덕션 배포, 환경변수 확인</td>
+<td>S4T2</td>
+</tr>
+<tr>
+<td>S5O2</td>
+<td>도메인 연결</td>
+<td>커스텀 도메인 Vercel 연결, DNS 최종 설정</td>
+<td>S5O1, S1O1</td>
+</tr>
+<tr>
+<td>S5O3</td>
+<td>SSL 인증서 확인</td>
+<td>HTTPS 설정 확인, 인증서 자동 갱신 확인</td>
+<td>S5O2</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Task 의존성 다이어그램</h2>
+<h3>S1 (개발 준비) 의존성</h3>
+<pre><code>S1F1 (Vercel 프로젝트) ──&gt; S1F2 (vercel.json)
+S1F1 ──&gt; S1BI1 (환경변수) ──&gt; S1S1 (Auth Provider)
+S1F1 ──&gt; S1T1 (테스트환경)
+</code></pre>
+<h3>S1 → S2 의존성</h3>
+<pre><code>S1S1 (Auth Provider) ──&gt; S2BA1 (OAuth API)
+S1BI1 (환경변수) ──&gt; S2BI1 (Resend 설정)
+S1D1 (스키마) ──&gt; S2D1 (인덱스)
+S1D1 ──&gt; S2BA3 (구독 API)
+</code></pre>
+<h3>S2 → S3 의존성</h3>
+<pre><code>S2BA1 (OAuth) ──&gt; S2S1 (인증 미들웨어) ──&gt; S3S1 (구독 권한)
+S1BI1 ──&gt; S3E1 (Perplexity 키)
+S1D1 ──&gt; S3BA1 (Task API) ──&gt; S3F1 (그리드 뷰어)
+S3BI1 (API 클라이언트) ──&gt; S3BA2 (AI API)
+</code></pre>
+<h3>S3 → S4 의존성</h3>
+<pre><code>S3BA2 (AI API) ──&gt; S4F2 (AI Q&amp;A UI)
+S2BA3 (구독 API) ──&gt; S4BA1 (결제 API) ──&gt; S4BA2 (웹훅)
+S4BA2 ──&gt; S4F1 (관리자 대시보드)
+S2S1 ──&gt; S4S1 (관리자 권한)
+</code></pre>
+<h3>S4 → S5 의존성</h3>
+<pre><code>S4T2 (통합 테스트) ──&gt; S5O1 (프로덕션 배포)
+S5O1 ──&gt; S5O2 (도메인 연결) ──&gt; S5O3 (SSL)
+S5O1 ──&gt; S5M1, S5F1, S5BA1, S5D1, S5S1
+</code></pre>
+<h3>전체 의존성 요약</h3>
+<pre><code>                    S1 (8 tasks)
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+    Vercel설정      환경변수설정    DB스키마확정
+         │               │               │
+         └───────────────┼───────────────┘
+                         ▼
+                    S2 (12 tasks)
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+    OAuth API      이메일 API      구독 API
+         │               │               │
+         └───────────────┼───────────────┘
+                         ▼
+                    S3 (10 tasks)
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+    Task API        AI API         권한체크
+         │               │               │
+         └───────────────┼───────────────┘
+                         ▼
+                    S4 (10 tasks)
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+    결제 API        관리자           테스트
+         │               │               │
+         └───────────────┼───────────────┘
+                         ▼
+                    S5 (8 tasks)
+                         │
+         ┌───────────────┼───────────────┐
+         ▼               ▼               ▼
+      배포          도메인연결        운영
+</code></pre>
+<hr>
+<h2>8. Gate 체크리스트</h2>
+<h3>P3 → S1 Gate (프로토타입 → 개발준비) ✅ 완료</h3>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 프로토타입 핵심 기능 작동 (Agenda #1~#10 완료)</li>
+<li><input checked="" disabled="" type="checkbox"> 모든 HTML/CSS/JS UI 완성</li>
+<li><input checked="" disabled="" type="checkbox"> Supabase 직접 연결 작동</li>
+<li><input checked="" disabled="" type="checkbox"> 개발 범위 확정 (HTML + Serverless)</li>
+</ul>
+<h3>S1 → S2 Gate (개발준비 → 개발1차)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Vercel 프로젝트 설정 완료</li>
+<li><input disabled="" type="checkbox"> vercel.json 보안 헤더 설정</li>
+<li><input disabled="" type="checkbox"> 환경변수 설정 완료</li>
+<li><input disabled="" type="checkbox"> DNS 설정 완료 (도메인은 P2에서 구매 완료)</li>
+<li><input disabled="" type="checkbox"> Google OAuth Provider 설정 완료</li>
+</ul>
+<h3>S2 → S3 Gate (개발1차 → 개발2차)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Google OAuth 로그인 작동</li>
+<li><input disabled="" type="checkbox"> Resend 이메일 발송 작동</li>
+<li><input disabled="" type="checkbox"> 구독 API 작동</li>
+<li><input disabled="" type="checkbox"> 인증 API 테스트 통과</li>
+</ul>
+<h3>S3 → S4 Gate (개발2차 → 개발3차)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> AI Q&amp;A API 작동 (Gemini, ChatGPT, Perplexity)</li>
+<li><input disabled="" type="checkbox"> 구독 권한 체크 작동</li>
+</ul>
+<h3>S4 → S5 Gate (개발3차 → 운영)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> 결제 시스템 작동 (토스 페이먼트)</li>
+<li><input disabled="" type="checkbox"> 관리자 대시보드 완성</li>
+<li><input disabled="" type="checkbox"> E2E 테스트 통과</li>
+<li><input disabled="" type="checkbox"> API 통합 테스트 통과</li>
+<li><input disabled="" type="checkbox"> Sentry 에러 트래킹 설정 완료</li>
+</ul>
+<hr>
+<h2>9. 변경 이력</h2>
+<h3>v3.0 (2025-12-12)</h3>
+<ul>
+<li><strong>아키텍처 확정</strong>: HTML + Serverless (Next.js 전환 불필요)</li>
+<li><strong>P3 중복 제거</strong>: UI 관련 Task 모두 제거</li>
+<li><strong>GRID 자체 기능 분리</strong>: 그리드 뷰어, Task CRUD 등 6개 Task 제거 (GRID 생성 단계에서 별도 처리)</li>
+<li><strong>AI 연동 3개 반영</strong>: Gemini, ChatGPT, Perplexity</li>
+<li><strong>누락 항목 추가</strong>:<ul>
+<li>Vercel 프로젝트 설정 (S1F1, S1F2)</li>
+<li>Google OAuth API (S2BA1)</li>
+<li>Resend 이메일 서비스 (S2BI1, S2BA2)</li>
+<li>결제 API (S4BA1, S4BA2)</li>
+<li>DNS/도메인 연결 설정 (S1O1, S5O2, S5O3) - 도메인은 P2에서 구매 완료</li>
+<li>Sentry 에러 트래킹 (S4BI1)</li>
+<li>Cron Jobs (S4O1)</li>
+</ul>
+</li>
+<li><strong>Task 수 최적화</strong>: 50 → 42 tasks</li>
+<li>PoliticianFinder 프로젝트 참조하여 실전 검증</li>
+</ul>
+<h3>v2.0 (2025-12-12)</h3>
+<ul>
+<li><strong>구조 변경</strong>: S1-S6 (86 tasks) → S1-S5 (50 tasks)</li>
+<li><strong>P1-P3</strong>: GRID 범위 밖으로 분리</li>
+<li>Gate 체크리스트 추가</li>
+<li>의존성 다이어그램 업데이트</li>
+</ul>
+<h3>v1.0 (2025-11-27)</h3>
+<ul>
+<li>초기 Task 기획서 작성</li>
+<li>총 86개 Task 정의</li>
+<li>6개 Stage별 Task 배분</li>
+</ul>
+<hr>
+<h2>10. 참고 문서</h2>
+<table>
+<thead>
+<tr>
+<th>문서</th>
+<th>위치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5×11 매트릭스</td>
+<td><code>Project-SSAL-Grid/manual/references/SSALWORKS_5x11_MATRIX.md</code></td>
+</tr>
+<tr>
+<td>Task 선정 매트릭스</td>
+<td><code>Project-SSAL-Grid/manual/references/TASK_SELECTION_MATRIX.md</code></td>
+</tr>
+<tr>
+<td>프로세스 워크플로우</td>
+<td><code>Development_Process_Monitor/DEVELOPMENT_PROCESS_WORKFLOW.md</code></td>
+</tr>
+<tr>
+<td>PROJECT SAL GRID 매뉴얼</td>
+<td><code>Project-SSAL-Grid/manual/PROJECT_SSAL_GRID_MANUAL.md</code></td>
+</tr>
+<tr>
+<td>PoliticianFinder (참조)</td>
+<td><code>C:\Development_PoliticianFinder_com\Developement_Real_PoliticianFinder</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>11. 병렬 작업 가능 Task</h2>
+<h3>S1 병렬 작업</h3>
+<pre><code>┌─ S1M1 (개발 가이드)
+├─ S1D1 (DB 스키마 확정)     ── 동시 진행 가능
+└─ S1O1 (도메인 구매)
+</code></pre>
+<h3>S2 병렬 작업</h3>
+<pre><code>S2BA1 (OAuth API) 완료 후:
+┌─ S2F1 (Google 로그인 UI)
+├─ S2T1 (인증 API 테스트)     ── 동시 진행 가능
+└─ S2C1 (Books 콘텐츠)
+
+S2BI1 (Resend 설정) 완료 후:
+┌─ S2BA2 (이메일 API)
+└─ S2F2 (비밀번호 재설정 UI)   ── 동시 진행 가능
+</code></pre>
+<h3>S3 병렬 작업</h3>
+<pre><code>┌─ S3BA1 (Task API)
+└─ S3BA2 (AI API)              ── 동시 진행 가능 (의존성 다름)
+
+S3BA1 완료 후:
+┌─ S3F1 (그리드 뷰어)
+├─ S3F2 (Task 팝업)
+└─ S3F3 (Export)               ── 순차 진행
+</code></pre>
+<h3>S4 병렬 작업</h3>
+<pre><code>┌─ S4BA1 (결제 API)
+├─ S4BI1 (Sentry)              ── 동시 진행 가능
+└─ S4S1 (관리자 권한)
+
+S4BA2 완료 후:
+┌─ S4F1 (관리자 대시보드)
+└─ S4T1 (E2E 테스트)           ── 동시 진행 가능
+</code></pre>
+<hr>
+<p><strong>문서 끝</strong></p>
+
+        </article>
+    </main>
+</body>
+</html>

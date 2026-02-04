@@ -1,0 +1,17 @@
+{
+  "task_id": "S4D2",
+  "task_name": "user_notifications 테이블 생성",
+  "stage": 4,
+  "area": "D",
+  "task_status": "Completed",
+  "task_progress": 100,
+  "verification_status": "Verified",
+  "dependencies": "S1D1",
+  "task_instruction": "인앱 알림 시스템용 user_notifications 테이블 생성. notification_type, title, message, is_read, metadata 등 컬럼 포함. RLS 정책 적용.",
+  "task_agent": "database-specialist",
+  "execution_type": "AI-Only",
+  "generated_files": "S4_개발-3차/Database/user_notifications_table.sql",
+  "verification_instruction": "테이블 생성 확인, RLS 정책 적용 확인, 인덱스 생성 확인, CRUD 테스트",
+  "verification_agent": "database-specialist",
+  "remarks": "인앱 알림 시스템 DB 테이블. 2025-12-22 완료."
+}

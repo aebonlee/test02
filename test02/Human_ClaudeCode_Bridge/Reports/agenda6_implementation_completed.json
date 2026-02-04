@@ -1,0 +1,151 @@
+{
+  "report_type": "implementation_completed",
+  "agenda_id": "6",
+  "agenda_name": "플랫폼 이용료 & 결제 관리",
+  "implementation_date": "2025-12-11",
+  "implemented_by": "Claude Code",
+  "status": "COMPLETED",
+
+  "summary": {
+    "description": "월간 플랫폼 이용료(₩50,000) 자동결제 및 구독 관리 시스템 구현",
+    "total_files_created": 6,
+    "total_files_modified": 1
+  },
+
+  "database_implementation": {
+    "status": "COMPLETED",
+    "files_created": [
+      {
+        "file": "P3_프로토타입_제작/Database/19_create_payment_methods.sql",
+        "description": "결제 수단 테이블 (카드/계좌 정보, 빌링키)",
+        "fields": ["id", "user_id", "payment_type", "card_last4", "card_company", "bank_name", "account_last4", "is_default", "toss_billing_key", "created_at", "updated_at"]
+      },
+      {
+        "file": "P3_프로토타입_제작/Database/20_create_billing_history.sql",
+        "description": "결제 내역 테이블 (결제/실패/환불 기록)",
+        "fields": ["id", "user_id", "billing_type", "amount", "status", "billing_date", "payment_method", "payment_method_id", "receipt_url", "failure_reason", "retry_count", "refund_amount", "refund_date", "refund_reason", "toss_payment_key", "notes", "created_at"]
+      },
+      {
+        "file": "P3_프로토타입_제작/Database/21_billing_rls_dev.sql",
+        "description": "개발용 RLS 정책 (anon 역할 전체 허용)",
+        "warning": "프로덕션 배포 전 교체 필요"
+      },
+      {
+        "file": "P3_프로토타입_제작/Database/22_sample_billing.sql",
+        "description": "테스트용 샘플 데이터 (결제 수단 3개, 결제 내역 7개)"
+      }
+    ]
+  },
+
+  "admin_dashboard_implementation": {
+    "status": "COMPLETED",
+    "file_modified": "P3_프로토타입_제작/Frontend/Prototype/admin-dashboard.html",
+    "features_added": {
+      "section": "결제 관리 (payment-section)",
+      "functions": [
+        "loadBillingHistory() - 결제 내역 조회",
+        "updateBillingStats() - 통계 업데이트",
+        "renderBillingTable() - 테이블 렌더링",
+        "viewBillingDetail() - 상세 보기",
+        "processRefund() - 환불 처리",
+        "retryPayment() - 결제 재시도"
+      ],
+      "statistics": ["이번 달 매출", "완료된 결제", "대기/실패 건수", "환불 건수"],
+      "actions": ["상세 보기", "환불 처리", "결제 재시도"]
+    }
+  },
+
+  "frontend_implementation": {
+    "status": "COMPLETED",
+    "files_created": [
+      {
+        "file": "pages/subscription/payment-method.html",
+        "description": "결제 수단 등록 페이지",
+        "features": [
+          "카드/계좌 선택 UI",
+          "카드번호 자동 포맷팅 (0000-0000-0000-0000)",
+          "유효기간 자동 포맷팅 (MM / YY)",
+          "등록된 결제 수단 목록 표시",
+          "결제 수단 삭제 기능",
+          "첫 달 무료 안내",
+          "다음 결제일 표시"
+        ]
+      },
+      {
+        "file": "pages/subscription/billing-history.html",
+        "description": "결제 내역 조회 페이지",
+        "features": [
+          "구독 상태 표시 (활성/일시정지/해지)",
+          "등록된 결제 수단 표시",
+          "결제 유형별 필터 (플랫폼 이용료/크레딧 충전/설치비)",
+          "결제 상태별 필터 (완료/실패/환불)",
+          "영수증 링크",
+          "구독 일시정지/해지 버튼"
+        ]
+      }
+    ]
+  },
+
+  "business_logic": {
+    "billing_types": {
+      "platform_fee": "플랫폼 월 이용료 ₩50,000",
+      "credit_purchase": "AI 크레딧 충전",
+      "installation_fee": "설치비 ₩3,000,000"
+    },
+    "payment_statuses": {
+      "paid": "결제 완료",
+      "failed": "결제 실패",
+      "refunded": "환불",
+      "pending": "대기 중"
+    },
+    "payment_types": {
+      "card": "신용/체크카드",
+      "bank": "계좌 자동이체"
+    },
+    "first_month_free": true,
+    "next_billing_calculation": "다음 달 1일"
+  },
+
+  "pending_integration": {
+    "toss_payments": {
+      "status": "NOT_IMPLEMENTED",
+      "description": "토스 페이먼트 빌링키 연동은 프로덕션 단계에서 진행",
+      "features_needed": [
+        "빌링키 발급 API",
+        "자동 결제 API",
+        "환불 API",
+        "결제 웹훅 처리"
+      ]
+    }
+  },
+
+  "file_structure": {
+    "database": [
+      "P3_프로토타입_제작/Database/19_create_payment_methods.sql",
+      "P3_프로토타입_제작/Database/20_create_billing_history.sql",
+      "P3_프로토타입_제작/Database/21_billing_rls_dev.sql",
+      "P3_프로토타입_제작/Database/22_sample_billing.sql"
+    ],
+    "frontend": [
+      "P3_프로토타입_제작/Frontend/Prototype/pages/subscription/payment-method.html",
+      "P3_프로토타입_제작/Frontend/Prototype/pages/subscription/billing-history.html"
+    ],
+    "admin": [
+      "P3_프로토타입_제작/Frontend/Prototype/admin-dashboard.html (수정됨)"
+    ]
+  },
+
+  "security_notes": [
+    "개발용 RLS 정책 적용 중 (21_billing_rls_dev.sql)",
+    "프로덕션 배포 전 반드시 인증 기반 RLS 정책으로 교체 필요",
+    "카드 정보는 마지막 4자리만 저장",
+    "토스 빌링키는 암호화 저장 권장"
+  ],
+
+  "next_steps": [
+    "Supabase에서 SQL 실행하여 테이블 생성",
+    "프론트엔드 페이지 테스트",
+    "Admin Dashboard 결제 관리 기능 테스트",
+    "Agenda #7 (AI 크레딧 충전 & 사용) 구현 진행"
+  ]
+}

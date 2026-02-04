@@ -1,0 +1,83 @@
+{
+  "report_id": "ClearEditor_LoadTemplate_Fix_2025-12-29",
+  "created_at": "2025-12-29T00:00:00Z",
+  "status": "completed",
+  "summary": "clearEditor 및 loadTemplate 함수 10회 반복 리뷰/수정 완료",
+
+  "tasks_completed": [
+    {
+      "function": "clearEditor",
+      "location": "index.html:4673-4700",
+      "changes": [
+        "confirm() → customConfirm() 모달로 변경",
+        "async function으로 변환",
+        "workspaceGuide 완전히 숨기고 innerHTML 비우기",
+        "textEditor 비우기 및 숨기기",
+        "translationSection 숨기기",
+        "showStatus() 호출 제거 (우측 하단 토스트 메시지 제거)",
+        "window.currentLoadedGuide = null 초기화"
+      ],
+      "before_behavior": "Default 안내문 표시, 브라우저 confirm(), 토스트 메시지 표시",
+      "after_behavior": "Control Desk 완전히 비움, customConfirm 모달, 토스트 없음"
+    },
+    {
+      "function": "loadTemplate",
+      "location": "index.html:4786-4848",
+      "changes": [
+        "ORDER_SHEET_TEMPLATES fallback 로직 추가",
+        "키 변환: categoryKey → categoryKey + '_OrderSheet'",
+        "프로덕션 환경에서 정적 JS 파일 템플릿 로드 가능"
+      ],
+      "before_behavior": "ordersheetTemplates만 사용 (로컬 서버 필요)",
+      "after_behavior": "ordersheetTemplates → ORDER_SHEET_TEMPLATES 순서로 fallback"
+    },
+    {
+      "function": "loadGuideToWorkspace",
+      "location": "index.html:9867-9893",
+      "changes": [
+        "setAttribute + !important 스타일 일관성 적용"
+      ]
+    },
+    {
+      "function": "showOrderSheetEditor",
+      "location": "index.html:9922-9939",
+      "changes": [
+        "setAttribute + !important 스타일 일관성 적용"
+      ]
+    }
+  ],
+
+  "commits": [
+    {
+      "hash": "acd1705",
+      "message": "refactor: clearEditor/loadTemplate 및 관련 함수 스타일 일관성 개선"
+    },
+    {
+      "hash": "33b1ad9",
+      "message": "fix: clearEditor에서 customConfirm 모달 사용"
+    },
+    {
+      "hash": "05b9ed9",
+      "message": "fix: clearEditor - Control Desk 완전히 비우기"
+    }
+  ],
+
+  "testing": {
+    "method": "Playwright 자동화 테스트",
+    "environment": "프로덕션 (https://www.ssalworks.ai.kr/)",
+    "results": {
+      "clearEditor": "PASS - Default 상태에서 지우기 정상 작동",
+      "loadTemplate": "PASS - ORDER_SHEET_TEMPLATES에서 템플릿 로드 성공"
+    }
+  },
+
+  "files_modified": [
+    "index.html"
+  ],
+
+  "key_learnings": [
+    "DOM 스타일 변경 시 setAttribute + !important 사용으로 일관성 유지",
+    "customConfirm은 async/await 필수",
+    "전역 변수 fallback 시 키 변환 규칙 확인 필요"
+  ]
+}

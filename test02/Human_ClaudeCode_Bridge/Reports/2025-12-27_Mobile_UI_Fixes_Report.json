@@ -1,0 +1,83 @@
+{
+  "report_id": "2025-12-27_Mobile_UI_Fixes",
+  "date": "2025-12-27",
+  "title": "모바일 UI 버그 수정 및 CSV Viewer 오류 해결",
+  "status": "completed",
+  "summary": "CSV Viewer undefined 오류 수정, 모바일 로그인 버튼 위치/닉네임 표시 개선",
+
+  "tasks_completed": [
+    {
+      "task": "CSV Viewer undefined 오류 수정",
+      "files": [
+        "S0_Project-SAL-Grid_생성/viewer/viewer_mobile_csv.html",
+        "S0_Project-SAL-Grid_생성/viewer/viewer_csv.html"
+      ],
+      "changes": [
+        "task.task_status.replace() → null 체크 추가",
+        "task.task_id.localeCompare() → null 체크 추가",
+        "parseCSV 함수에서 빈 줄 및 task_id 없는 행 건너뛰기"
+      ]
+    },
+    {
+      "task": "CSV 파일 경로 수정",
+      "files": [
+        "S0_Project-SAL-Grid_생성/viewer/viewer_mobile_csv.html",
+        "S0_Project-SAL-Grid_생성/viewer/viewer_csv.html"
+      ],
+      "changes": [
+        "fetch('data/sal_grid.csv') → fetch('../data/sal_grid.csv')",
+        "viewer 폴더 상위에 data 폴더가 있어서 경로 수정 필요"
+      ]
+    },
+    {
+      "task": "진행률 JSON 배포",
+      "files": [
+        "Development_Process_Monitor/data/phase_progress.json"
+      ],
+      "changes": [
+        "phase_progress.json 파일 git에 커밋/푸시",
+        "P0~S5 모든 단계 100% 진행률 표시"
+      ]
+    },
+    {
+      "task": "모바일 로그인 버튼 위치 수정",
+      "files": [
+        "index.html"
+      ],
+      "changes": [
+        ".mobile-user-section에 top: 50%, transform: translateY(-50%) 추가",
+        ".mobile-login-btn에서 position: absolute → relative 변경",
+        "헤더 세로 중앙 배치"
+      ]
+    },
+    {
+      "task": "모바일 로그인 시 닉네임 표시 개선",
+      "files": [
+        "index.html"
+      ],
+      "changes": [
+        "showLoggedInUI(): 버튼 안에 닉네임 2글자 표시",
+        "fontSize: 12px, fontWeight: 700 적용",
+        "mobile-user-badge 사용 안 함 (밀림 방지)"
+      ]
+    }
+  ],
+
+  "commits": [
+    "fix: CSV 파싱 시 undefined 체크 추가 - task_id, stage, area 정렬 시 null 체크",
+    "fix: CSV viewer undefined 오류 수정 - task_status, execution_type 등 null 체크",
+    "fix: CSV 파싱 시 빈 줄 및 task_id 없는 행 건너뛰기",
+    "fix: CSV 파일 경로 수정 - data/sal_grid.csv → ../data/sal_grid.csv",
+    "fix: phase_progress.json 배포 - 진행률 표시 수정",
+    "fix: 모바일 로그인 버튼 위치 수정 - top: 50% + transform 추가",
+    "fix: 모바일 로그인 시 버튼 안에 닉네임 2글자 표시 - 밀림 방지"
+  ],
+
+  "verification": {
+    "csv_viewer_mobile": "정상 작동 확인",
+    "csv_viewer_pc": "정상 작동 확인",
+    "progress_display": "P0~S5 100% 표시 확인",
+    "mobile_login_button_position": "헤더 중앙 배치 확인",
+    "mobile_nickname_display": "2글자 표시, 밀림 없음 확인"
+  }
+}

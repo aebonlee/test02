@@ -1,0 +1,23 @@
+                const currentContent = workspace.value;
+                const newContent = '☀️ 써니에게 문의\n\n📝 문의 내용:\n' + question + fileInfo + '\n\n✅ 문의가 접수되었습니다!\n관리자가 확인 후 답변을 드립니다.\n\n접수 시간: ' + new Date().toLocaleString('ko-KR') + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' + currentContent;
+                workspace.value = newContent;
+                console.log('workspace에 문의 내용 추가됨');
+
+                // 입력 필드 초기화
+                document.getElementById('supportQuestion').value = '';
+                document.getElementById('supportFile').value = '';
+                supportFiles = [];
+                document.getElementById('supportFileList').innerHTML = '';
+
+                showStatus('✅ 문의가 접수되었습니다', 'success');
+            } catch (error) {
+                console.error('문의 제출 실패:', error);
+                showStatus('❌ 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+
+        // 푸터에서 써니에게 묻기 클릭 시
+        function scrollToSunnySupport(event) {
+            event.preventDefault();
+            // 우측 사이드바의 써니에게 묻기 섹션으로 스크롤
+            const supportSection = document.querySelector('.sidebar-section');

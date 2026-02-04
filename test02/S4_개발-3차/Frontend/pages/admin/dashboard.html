@@ -1,0 +1,154 @@
+<!--
+@task S4F1
+@description 관리자 메인 대시보드 - 통계카드, 차트, 긴급알림
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - SSAL</title>
+    <link rel="stylesheet" href="../../shared.css">
+    <link rel="stylesheet" href="../../admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>SSAL 관리자</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span>대시보드</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>사용자 관리</span>
+                </a>
+                <a href="installation.html" class="nav-item">
+                    <span class="icon">💰</span>
+                    <span>설치비 관리</span>
+                    <span class="badge" id="pending-badge" style="display: none;">0</span>
+                </a>
+                <a href="subscriptions.html" class="nav-item">
+                    <span class="icon">🔄</span>
+                    <span>구독 관리</span>
+                </a>
+                <a href="payments.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>결제 내역</span>
+                </a>
+                <a href="credits.html" class="nav-item">
+                    <span class="icon">🎫</span>
+                    <span>크레딧 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📝</span>
+                    <span>콘텐츠 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span>설정</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>대시보드</h1>
+                <div class="admin-user">
+                    <span id="admin-name">관리자</span>
+                    <button id="logout-btn" class="btn-secondary">로그아웃</button>
+                </div>
+            </header>
+
+            <!-- Emergency Alerts -->
+            <div id="emergency-alerts"></div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>총 사용자</h3>
+                        <p class="stat-value" id="total-users">-</p>
+                        <span class="stat-change positive" id="users-change">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <div class="stat-content">
+                        <h3>활성 구독</h3>
+                        <p class="stat-value" id="active-subscriptions">-</p>
+                        <span class="stat-change" id="subscriptions-change">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>월 매출</h3>
+                        <p class="stat-value" id="monthly-revenue">-</p>
+                        <span class="stat-change positive" id="revenue-change">-</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <h3>입금 대기</h3>
+                        <p class="stat-value" id="pending-installations">-</p>
+                        <a href="installation.html" class="stat-link">확인하기 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Breakdown -->
+            <div class="card">
+                <h2>매출 구성</h2>
+                <div class="revenue-breakdown">
+                    <div class="revenue-item">
+                        <span class="revenue-label">설치비</span>
+                        <span class="revenue-amount" id="installation-revenue">₩0</span>
+                        <span class="revenue-percent" id="installation-percent">0%</span>
+                    </div>
+                    <div class="revenue-item">
+                        <span class="revenue-label">크레딧 충전</span>
+                        <span class="revenue-amount" id="credit-revenue">₩0</span>
+                        <span class="revenue-percent" id="credit-percent">0%</span>
+                    </div>
+                    <div class="revenue-item">
+                        <span class="revenue-label">월 이용료</span>
+                        <span class="revenue-amount" id="subscription-revenue">₩0</span>
+                        <span class="revenue-percent" id="subscription-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="card">
+                    <h2>가입자 추이</h2>
+                    <canvas id="users-chart"></canvas>
+                </div>
+                <div class="card">
+                    <h2>매출 추이</h2>
+                    <canvas id="revenue-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="card">
+                <h2>최근 활동</h2>
+                <div id="recent-activities" class="activity-list">
+                    <p class="loading">로딩 중...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../../admin-dashboard.js"></script>
+</body>
+</html>

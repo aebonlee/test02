@@ -1,0 +1,77 @@
+{
+  "report_id": "2025-12-30_범용화_수정",
+  "date": "2025-12-30",
+  "session_type": "범용화 및 버그 수정 작업",
+  "status": "completed",
+  "tasks_completed": [
+    {
+      "task": "Project_Registration.md '도움이 필요하면' 섹션 통일",
+      "files_modified": [
+        "Briefings_OrderSheets/Briefings/Situational/Project_Registration.md",
+        "Briefings_OrderSheets/Briefings/Situational/Project_Registration_Subsequent.md"
+      ],
+      "changes": "학습용 Books, 실전 Tips, 외부 연동 설정 가이드 / AI 튜터, 써니에게 질문하기 안내로 통일"
+    },
+    {
+      "task": "마이페이지 명칭 변경",
+      "files_modified": ["pages/mypage/index.html"],
+      "changes": [
+        "마이 페이지 → My Page",
+        "SSAL Works Dev Package 다운로드 → Project Dev Package 다운로드",
+        "ZIP 파일명: Project_Dev_Package.zip"
+      ]
+    },
+    {
+      "task": "Project Dev Package ZIP 생성 및 Google Drive 연결",
+      "files_created": ["공개_전환_업무/Project_Dev_Package.zip"],
+      "google_drive_id": "1Lz0Qi99dSVDlrTEsxeXsUWbM8dv9W-ds",
+      "download_url": "https://drive.google.com/uc?export=download&id=1Lz0Qi99dSVDlrTEsxeXsUWbM8dv9W-ds"
+    },
+    {
+      "task": "서약서 이름/빌더ID 표시 버그 수정",
+      "files_modified": ["index.html"],
+      "problem": "user.user_metadata가 비어있어 이름이 '(이름 없음)', 빌더ID가 이메일로 표시",
+      "solution": "users 테이블에서 full_name, builder_account_id 직접 조회",
+      "functions_modified": ["handleSSALWorksClick", "openAgreementModal", "submitAgreement"]
+    },
+    {
+      "task": "SSAL Works 프로젝트 자료 Google Drive 링크 업데이트",
+      "files_modified": ["index.html"],
+      "google_drive_id": "1CpLsZIvSZCQjB5qRrdE-62PRuTzNDzGx",
+      "constant_updated": "SSALWORKS_DRIVE_URL"
+    },
+    {
+      "task": "무단 생성 폴더 삭제",
+      "folders_deleted": ["Production/", "test-results/"],
+      "violation": "절대 규칙 1: 폴더 임의 생성 금지 위반",
+      "gitignore_updated": true
+    }
+  ],
+  "files_summary": {
+    "modified": [
+      "pages/mypage/index.html",
+      "index.html",
+      "Briefings_OrderSheets/Briefings/Situational/Project_Registration.md",
+      "Briefings_OrderSheets/Briefings/Situational/Project_Registration_Subsequent.md",
+      ".gitignore"
+    ],
+    "created": [
+      "공개_전환_업무/Project_Dev_Package.zip"
+    ],
+    "deleted": [
+      "Production/",
+      "test-results/"
+    ]
+  },
+  "google_drive_links": {
+    "project_dev_package": "1Lz0Qi99dSVDlrTEsxeXsUWbM8dv9W-ds",
+    "ssalworks_project_materials": "1CpLsZIvSZCQjB5qRrdE-62PRuTzNDzGx"
+  },
+  "lessons_learned": [
+    "user.user_metadata는 OAuth Provider에 따라 비어있을 수 있음 - users 테이블 직접 조회 필요",
+    "폴더 생성 시 반드시 PO 승인 필요 (CLAUDE.md 절대 규칙 1)",
+    "test-results/ 폴더는 Playwright 테스트가 자동 생성하므로 .gitignore에 추가"
+  ],
+  "work_logs_updated": true,
+  "reports_saved": true
+}

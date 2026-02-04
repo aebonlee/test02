@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습용 Books 구성</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            padding: 50px 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #0066cc;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .summary-table th {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: #fff;
+            padding: 20px;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+        .summary-table td {
+            padding: 22px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 1.1rem;
+        }
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+        .summary-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .book-number {
+            font-weight: bold;
+            color: #0066cc;
+            font-size: 1.2rem;
+        }
+        .book-title {
+            color: #212529;
+        }
+        .book-count {
+            text-align: center;
+            font-weight: bold;
+            color: #e67700;
+        }
+        .total-row {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%) !important;
+        }
+        .total-row td {
+            color: #212529;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #868e96;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 학습용 Books 구성</h1>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">권</th>
+                    <th style="width: 60%;">제목</th>
+                    <th style="width: 25%; text-align: center;">편 수</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="book-number">1권</td>
+                    <td class="book-title">Claude & Claude Code 사용법</td>
+                    <td class="book-count">29편</td>
+                </tr>
+                <tr>
+                    <td class="book-number">2권</td>
+                    <td class="book-title">풀스택 웹사이트 개발 기초지식</td>
+                    <td class="book-count">27편</td>
+                </tr>
+                <tr>
+                    <td class="book-number">3권</td>
+                    <td class="book-title">프로젝트 관리 방법</td>
+                    <td class="book-count">12편</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" style="text-align: center;">총계</td>
+                    <td style="text-align: center;">68편</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="footer">SSALWorks Learning Books</div>
+    </div>
+</body>
+</html>

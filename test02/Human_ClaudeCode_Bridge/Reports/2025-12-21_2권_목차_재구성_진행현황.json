@@ -1,0 +1,89 @@
+{
+  "report_id": "2025-12-21_books_restructure",
+  "report_type": "work_in_progress",
+  "created_at": "2025-12-21T23:30:00+09:00",
+  "title": "학습용 Books 2권 목차 재구성 작업 현황",
+
+  "summary": {
+    "status": "진행 중 (Part 표시 이슈 미해결)",
+    "completion_rate": "90%",
+    "blocker": "index.html Part 표시 기능 작동 안 함"
+  },
+
+  "completed_tasks": [
+    {
+      "task": "2권 목차 확정",
+      "details": "28편 → 13편 구조로 재구성",
+      "status": "완료"
+    },
+    {
+      "task": "6개 분류체계 명칭 확정",
+      "details": [
+        "개발 영역 7가지",
+        "기술 스택 7가지",
+        "개발 영역 × 기술 스택 매트릭스 (7×7)",
+        "코드 구성 7단계",
+        "3계층 아키텍처",
+        "4계층 아키텍처"
+      ],
+      "status": "완료"
+    },
+    {
+      "task": "Part 구조 확정",
+      "details": {
+        "1권": ["Part 1: Anthropic과 Claude 이해", "Part 2: Claude 설치와 시작", "Part 3: Claude 생태계", "Part 4: Claude Code 기능과 활용", "Part 5: AI 활용 시 참고사항"],
+        "2권": ["Part 1: 개요", "Part 2: 분류체계", "Part 3: 개발 영역·기술 스택별 상세", "Part 4: 최적화", "Part 5: 용어 사전"]
+      },
+      "status": "완료"
+    },
+    {
+      "task": "03편_분류체계 분할",
+      "details": "2개 파일로 분할 (~5,000자씩)",
+      "files": ["03편_분류체계 (1).md", "03편_분류체계 (2).md"],
+      "status": "완료"
+    },
+    {
+      "task": "index.html 코드 추가",
+      "details": "BOOKS에 parts 배열, generateSidebar에 Part 로직, CSS 추가",
+      "status": "완료 (작동 안 함)"
+    },
+    {
+      "task": "Git 커밋 & 푸시",
+      "commit": "d05e2cc",
+      "status": "완료"
+    }
+  ],
+
+  "pending_issue": {
+    "issue": "Part 표시 기능 작동 안 함",
+    "symptoms": [
+      "브라우저에서 Part 헤더 표시 안 됨",
+      "Console에서 BOOKS.book1.parts 실행 시 아무것도 안 나옴",
+      "JavaScript 자체가 로드되지 않는 것으로 추정"
+    ],
+    "attempted_solutions": [
+      "Ctrl+F5 하드 리프레시",
+      "Console 에러 확인 (에러 없음)"
+    ],
+    "next_steps": [
+      "다른 브라우저로 테스트",
+      "JavaScript 문법 오류 검토",
+      "파일 경로 확인"
+    ]
+  },
+
+  "files_modified": [
+    "부수적_고유기능/콘텐츠/학습용_Books_New/index.html",
+    "부수적_고유기능/콘텐츠/학습용_Books_New/기획서/2권_목차_논리구조.md"
+  ],
+
+  "files_created": [
+    "부수적_고유기능/콘텐츠/학습용_Books_New/2권_풀스택_웹사이트_개발_기초지식/03편_분류체계 (1).md",
+    "부수적_고유기능/콘텐츠/학습용_Books_New/2권_풀스택_웹사이트_개발_기초지식/03편_분류체계 (2).md"
+  ],
+
+  "next_session_priority": [
+    "1. Part 표시 이슈 해결",
+    "2. 나머지 2권 콘텐츠 작성 (04편~13편)"
+  ]
+}

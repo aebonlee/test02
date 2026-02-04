@@ -1,0 +1,1341 @@
+{
+  "device": "iPhone 12",
+  "viewport": {
+    "width": 390,
+    "height": 664
+  },
+  "results": [
+    {
+      "pageName": "viewer.html",
+      "analysis": {
+        "buttons": [
+          {
+            "index": 0,
+            "text": "✕ 닫기",
+            "width": 390,
+            "height": 47,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 1,
+            "text": "2D Card View",
+            "width": 170,
+            "height": 46,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 2,
+            "text": "3D Block View",
+            "width": 170,
+            "height": 46,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 3,
+            "text": "전체",
+            "width": 92,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 4,
+            "text": "Pending",
+            "width": 95,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 5,
+            "text": "In Progress",
+            "width": 118,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 6,
+            "text": "Executed",
+            "width": 103,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 7,
+            "text": "Completed",
+            "width": 113,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 8,
+            "text": "Fixing",
+            "width": 92,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 9,
+            "text": "전체",
+            "width": 97,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 10,
+            "text": "Not Verified",
+            "width": 119,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 11,
+            "text": "Passed",
+            "width": 97,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 12,
+            "text": "Failed",
+            "width": 97,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 13,
+            "text": "전체",
+            "width": 68,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 14,
+            "text": "S1: 개발 준비 (Development Setup) (9)",
+            "width": 313,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 15,
+            "text": "🔐 Gate 1",
+            "width": 110,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 16,
+            "text": "S2: 개발 1차 (Core Development) (16)",
+            "width": 307,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 17,
+            "text": "🔐 Gate 2",
+            "width": 110,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 18,
+            "text": "S3: 개발 2차 (Advanced Features) (6)",
+            "width": 304,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 19,
+            "text": "🔐 Gate 3",
+            "width": 110,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 20,
+            "text": "S4: 개발 3차 (QA & Optimization) (18)",
+            "width": 305,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 21,
+            "text": "🔐 Gate 4",
+            "width": 110,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 22,
+            "text": "S5: 운영 (Operations) (8)",
+            "width": 214,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 23,
+            "text": "🔐 Gate 5",
+            "width": 110,
+            "height": 49,
+            "fontSize": "16px",
+            "isAccessible": true,
+            "visible": true
+          },
+          {
+            "index": 24,
+            "text": "💾 AI 검증 결과 저장",
+            "width": 0,
+            "height": 0,
+            "fontSize": "16px",
+            "isAccessible": false,
+            "visible": false
+          },
+          {
+            "index": 25,
+            "text": "💾 승인 여부 의견 저장",
+            "width": 0,
+            "height": 0,
+            "fontSize": "16px",
+            "isAccessible": false,
+            "visible": false
+          },
+          {
+            "index": 26,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 27,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 28,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 29,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 30,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 31,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 32,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 33,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 34,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 35,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 36,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 37,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 38,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 39,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 40,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 41,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 42,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 43,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 44,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 45,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 46,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 47,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 48,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 49,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 50,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 51,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 52,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 53,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 54,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 55,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 56,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 57,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 58,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 59,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 60,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 61,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 62,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 63,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 64,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 65,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 66,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 67,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 68,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 69,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 70,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 71,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 72,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 73,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 74,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 75,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 76,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 77,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 78,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 79,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 80,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 81,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 82,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 83,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 84,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 85,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 86,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 87,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 88,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 89,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 90,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 91,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 92,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 93,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 94,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 95,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 96,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 97,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 98,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 99,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 100,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 101,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 102,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 103,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 104,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 105,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 106,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 107,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 108,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 109,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 110,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 111,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 112,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 113,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 114,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 115,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 116,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 117,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 118,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 119,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 120,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 121,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 122,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 123,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 124,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 125,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 126,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 127,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 128,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 129,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 130,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 131,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 132,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 133,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 134,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 135,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 136,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 137,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 138,
+            "text": "작업지시서",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 139,
+            "text": "전체 속성 (22개)",
+            "width": 272,
+            "height": 44,
+            "fontSize": "11px",
+            "isAccessible": true,
+            "visible": false
+          },
+          {
+            "index": 140,
+            "text": "카메라 리셋",
+            "width": 0,
+            "height": 0,
+            "fontSize": "16px",
+            "isAccessible": false,
+            "visible": false
+          },
+          {
+            "index": 141,
+            "text": "자동 회전",
+            "width": 0,
+            "height": 0,
+            "fontSize": "16px",
+            "isAccessible": false,
+            "visible": false
+          },
+          {
+            "index": 142,
+            "text": "×",
+            "width": 0,
+            "height": 0,
+            "fontSize": "16px",
+            "isAccessible": false,
+            "visible": false
+          }
+        ],
+        "fontSizes": {
+          "24px": 1,
+          "14px": 83,
+          "16px": 325,
+          "14.4px": 1255,
+          "18px": 1,
+          "15.2px": 2,
+          "17.6px": 57,
+          "13.6px": 58,
+          "20px": 2,
+          "12.8px": 6
+        },
+        "viewport": {
+          "width": 390,
+          "height": 664,
+          "scrollWidth": 390,
+          "scrollHeight": 51230,
+          "hasHorizontalScroll": false
+        },
+        "issues": [
+          "버튼 터치 영역 부족: \"💾 AI 검증 결과 저장\" (0x0px, 권장: 44x44px)",
+          "버튼 터치 영역 부족: \"💾 승인 여부 의견 저장\" (0x0px, 권장: 44x44px)",
+          "버튼 터치 영역 부족: \"카메라 리셋\" (0x0px, 권장: 44x44px)",
+          "버튼 터치 영역 부족: \"자동 회전\" (0x0px, 권장: 44x44px)",
+          "버튼 터치 영역 부족: \"×\" (0x0px, 권장: 44x44px)",
+          "가독성 낮은 텍스트 3개 발견 (14px 미만)",
+          "콘텐츠 오버플로우 17개 요소"
+        ],
+        "navigation": {},
+        "contentStructure": {}
+      },
+      "timestamp": "2025-12-24T03:11:03.536Z"
+    }
+  ],
+  "summary": {
+    "totalPages": 1,
+    "pagesWithHorizontalScroll": 0,
+    "totalIssues": 7,
+    "averageButtonAccessibility": 97
+  },
+  "timestamp": "2025-12-24T03:11:11.860Z"
+}

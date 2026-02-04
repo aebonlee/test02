@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - SSAL Works 매뉴얼</title>
+    <meta name="description" content="{{DESCRIPTION}}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Code Highlighting (Prism.js) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        /* ============================================ */
+        /* Reset & Base                                 */
+        /* ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #fafbfc;
+            min-height: 100vh;
+        }
+
+        /* ============================================ */
+        /* Layout                                       */
+        /* ============================================ */
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-container {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            width: 100%;
+        }
+
+        /* ============================================ */
+        /* Top Navigation Bar                           */
+        /* ============================================ */
+        .top-nav {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .top-nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .top-nav-brand span {
+            font-size: 24px;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .top-nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .top-nav-links a:hover {
+            color: white;
+        }
+
+        /* ============================================ */
+        /* Manual Badge                                 */
+        /* ============================================ */
+        .manual-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        /* ============================================ */
+        /* Breadcrumb                                   */
+        /* ============================================ */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .breadcrumb-item {
+            color: #00b894;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: #adb5bd;
+            margin: 0 4px;
+        }
+
+        .breadcrumb-current {
+            color: #495057;
+        }
+
+        /* ============================================ */
+        /* Content Header                               */
+        /* ============================================ */
+        .content-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #00b894;
+        }
+
+        .content-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .content-header .description {
+            font-size: 16px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .content-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #868e96;
+        }
+
+        .content-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ============================================ */
+        /* Table of Contents                            */
+        /* ============================================ */
+        .toc {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .toc-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 8px;
+        }
+
+        .toc-list a {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: #00b894;
+        }
+
+        .toc-list .toc-h3 {
+            padding-left: 16px;
+        }
+
+        /* ============================================ */
+        /* Content Body                                 */
+        /* ============================================ */
+        .content-body {
+            background: #fff;
+            padding: 48px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid #e9ecef;
+        }
+
+        /* Headers */
+        .content-body h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 40px 0 20px;
+            color: #212529;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .content-body h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 36px 0 16px;
+            color: #2d3436;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .content-body h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: #00b894;
+            border-radius: 2px;
+        }
+
+        .content-body h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 28px 0 14px;
+            color: #495057;
+        }
+
+        .content-body h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: #6c757d;
+        }
+
+        .content-body h5, .content-body h6 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            color: #868e96;
+        }
+
+        /* First header no top margin */
+        .content-body > h1:first-child,
+        .content-body > h2:first-child,
+        .content-body > h3:first-child {
+            margin-top: 0;
+        }
+
+        .content-body > h2:first-child::before {
+            display: none;
+        }
+
+        /* Paragraphs */
+        .content-body p {
+            margin-bottom: 16px;
+            color: #495057;
+        }
+
+        /* Lists */
+        .content-body ul, .content-body ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        .content-body li {
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .content-body li > ul,
+        .content-body li > ol {
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        /* Code blocks */
+        .content-body pre {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .content-body pre code {
+            font-family: 'Consolas', 'Monaco', 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #f8f8f2;
+            background: none;
+            padding: 0;
+        }
+
+        /* Inline code */
+        .content-body code {
+            font-family: 'Consolas', 'Monaco', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9em;
+            background: #e8f5e9;
+            color: #00b894;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Blockquote */
+        .content-body blockquote {
+            border-left: 4px solid #00b894;
+            padding: 16px 20px;
+            margin: 20px 0;
+            background: linear-gradient(90deg, #e8f5e9 0%, #fff 100%);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .content-body blockquote p {
+            margin-bottom: 0;
+            color: #495057;
+            font-style: italic;
+        }
+
+        /* Links */
+        .content-body a {
+            color: #00b894;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .content-body a:hover {
+            border-bottom-color: #00b894;
+        }
+
+        /* Images */
+        .content-body img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 24px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        /* Horizontal Rule */
+        .content-body hr {
+            border: none;
+            border-top: 1px solid #e9ecef;
+            margin: 40px 0;
+        }
+
+        /* Tables */
+        .content-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .content-body th {
+            background: #00b894;
+            color: white;
+            border: 1px solid #00a884;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .content-body td {
+            border: 1px solid #e9ecef;
+            padding: 12px;
+        }
+
+        .content-body tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .content-body tr:hover td {
+            background: #e8f5e9;
+        }
+
+        /* ============================================ */
+        /* Step Guide Boxes                             */
+        /* ============================================ */
+        .step-box {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #00b894;
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #00b894;
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+
+        /* ============================================ */
+        /* Info/Warning Boxes                           */
+        /* ============================================ */
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .info-box-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-box-content {
+            flex: 1;
+        }
+
+        .info-box.info {
+            background: #e7f5ff;
+            border: 1px solid #74c0fc;
+        }
+
+        .info-box.warning {
+            background: #fff9db;
+            border: 1px solid #ffd43b;
+        }
+
+        .info-box.danger {
+            background: #ffe3e3;
+            border: 1px solid #ff8787;
+        }
+
+        .info-box.success {
+            background: #d3f9d8;
+            border: 1px solid #69db7c;
+        }
+
+        .info-box.tip {
+            background: #e8f5e9;
+            border: 1px solid #00b894;
+        }
+
+        /* ============================================ */
+        /* Footer                                       */
+        /* ============================================ */
+        .footer {
+            margin-top: 48px;
+            padding: 24px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid #e9ecef;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .footer-nav-item {
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .footer-nav-item.next {
+            text-align: right;
+        }
+
+        .footer-nav-label {
+            font-size: 12px;
+            color: #868e96;
+            margin-bottom: 4px;
+        }
+
+        .footer-nav-link {
+            font-size: 14px;
+            color: #00b894;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-nav-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-info {
+            text-align: center;
+            font-size: 13px;
+            color: #868e96;
+        }
+
+        .footer-info a {
+            color: #00b894;
+            text-decoration: none;
+        }
+
+        /* ============================================ */
+        /* Responsive                                   */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 24px 16px;
+            }
+
+            .content-body {
+                padding: 24px;
+            }
+
+            .content-header h1 {
+                font-size: 24px;
+            }
+
+            .top-nav-links {
+                display: none;
+            }
+
+            .footer-nav {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .footer-nav-item {
+                max-width: 100%;
+            }
+
+            .footer-nav-item.next {
+                text-align: left;
+            }
+
+            .toc {
+                display: none;
+            }
+        }
+
+        /* ============================================ */
+        /* Print Styles                                 */
+        /* ============================================ */
+        @media print {
+            .top-nav, .toc {
+                display: none;
+            }
+
+            .main-container {
+                max-width: none;
+                padding: 0;
+            }
+
+            .content-body {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+
+            .footer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="top-nav-inner">
+                <a href="/" class="top-nav-brand">
+                    <span>🌾</span>
+                    SSAL Works
+                </a>
+                <div class="top-nav-links">
+                    <a href="/">홈</a>
+                    <a href="/pages/learning/">학습자료</a>
+                    <a href="/pages/manual/">매뉴얼</a>
+                    <a href="/pages/faq/">FAQ</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-container">
+            <!-- Manual Badge -->
+            <div class="manual-badge">
+                📖 플랫폼 매뉴얼
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb" aria-label="breadcrumb">
+                <a href="/pages/manual/" class="breadcrumb-item">매뉴얼</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="#" class="breadcrumb-item">{{CATEGORY}}</a>
+                {{SUBCATEGORY_BREADCRUMB}}
+            </nav>
+
+            <!-- Header -->
+            <header class="content-header">
+                <h1>{{TITLE}}</h1>
+                <p class="description">{{DESCRIPTION}}</p>
+                <div class="content-meta">
+                    <span class="content-meta-item">
+                        📅 마지막 업데이트: {{UPDATE_DATE}}
+                    </span>
+                    <span class="content-meta-item">
+                        📂 {{CATEGORY}}
+                    </span>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <article class="content-body">
+                {{CONTENT}}
+            </article>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-info">
+                    <p>📖 SSAL Works 플랫폼 매뉴얼</p>
+                    <p>문의: <a href="mailto:support@ssalworks.com">support@ssalworks.com</a></p>
+                    <p>© 2025 SSAL Works. All rights reserved.</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+
+    <script>
+        // Initialize Prism.js
+        document.addEventListener('DOMContentLoaded', function() {
+            Prism.highlightAll();
+        });
+    </script>
+</body>
+</html>

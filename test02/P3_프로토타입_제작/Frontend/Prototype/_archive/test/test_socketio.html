@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io 테스트</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .status {
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .connected {
+            background: #4CAF50;
+            color: white;
+        }
+        .disconnected {
+            background: #f44336;
+            color: white;
+        }
+        .waiting {
+            background: #ff9800;
+            color: white;
+        }
+        .log {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #2196F3;
+            color: white;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔌 Socket.io 연결 테스트</h1>
+
+    <div id="status" class="status waiting">
+        ⏳ 연결 대기 중...
+    </div>
+
+    <button onclick="testNotification()">🔔 테스트 알림 보내기</button>
+    <button onclick="clearLog()">🗑️ 로그 지우기</button>
+
+    <h2>📋 로그</h2>
+    <div id="log" class="log">
+        <div class="log-entry">시스템 준비 중...</div>
+    </div>
+
+    <!-- Socket.io CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const logDiv = document.getElementById('log');
+        const statusDiv = document.getElementById('status');
+
+        function addLog(message) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            logDiv.innerHTML = '<div class="log-entry">로그 초기화됨</div>';
+        }
+
+        function testNotification() {
+            addLog('🔔 테스트 알림 요청 보냄');
+            fetch('http://localhost:3030/test-notification', {
+                method: 'POST'
+            })
+            .then(() => addLog('✅ 테스트 알림 요청 성공'))
+            .catch(err => addLog('❌ 테스트 알림 요청 실패: ' + err.message));
+        }
+
+        // 페이지 로드 시작
+        addLog('🚀 페이지 로드 시작');
+
+        // Socket.io 라이브러리 로드 확인
+        if (typeof io === 'undefined') {
+            addLog('❌ Socket.io 라이브러리 로드 실패!');
+            statusDiv.textContent = '❌ Socket.io 라이브러리 없음';
+            statusDiv.className = 'status disconnected';
+        } else {
+            addLog('✅ Socket.io 라이브러리 로드 성공');
+
+            // Socket.io 연결 시작
+            addLog('🔌 Socket.io 연결 시도 중... (http://localhost:3030)');
+
+            const socket = io('http://localhost:3030', {
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionAttempts: 10
+            });
+
+            socket.on('connect', () => {
+                addLog('✅ Socket.io 서버 연결 성공!');
+                addLog('📡 소켓 ID: ' + socket.id);
+                statusDiv.textContent = '✅ 연결됨';
+                statusDiv.className = 'status connected';
+            });
+
+            socket.on('disconnect', (reason) => {
+                addLog('❌ Socket.io 서버 연결 끊김: ' + reason);
+                statusDiv.textContent = '❌ 연결 끊김';
+                statusDiv.className = 'status disconnected';
+            });
+
+            socket.on('connect_error', (error) => {
+                addLog('⚠️ 연결 오류: ' + error.message);
+            });
+
+            socket.on('reconnect_attempt', (attemptNumber) => {
+                addLog('🔄 재연결 시도 #' + attemptNumber);
+            });
+
+            // 새 Order 알림 수신
+            socket.on('new-order-alert', (data) => {
+                addLog('📬 새 Order 알림 받음!');
+                addLog('   Order ID: ' + data.orderId);
+                addLog('   Order Name: ' + data.orderName);
+                alert('📬 새 Order 도착!\n\n' + data.orderId + '\n' + data.orderName);
+            });
+
+            // 전역 변수로 저장 (디버깅용)
+            window.testSocket = socket;
+            addLog('💡 브라우저 콘솔에서 "testSocket"으로 소켓 객체 접근 가능');
+        }
+
+        addLog('🏁 스크립트 초기화 완료');
+    </script>
+</body>
+</html>

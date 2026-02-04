@@ -1,0 +1,47 @@
+name: MD to HTML 자동 변환
+
+# 학습용_Books, 매뉴얼 폴더의 .md 파일이 push되면 실행
+# (상황별_안내문은 팝업용이라 별도 HTML로 관리)
+on:
+  push:
+    paths:
+      - '학습용_Books/**/*.md'
+      - 'Project-SSAL-Grid/manual/**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Node.js 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. marked 라이브러리 설치
+      - name: Install marked
+        run: npm install marked
+
+      # 4. MD → HTML 변환 스크립트 실행
+      - name: Convert MD to HTML
+        run: node scripts/convert-md-to-html.js
+
+      # 5. 변환된 HTML 파일 커밋 및 push
+      - name: Commit and push HTML files
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add "학습용_Books/" "Project-SSAL-Grid/manual/"
+          git diff --staged --quiet || git commit -m "자동 변환: MD → HTML [GitHub Actions]"
+          git push

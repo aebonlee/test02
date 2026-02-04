@@ -1,0 +1,116 @@
+{
+  "task_id": "S4F5",
+  "task_name": "프로젝트 등록 API 수정",
+  "report_date": "2025-12-21",
+  "status": "테스트 대기",
+
+  "completed_work": {
+    "api_creation": {
+      "description": "/api/projects/create API 생성",
+      "file": "Production/api/Backend_APIs/projects/create.js",
+      "status": "완료"
+    },
+    "frontend_integration": {
+      "description": "localhost:3030 → /api/projects/create 변경",
+      "file": "Production/index.html",
+      "status": "완료"
+    },
+    "auth_token": {
+      "description": "Authorization Bearer 토큰 연동",
+      "status": "완료"
+    },
+    "design_improvement": {
+      "description": "프로젝트 등록 폼 디자인 개선",
+      "changes": [
+        "max-width: 700px",
+        "padding: 50px",
+        "border-radius: 16px",
+        "box-shadow: 0 4px 20px rgba(0,0,0,0.15)",
+        "입력 필드 크기 확대 (padding: 16px, font-size: 16px)"
+      ],
+      "status": "완료"
+    },
+    "terminology": {
+      "description": "추가 → 등록 용어 변경",
+      "status": "완료"
+    }
+  },
+
+  "temporary_modifications": {
+    "warning": "⚠️ 테스트 완료 후 반드시 복원 필요!",
+    "files": [
+      {
+        "file": "Production/index.html",
+        "locations": [
+          "라인 7486-7489: hasInProgress 체크 비활성화",
+          "라인 7544-7553: hasInProgress 체크 비활성화"
+        ],
+        "marker": "// TEST_DISABLE:"
+      },
+      {
+        "file": "Production/api/Backend_APIs/projects/create.js",
+        "locations": [
+          "라인 95-109: 진행 중 프로젝트 체크 비활성화"
+        ],
+        "marker": "// TEST_DISABLE:"
+      },
+      {
+        "file": "S4_개발-3차/Backend_APIs/projects/create.js",
+        "locations": [
+          "라인 95-109: 동일하게 비활성화"
+        ],
+        "marker": "// TEST_DISABLE:"
+      }
+    ]
+  },
+
+  "pending_tests": [
+    {
+      "test": "브라우저 강제 새로고침 (Ctrl+Shift+R)",
+      "purpose": "캐시 무효화",
+      "status": "대기"
+    },
+    {
+      "test": "디자인 확인",
+      "purpose": "폼이 널찍해졌는지 확인",
+      "status": "대기"
+    },
+    {
+      "test": "등록 기능 테스트",
+      "purpose": "API 정상 작동 확인",
+      "status": "대기"
+    }
+  ],
+
+  "post_test_actions": [
+    "index.html의 TEST_DISABLE 주석 해제",
+    "create.js의 TEST_DISABLE 주석 해제",
+    "Supabase project_sal_grid에 결과 기록",
+    "verification 필드 업데이트"
+  ],
+
+  "git_commits": [
+    {
+      "hash": "b01cb46",
+      "message": "test: API에서도 진행중 프로젝트 체크 임시 비활성화 (테스트용)"
+    },
+    {
+      "hash": "7c4b518",
+      "message": "fix: 프로젝트 등록 폼 디자인 개선"
+    },
+    {
+      "hash": "436a6cf",
+      "message": "fix: 프로젝트 등록 수정 - description 전달, 체크 비활성화, 폼 크기 확대"
+    },
+    {
+      "hash": "a7bc117",
+      "message": "fix: API 파일 위치 수정 - projects/create.js → Backend_APIs/projects/create.js"
+    }
+  ],
+
+  "notes": {
+    "issue_found": "프론트엔드와 API 양쪽에서 진행 중 프로젝트 체크가 있어서 등록이 안 됨",
+    "solution": "테스트를 위해 양쪽 체크 모두 임시 비활성화",
+    "browser_cache": "디자인 변경은 배포됨. 브라우저 캐시로 인해 반영 안 될 수 있음"
+  }
+}

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSAL Works 차별점 6-10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            width: 1080px;
+            height: 1080px;
+            background: #FFFFFF;
+            border-radius: 0;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .badge {
+            display: inline-block;
+            background: #E85A71;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 48px;
+            font-weight: 900;
+            color: #6B5CCC;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 24px;
+            color: #333;
+        }
+        .items {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .item {
+            background: #F8F9FA;
+            border-radius: 20px;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            border: 2px solid #E9ECEF;
+        }
+        .number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E85A71 0%, #F5576C 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .item-desc {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #6B5CCC 0%, #764ba2 100%);
+            border-radius: 16px;
+        }
+        .footer-price {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 8px;
+        }
+        .footer-url {
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="badge">2/2</div>
+            <div class="logo">SSAL Works</div>
+            <div class="subtitle">10가지 차별점 (6~10)</div>
+        </div>
+
+        <div class="items">
+            <div class="item">
+                <div class="number">6</div>
+                <div class="item-content">
+                    <div class="item-title">Order Sheet</div>
+                    <div class="item-desc">단계별 AI 작업 지시서 템플릿. 무엇을 어떻게 만들지 미리 정리되어 있어서, 필요시 내용 추가 후 Claude Code에 전달하면 바로 작업 시작</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">7</div>
+                <div class="item-content">
+                    <div class="item-title">SAL Grid Viewer</div>
+                    <div class="item-desc">71개 Task의 작업 상태와 검증 상태를 Stage별로 시각화. 전체 개발 진행 현황을 한눈에 파악하고 병목 구간을 즉시 확인</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">8</div>
+                <div class="item-content">
+                    <div class="item-title">학습 콘텐츠 151개</div>
+                    <div class="item-desc">Books 80편 + 실전 Tips 66개 + 외부 연동 Guide 5개. 코딩을 몰라도 초보자가 따라할 수 있는 수준으로 구성된 체계적인 학습 자료</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">9</div>
+                <div class="item-content">
+                    <div class="item-title">AI Tutor</div>
+                    <div class="item-desc">모르는 것은 AI에게 질문하면 151개 학습 콘텐츠를 기반으로 맞춤 답변 제공. 검색할 필요 없이 필요한 정보를 즉시 획득</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="number">10</div>
+                <div class="item-content">
+                    <div class="item-title">Sunny 1:1 코칭 3개월</div>
+                    <div class="item-desc">개발뿐 아니라 창업 전반에 대해 전문가가 3개월간 1:1 맞춤형 코칭. 혼자 했으면 수개월 걸릴 일을 단축하고 실전 노하우 전수</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-price">빌더 계정 개설비 얼리버드 300만원을 납부하고 3개월 이내에 자신만의 아이디어가 구현된 웹사이트를 만들어서 150만원을 환불받으세요</div>
+            <div class="footer-url">www.ssalworks.ai.kr</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase 직접 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase 공지사항 테스트</h1>
+    <div id="result" style="white-space: pre-wrap; font-family: monospace; padding: 20px; background: #f5f5f5;"></div>
+
+    <script>
+        const result = document.getElementById('result');
+
+        async function test() {
+            result.textContent = '테스트 시작...\n\n';
+
+            try {
+                // Step 1: 라이브러리 확인
+                result.textContent += 'Step 1: Supabase 라이브러리 확인\n';
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Supabase 라이브러리 로드 실패');
+                }
+                result.textContent += '✅ Supabase 라이브러리 로드됨\n\n';
+
+                // Step 2: 클라이언트 생성
+                result.textContent += 'Step 2: 클라이언트 생성\n';
+                const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5NDI1MTMsImV4cCI6MjA0ODUxODUxM30.ibeW8lMxCqixNowDPCVIeM30iHo3k-_Zti1nObqMnXU';
+
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                result.textContent += '✅ 클라이언트 생성 완료\n\n';
+
+                // Step 3: 데이터 조회
+                result.textContent += 'Step 3: notices 테이블 조회\n';
+                const { data, error } = await client
+                    .from('notices')
+                    .select('*')
+                    .order('important', { ascending: false })
+                    .order('created_at', { ascending: false })
+                    .limit(3);
+
+                if (error) {
+                    result.textContent += '❌ 오류 발생:\n';
+                    result.textContent += `  code: ${error.code}\n`;
+                    result.textContent += `  message: ${error.message}\n`;
+                    result.textContent += `  details: ${error.details}\n`;
+                    result.textContent += `  hint: ${error.hint}\n`;
+                    result.textContent += `\n전체 오류 객체:\n${JSON.stringify(error, null, 2)}\n`;
+                } else {
+                    result.textContent += `✅ 성공! ${data.length}개 공지사항 로드됨\n\n`;
+
+                    if (data.length > 0) {
+                        result.textContent += '공지사항 목록:\n';
+                        result.textContent += '─'.repeat(80) + '\n';
+                        data.forEach((notice, i) => {
+                            const mark = notice.important ? '🔴' : '📌';
+                            result.textContent += `${i+1}. ${mark} ${notice.title}\n`;
+                            result.textContent += `   작성일: ${new Date(notice.created_at).toLocaleDateString('ko-KR')}\n`;
+                            result.textContent += `   내용: ${notice.content.substring(0, 50)}...\n\n`;
+                        });
+                    } else {
+                        result.textContent += '⚠️ 공지사항이 없습니다.\n';
+                    }
+                }
+
+            } catch (e) {
+                result.textContent += `\n❌ 예외 발생:\n${e.message}\n${e.stack}`;
+            }
+        }
+
+        // 페이지 로드 후 실행
+        window.addEventListener('load', test);
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!--
+@task S4F1
+@description 구독 관리 - 빌링 상태
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구독 관리 - SSAL</title>
+    <link rel="stylesheet" href="../../shared.css">
+    <link rel="stylesheet" href="../../admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>SSAL 관리자</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>대시보드</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>사용자 관리</span>
+                </a>
+                <a href="installation.html" class="nav-item">
+                    <span class="icon">💰</span>
+                    <span>설치비 관리</span>
+                </a>
+                <a href="subscriptions.html" class="nav-item active">
+                    <span class="icon">🔄</span>
+                    <span>구독 관리</span>
+                </a>
+                <a href="payments.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>결제 내역</span>
+                </a>
+                <a href="credits.html" class="nav-item">
+                    <span class="icon">🎫</span>
+                    <span>크레딧 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📝</span>
+                    <span>콘텐츠 관리</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span>설정</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>구독 관리</h1>
+                <div class="admin-user">
+                    <span id="admin-name">관리자</span>
+                    <button id="logout-btn" class="btn-secondary">로그아웃</button>
+                </div>
+            </header>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card-small">
+                    <h3>활성 구독</h3>
+                    <p class="stat-value" id="active-count">-</p>
+                </div>
+                <div class="stat-card-small">
+                    <h3>취소 예정</h3>
+                    <p class="stat-value" id="canceling-count">-</p>
+                </div>
+                <div class="stat-card-small">
+                    <h3>정지됨</h3>
+                    <p class="stat-value" id="paused-count">-</p>
+                </div>
+                <div class="stat-card-small">
+                    <h3>월 예상 수익</h3>
+                    <p class="stat-value" id="mrr">-</p>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="tab-btn active" data-status="active">활성</button>
+                <button class="tab-btn" data-status="canceling">취소 예정</button>
+                <button class="tab-btn" data-status="paused">정지</button>
+                <button class="tab-btn" data-status="expired">만료</button>
+                <button class="tab-btn" data-status="all">전체</button>
+            </div>
+
+            <!-- Subscriptions Table -->
+            <div class="card">
+                <div class="table-header">
+                    <h2>구독 목록</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="사용자명, 이메일 검색...">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>사용자</th>
+                                <th>이메일</th>
+                                <th>플랜</th>
+                                <th>상태</th>
+                                <th>시작일</th>
+                                <th>다음 결제일</th>
+                                <th>빌링키</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscriptions-list">
+                            <tr>
+                                <td colspan="8" class="loading">로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Subscription Detail Modal -->
+    <div id="subscription-detail-modal" class="modal">
+        <div class="modal-content">
+            <h2>구독 상세 정보</h2>
+            <div id="subscription-details"></div>
+            <div class="modal-actions">
+                <button id="pause-btn" class="btn-secondary" style="display: none;">일시정지</button>
+                <button id="resume-btn" class="btn-primary" style="display: none;">재개</button>
+                <button id="cancel-subscription-btn" class="btn-danger" style="display: none;">구독 취소</button>
+                <button id="close-detail-modal" class="btn-secondary">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Billing History Modal -->
+    <div id="billing-history-modal" class="modal">
+        <div class="modal-content large">
+            <h2>결제 이력</h2>
+            <div id="billing-history"></div>
+            <div class="modal-actions">
+                <button id="close-history-modal" class="btn-secondary">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../admin-subscriptions.js"></script>
+</body>
+</html>

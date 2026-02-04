@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 프로젝트 - SSAL Works</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2C4A8A;
+            --primary-dark: #1F3563;
+            --secondary: #F59E0B;
+            --secondary-dark: #D97706;
+            --accent: #10B981;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .nav {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0 32px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .rice-logo {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transform: rotate(-15deg);
+        }
+
+        .rice-grain {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 40%;
+        }
+
+        .rice-grain:nth-child(1) { transform: rotate(-5deg); }
+        .rice-grain:nth-child(2) { transform: rotate(5deg); margin-top: 2px; }
+        .rice-grain:nth-child(3) { transform: rotate(-3deg); margin-top: -1px; }
+
+        .nav-logo-text { font-size: 28px; font-weight: 800; color: white; }
+
+        .close-btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-title { font-size: 28px; font-weight: 700; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 74, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* 빌더 계정 개설비 안내 카드 */
+        .fee-notice {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+            border: 2px solid var(--secondary);
+            text-align: center;
+            padding: 32px;
+        }
+
+        .fee-notice-icon { font-size: 48px; margin-bottom: 16px; }
+        .fee-notice-title { font-size: 20px; font-weight: 700; color: var(--secondary-dark); margin-bottom: 12px; }
+        .fee-notice-text { color: var(--gray-700); margin-bottom: 24px; line-height: 1.6; }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .empty-state-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--gray-700); }
+        .empty-state-text { font-size: 14px; margin-bottom: 24px; }
+
+        /* 프로젝트 카드 */
+        .project-card {
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .project-info { flex: 1; }
+        .project-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .project-id { font-size: 12px; color: var(--gray-500); font-family: monospace; }
+
+        .project-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .project-status.in_progress {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .project-status.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .project-status.archived {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .project-description {
+            color: var(--gray-700);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .project-progress {
+            margin-bottom: 16px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .progress-label span:first-child { color: var(--gray-500); }
+        .progress-label span:last-child { font-weight: 600; color: var(--primary); }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .project-stages {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stage {
+            flex: 1;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+        }
+
+        .stage.completed { background: var(--success); }
+        .stage.current { background: var(--primary); }
+
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .project-date { font-size: 12px; color: var(--gray-500); }
+
+        .project-actions { display: flex; gap: 8px; }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden { display: none; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--primary); }
+
+        /* 통계 카드 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-value { font-size: 32px; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+        .stat-card.highlight {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+        .stat-card.highlight .stat-value { color: white; }
+        .stat-card.highlight .stat-label { color: rgba(255,255,255,0.8); }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav { padding: 0 12px; height: 56px; }
+            .nav-logo-text { font-size: 18px; }
+            .close-btn { padding: 4px 10px; font-size: 11px; white-space: nowrap; }
+            .container { padding: 16px 12px; }
+            .page-header { flex-direction: column; gap: 12px; align-items: stretch; }
+            .page-title { font-size: 22px; }
+            .btn { width: 100%; justify-content: center; }
+            .card { padding: 16px; }
+            .stats-row { grid-template-columns: 1fr; }
+            .project-header { flex-direction: column; gap: 8px; }
+            .project-footer { flex-direction: column; gap: 12px; align-items: stretch; }
+            .project-actions { flex-direction: column; }
+            .project-actions .btn { width: 100%; }
+            .toast { right: 12px; left: 12px; bottom: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="../../index.html" class="nav-logo">
+            <div class="rice-logo">
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+                <span class="rice-grain"></span>
+            </div>
+            <span class="nav-logo-text">SSAL Works</span>
+        </a>
+        <button class="close-btn" onclick="window.history.length > 1 ? history.back() : window.location.href='../../index.html'" title="닫기">✕ 닫기</button>
+    </nav>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../../index.html">홈</a>
+            <span>›</span>
+            <span>내 프로젝트</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">내 프로젝트</h1>
+            <button class="btn btn-primary" id="newProjectBtn" onclick="goToNewProject()">
+                새 프로젝트
+            </button>
+        </div>
+
+        <!-- 빌더 계정 개설비 미납 안내 -->
+        <div class="card fee-notice" id="feeNotice" style="display: none;">
+            <div class="fee-notice-icon"></div>
+            <div class="fee-notice-title">빌더 계정 개설비 납부가 필요합니다</div>
+            <div class="fee-notice-text">
+                프로젝트를 등록하려면 먼저 빌더 계정 개설비를 납부해주세요.<br>
+                빌더 계정 개설비 납부 시 ₩5,000 무료 크레딧이 지급됩니다!
+            </div>
+            <a href="../payment/installation.html" class="btn" style="background: #2C4A8A; color: white;">빌더 계정 개설비 안내 보기</a>
+        </div>
+
+        <!-- 통계 -->
+        <div class="stats-row" id="statsRow" style="display: none;">
+            <div class="stat-card highlight">
+                <div class="stat-value" id="totalProjects">0</div>
+                <div class="stat-label">전체 프로젝트</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="inProgressProjects">0</div>
+                <div class="stat-label">진행 중</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedProjects">0</div>
+                <div class="stat-label">완료</div>
+            </div>
+        </div>
+
+        <!-- 프로젝트 목록 -->
+        <div id="projectList"></div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NzE1NTEsImV4cCI6MjA3OTE0NzU1MX0.AJy34h5VR8QS6WFEcUcBeJJu8I3bBQ6UCk1I84Wb7y4';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+        let projects = [];
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        async function checkAuth() {
+            showLoading();
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                if (error || !session) {
+                    showToast('로그인이 필요합니다.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../auth/login.html';
+                    }, 1500);
+                    return;
+                }
+                currentUser = session.user;
+                await loadUserData();
+            } catch (error) {
+                console.error('인증 확인 실패:', error);
+                showToast('인증 확인에 실패했습니다.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) throw error;
+                userData = data;
+
+                // 빌더 계정 개설비 미납 시
+                if (!userData.installation_fee_paid) {
+                    document.getElementById('feeNotice').style.display = 'block';
+                    document.getElementById('newProjectBtn').disabled = true;
+                    document.getElementById('projectList').innerHTML = `
+                        <div class="card empty-state">
+                            <div class="empty-state-icon"></div>
+                            <div class="empty-state-title">빌더 계정 개설비 납부 후 이용 가능합니다</div>
+                            <div class="empty-state-text">빌더 계정 개설비를 납부하시면 프로젝트를 등록할 수 있습니다.</div>
+                        </div>
+                    `;
+                } else {
+                    await loadProjects();
+                }
+            } catch (error) {
+                console.error('사용자 정보 로드 실패:', error);
+                showToast('사용자 정보를 불러올 수 없습니다.', 'error');
+            }
+        }
+
+        async function loadProjects() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .select('*')
+                    .eq('user_id', userData.user_id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                projects = data || [];
+                renderProjects();
+                updateStats();
+            } catch (error) {
+                console.error('프로젝트 로드 실패:', error);
+                showToast('프로젝트를 불러올 수 없습니다.', 'error');
+            }
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projectList');
+
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="card empty-state">
+                        <div class="empty-state-icon"></div>
+                        <div class="empty-state-title">등록된 프로젝트가 없습니다</div>
+                        <div class="empty-state-text">새 프로젝트를 등록하고 개발을 시작하세요!</div>
+                        <button class="btn btn-primary" onclick="goToNewProject()">새 프로젝트 등록</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = projects.map(project => {
+                const statusText = {
+                    'in_progress': '진행 중',
+                    'completed': '완료',
+                    'archived': '보관됨'
+                }[project.status] || project.status;
+
+                const stages = Array.from({ length: project.total_stages }, (_, i) => {
+                    if (i < project.current_stage) return 'completed';
+                    if (i === project.current_stage) return 'current';
+                    return '';
+                });
+
+                return `
+                    <div class="card project-card">
+                        <div class="project-header">
+                            <div class="project-info">
+                                <div class="project-name">${DOMPurify.sanitize(project.project_name)}</div>
+                                <div class="project-id">${DOMPurify.sanitize(project.project_id)}</div>
+                            </div>
+                            <span class="project-status ${project.status}">${statusText}</span>
+                        </div>
+
+                        ${project.description ? `
+                            <div class="project-description">${DOMPurify.sanitize(project.description)}</div>
+                        ` : ''}
+
+                        <div class="project-progress">
+                            <div class="progress-label">
+                                <span>진행률</span>
+                                <span>${project.progress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${project.progress}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="project-stages">
+                            ${stages.map((cls, i) => `
+                                <div class="stage ${cls}" title="Phase ${i + 1}"></div>
+                            `).join('')}
+                        </div>
+
+                        <div class="project-footer">
+                            <div class="project-date">
+                                생성: ${formatDate(project.created_at)}
+                                ${project.completed_at ? ` · 완료: ${formatDate(project.completed_at)}` : ''}
+                            </div>
+                            <div class="project-actions">
+                                <button class="btn btn-primary btn-small" onclick="viewProject('${project.id}')">
+                                    상세보기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('statsRow').style.display = 'grid';
+            document.getElementById('totalProjects').textContent = projects.length;
+            document.getElementById('inProgressProjects').textContent = projects.filter(p => p.status === 'in_progress').length;
+            document.getElementById('completedProjects').textContent = projects.filter(p => p.status === 'completed').length;
+        }
+
+        function goToNewProject() {
+            if (!userData || !userData.installation_fee_paid) {
+                showToast('빌더 계정 개설비 납부 후 이용 가능합니다.', 'error');
+                return;
+            }
+
+            // 이미 진행 중인 프로젝트가 있는지 확인
+            const hasInProgress = projects.some(p => p.status === 'in_progress');
+            if (hasInProgress) {
+                showToast('진행 중인 프로젝트가 있습니다. 완료 후 새 프로젝트를 등록해주세요.', 'info');
+                return;
+            }
+
+            window.location.href = 'new.html';
+        }
+
+        function viewProject(projectId) {
+            // 추후 상세 페이지 구현
+            showToast('프로젝트 상세 페이지는 준비 중입니다.', 'info');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = msg;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

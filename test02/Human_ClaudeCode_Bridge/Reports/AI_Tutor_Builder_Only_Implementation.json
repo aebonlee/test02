@@ -1,0 +1,48 @@
+{
+  "report_type": "feature_modification",
+  "task_name": "AI Tutor 빌더 계정 전용 제한 구현",
+  "date": "2025-12-28",
+  "status": "completed",
+
+  "summary": {
+    "description": "AI Tutor 접근 권한을 회원 전용에서 빌더 계정 전용으로 변경",
+    "reason": "7대 핵심 지식 콘텐츠의 가치 보호 및 빌더 계정 혜택 강화"
+  },
+
+  "changes": {
+    "file": "index.html",
+    "function": "toggleAITutor()",
+    "before": {
+      "comment": "// AI Tutor 토글 (회원 전용)",
+      "logic": "로그인 세션 확인만 수행"
+    },
+    "after": {
+      "comment": "// AI Tutor 토글 (빌더 계정 전용)",
+      "logic": [
+        "1. 로그인 세션 확인",
+        "2. users 테이블에서 installation_fee_paid 필드 조회",
+        "3. installation_fee_paid=true인 경우에만 접근 허용"
+      ]
+    }
+  },
+
+  "alert_messages": {
+    "not_logged_in": "🎓 AI Tutor는 빌더 계정 전용 서비스입니다.\n\n로그인 후 이용해 주세요.",
+    "not_builder": "🎓 AI Tutor는 빌더 계정 전용 서비스입니다.\n\n빌더 계정 개설 후 이용해 주세요."
+  },
+
+  "ai_tutor_content_categories": [
+    "SSAL Works - 학습용 Books",
+    "SSAL Works - 외부 연동 설정 Guide",
+    "SSAL Works - 실전 Tips",
+    "SSAL Works - 서비스 소개",
+    "SSAL Works - PROJECT SAL Grid 매뉴얼",
+    "SSAL Works - Rules, Compliance, Methods",
+    "SSAL Works - 첫 프로젝트 시작 환경설정 가이드"
+  ],
+
+  "verification": {
+    "code_review": "PASS - 기존 빌더 계정 확인 패턴과 동일한 로직 적용",
+    "syntax_check": "PASS - JavaScript 문법 오류 없음"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "report_id": "policy_document_update_20251225",
+  "report_date": "2025-12-25",
+  "report_type": "document_update",
+  "status": "completed",
+
+  "summary": {
+    "title": "기획 문서 정책 반영 수정",
+    "description": "크레딧 환불 기능 삭제, 충전 정책 1:1 비율 통일, 결제수단 토스페이먼츠 통일, 웰컴 크레딧 금액 통일",
+    "total_files_modified": 8,
+    "commit_hash": "959b712"
+  },
+
+  "policy_changes": {
+    "refund_policy": {
+      "before": "크레딧 환불, 플랫폼 이용료 환불 기능 존재",
+      "after": "환불 기능 없음 (정책상 환불 불가)",
+      "affected_areas": [
+        "크레딧 환불 신청 UI",
+        "관리자 환불 처리 기능",
+        "환불 내역 조회",
+        "환불 알림",
+        "환불 수수료 설정"
+      ]
+    },
+    "credit_charging": {
+      "before": "보너스 포함 (₩5,000 없음, ₩10,000+10%, ₩30,000+16.7%, ₩50,000+20%, ₩100,000+25%)",
+      "after": "1:1 비율 (₩10,000=10,000C, ₩30,000=30,000C, ₩50,000=50,000C, ₩100,000=100,000C)",
+      "bonus_removed": true
+    },
+    "payment_method": {
+      "before": "신용카드/카카오페이/무통장입금",
+      "after": "토스페이먼츠"
+    },
+    "welcome_credit": {
+      "before": "₩5,000 (일부 문서)",
+      "after": "₩50,000 (통일)"
+    }
+  },
+
+  "modified_files": [
+    {
+      "file": "P2_프로젝트_기획/UI_UX_Mockup/Mockups/USERFLOW_SUMMARY.md",
+      "changes": [
+        "크레딧 충전 단위를 1:1 비율로 수정",
+        "결제수단을 토스페이먼츠로 변경",
+        "FAQ 카테고리 '결제/환불' → '결제 문의'"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/UI_UX_Mockup/Mockups/PLANNING_DOCUMENTS_VERIFICATION.md",
+      "changes": [
+        "충전 금액 옵션에서 보너스 제거",
+        "₩5,000 옵션 삭제",
+        "1:1 비율 명시"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/Workflows/Admin_Operations_Workflow.md",
+      "changes": [
+        "'결제/환불' → '결제 문의' 변경",
+        "환불 처리 항목 삭제",
+        "환불 관련 이메일 템플릿 삭제"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/Workflows/Admin_Dashboard_Features.md",
+      "changes": [
+        "크레딧 환불 요청 알림 제거",
+        "환불 내역 섹션 전체 삭제",
+        "환불 요청 알림 설정 제거",
+        "환불 수수료율 설정 제거",
+        "흐름 3: 크레딧 환불 승인 전체 삭제",
+        "결제수단을 토스페이먼츠로 변경"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/Requirements/functional_requirements.md",
+      "changes": [
+        "FR-CREDIT-004 크레딧 환불 기능 전체 삭제",
+        "관리자 결제 관리에서 환불 처리 제거",
+        "관리자 크레딧 관리에서 환불 처리 제거",
+        "환불 요청 탭 삭제"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/User_Flows/1_Signup/환영_메시지.md",
+      "changes": [
+        "AI 크레딧 ₩5,000 → ₩50,000 (웰컴 크레딧)"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/User_Flows/2_Project_Registration/flow.md",
+      "changes": [
+        "AI 크레딧 ₩5,000 → ₩50,000",
+        "플랫폼 알림 메시지 수정"
+      ]
+    },
+    {
+      "file": "P2_프로젝트_기획/User_Flows/2_Project_Registration/ui_specs.md",
+      "changes": [
+        "AI 크레딧 ₩5,000 → ₩50,000 (웰컴 크레딧)"
+      ]
+    }
+  ],
+
+  "verification": {
+    "method": "manual_review",
+    "checked_items": [
+      "모든 환불 관련 내용 제거 확인",
+      "크레딧 충전 금액 1:1 비율 통일 확인",
+      "결제수단 토스페이먼츠 통일 확인",
+      "웰컴 크레딧 ₩50,000 통일 확인"
+    ],
+    "result": "passed"
+  },
+
+  "git_info": {
+    "commit_hash": "959b712",
+    "commit_message": "docs: 기획 문서 정책 반영 수정",
+    "branch": "master",
+    "pushed": true
+  },
+
+  "notes": [
+    "3개월 챌린지 환불(설치비 50%)은 별도 인센티브 프로그램으로 유지됨",
+    "admin-dashboard.html 환불 코드는 이전 세션에서 이미 삭제됨 (commit: 1186140)"
+  ]
+}

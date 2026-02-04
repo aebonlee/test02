@@ -1,0 +1,71 @@
+{
+  "report_id": "Default_Guide_Styling_Fix",
+  "created_at": "2025-12-27T18:30:00.000Z",
+  "status": "completed",
+  "summary": "Default 안내문 스타일링 전면 수정 - 초록색 복원, 여백 통일, 줄 간격 통일",
+
+  "tasks_completed": [
+    {
+      "task": "Default.md 잘못된 문구 삭제",
+      "description": "Default.md 끝에 잘못 추가된 'Order Sheet 로딩 문구' 삭제",
+      "commit": "2d76ddf"
+    },
+    {
+      "task": "섹션 여백 수정",
+      "description": "p, ul, table, blockquote 요소에 margin: 16px 0 적용",
+      "commit": "65e0eae, afc6f82"
+    },
+    {
+      "task": "초록색 스타일 복원",
+      "description": "var(--primary-dark), var(--primary) CSS 변수 사용하는 원본 스타일 복원",
+      "commit": "a8cdda1"
+    },
+    {
+      "task": "제목 글씨 크기 축소 + 여백 추가",
+      "description": "h1: 18px, h2: 16px, h3: 14px로 축소. h1-h2 사이 margin-top: 24px 추가",
+      "commit": "7525235"
+    },
+    {
+      "task": "본문 줄 간격 통일",
+      "description": "p, li, blockquote, td 모두 font-size: 13px, line-height: 1.7 적용",
+      "commit": "300825b"
+    }
+  ],
+
+  "files_modified": [
+    "Briefings_OrderSheets/Briefings/generate-briefings-js.js",
+    "Briefings_OrderSheets/Briefings/Situational/Default.md",
+    "P3_프로토타입_제작/Frontend/Prototype/guides.js",
+    "Briefings_OrderSheets/Briefings/guides.js"
+  ],
+
+  "final_styles": {
+    "h1": "margin-top: 0; margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--primary-dark)",
+    "h2": "margin-top: 24px; margin-bottom: 12px; font-size: 16px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid var(--primary)",
+    "h3": "margin-top: 20px; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #333",
+    "p": "margin: 16px 0; font-size: 13px; line-height: 1.7",
+    "li": "margin-bottom: 8px; font-size: 13px; line-height: 1.7",
+    "ul": "padding-left: 20px; margin: 16px 0",
+    "blockquote": "border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; color: #555; font-size: 13px; line-height: 1.7",
+    "td": "padding: 8px; border: 1px solid #ddd; font-size: 13px; line-height: 1.7"
+  },
+
+  "commits": [
+    "2d76ddf - fix: Default.md에서 잘못 추가된 문구 삭제",
+    "5054e79 - fix: guides.js 생성 시 인라인 요소로 시작하는 문단에 p태그 적용",
+    "d3b4bd4 - fix: 원본 초록색 스타일 복원 + 단락 여백 수정",
+    "65e0eae - fix: guides.js 섹션 여백 스타일 적용",
+    "afc6f82 - fix: 안내문 섹션 여백 16px로 통일",
+    "a8cdda1 - fix: 초록색 스타일 복원 + 섹션 여백 16px 적용",
+    "7525235 - fix: 제목 글씨 크기 축소 + h1-h2 사이 여백 추가",
+    "300825b - fix: 본문 줄 간격 통일",
+    "921bf41 - chore: 빌드 아티팩트 업데이트"
+  ],
+
+  "verification": {
+    "green_color": "var(--primary-dark), var(--primary) 사용 확인",
+    "margins": "모든 본문 요소 margin: 16px 0 적용 확인",
+    "line_height": "p, li, blockquote, td 모두 line-height: 1.7 확인",
+    "font_size": "h1:18px, h2:16px, h3:14px, 본문:13px 확인"
+  }
+}

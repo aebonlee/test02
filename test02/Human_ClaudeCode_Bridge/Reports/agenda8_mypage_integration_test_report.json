@@ -1,0 +1,581 @@
+{
+  "test_id": "AGENDA8_MYPAGE_TEST",
+  "test_name": "My Page 통합 완성 테스트",
+  "test_date": "2025-12-12",
+  "test_file": "C:\\!SSAL_Works_Private\\P3_프로토타입_제작\\Frontend\\Prototype\\pages\\mypage\\index.html",
+
+  "executive_summary": {
+    "overall_status": "⚠️ 부분 통과 (데이터 확인 필요)",
+    "code_quality": "✅ 우수",
+    "data_readiness": "⚠️ 확인 필요",
+    "critical_issues": [
+      "Supabase API 키로 curl 직접 조회 실패 (Invalid API key 오류)",
+      "payment_methods 테이블 샘플 데이터 존재 여부 확인 필요",
+      "billing_history 테이블 샘플 데이터 존재 여부 확인 필요"
+    ]
+  },
+
+  "1_code_analysis": {
+    "status": "✅ 통과",
+    "summary": "My Page HTML 파일의 코드 품질 및 구조는 우수함",
+    "details": {
+      "file_structure": {
+        "status": "✅ 양호",
+        "lines_of_code": 1870,
+        "sections": [
+          "프로필 정보 (Profile)",
+          "내 프로젝트 (Projects)",
+          "구독 정보 (Subscription)",
+          "크레딧 관리 (Credit)",
+          "보안 설정 (Security)"
+        ],
+        "notes": "5개 섹션이 명확하게 구분되어 있음"
+      },
+      "supabase_integration": {
+        "status": "✅ 양호",
+        "url": "https://zwjmfewyshhwpgwdtrus.supabase.co",
+        "anon_key": "설정됨 (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
+        "client_initialization": "✅ supabase.createClient() 정상 설정",
+        "auth_check": "✅ checkAuth() 함수로 세션 검증"
+      },
+      "security": {
+        "status": "✅ 우수",
+        "xss_protection": "✅ DOMPurify 사용",
+        "sanitization": "✅ sanitize() 함수로 모든 사용자 입력 처리",
+        "password_validation": "✅ 정규식 검증 (영문/숫자/특수문자 조합)",
+        "rls_dependency": "⚠️ Supabase RLS 정책에 의존 (데이터 보안)"
+      },
+      "ui_ux": {
+        "status": "✅ 우수",
+        "responsive_design": "✅ 미디어 쿼리 적용 (900px, 600px, 500px)",
+        "loading_state": "✅ 로딩 오버레이 및 스켈레톤 UI",
+        "toast_notifications": "✅ 성공/오류 메시지 토스트",
+        "animations": "✅ fadeIn, slideIn 애니메이션 적용"
+      },
+      "data_fetching": {
+        "status": "✅ 양호",
+        "tables_accessed": [
+          "users (프로필)",
+          "projects (프로젝트 목록)",
+          "payment_methods (결제 수단)",
+          "billing_history (결제 내역)",
+          "credit_transactions (크레딧 거래)",
+          "ai_usage_log (AI 사용 로그)",
+          "ai_service_pricing (AI 가격 정보)"
+        ],
+        "error_handling": "✅ try-catch로 모든 데이터 조회 감싸짐",
+        "fallback_display": "✅ 데이터 없을 시 안내 메시지 표시"
+      }
+    }
+  },
+
+  "2_database_schema_verification": {
+    "status": "✅ 통과",
+    "summary": "필요한 모든 테이블 스키마가 SQL 파일로 정의되어 있음",
+    "details": {
+      "users_table": {
+        "schema_file": "00_users_table.sql, 12_extend_users_table.sql",
+        "sample_data_file": "14_users_sample_data.sql",
+        "rls_file": "13_users_rls_dev.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "user_id (VARCHAR(8), PK)",
+          "email, name, nickname, real_name",
+          "subscription_status (free/active/paused/suspended/cancelled)",
+          "installation_fee_paid (BOOLEAN)",
+          "credit_balance (INTEGER)",
+          "marketing_agreed (BOOLEAN)"
+        ]
+      },
+      "projects_table": {
+        "schema_file": "15_create_projects.sql",
+        "rls_file": "17_projects_rls_dev.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "project_id (VARCHAR(20), UNIQUE)",
+          "user_id (VARCHAR(8))",
+          "status (in_progress/completed/archived)",
+          "progress (0-100)",
+          "current_stage, total_stages"
+        ],
+        "constraints": "✅ 진행 중인 프로젝트는 사용자당 1개만 허용"
+      },
+      "payment_methods_table": {
+        "schema_file": "19-1_create_payment_methods.sql",
+        "sample_data_file": "22_sample_billing.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "user_id (VARCHAR(8))",
+          "payment_type (card/bank)",
+          "card_last4, card_company",
+          "bank_name, account_last4",
+          "is_default (BOOLEAN)"
+        ]
+      },
+      "billing_history_table": {
+        "schema_file": "20_create_billing_history.sql",
+        "sample_data_file": "22_sample_billing.sql",
+        "rls_file": "21_billing_rls_dev.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "user_id (VARCHAR(8))",
+          "billing_type (platform_fee/credit_purchase)",
+          "amount, status (paid/failed/refunded)",
+          "billing_date, payment_method"
+        ]
+      },
+      "credit_transactions_table": {
+        "schema_file": "24_create_credit_tables.sql",
+        "sample_data_file": "26_sample_credit_data.sql",
+        "rls_file": "25_credit_rls_dev.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "user_id (VARCHAR(8))",
+          "type (charge/spend/refund/bonus/expire)",
+          "amount, balance_after",
+          "related_service (ChatGPT/Gemini/Perplexity)"
+        ]
+      },
+      "ai_usage_log_table": {
+        "schema_file": "24_create_credit_tables.sql",
+        "sample_data_file": "26_sample_credit_data.sql",
+        "status": "✅ 정의됨",
+        "key_columns": [
+          "user_id (VARCHAR(8))",
+          "service_name (ChatGPT/Gemini/Perplexity)",
+          "prompt, response",
+          "tokens_used, cost, response_time_ms"
+        ]
+      },
+      "ai_service_pricing_table": {
+        "schema_file": "24_create_credit_tables.sql",
+        "status": "✅ 정의됨 + 초기 데이터 포함",
+        "initial_data": [
+          { "service": "ChatGPT", "price": 100, "description": "GPT-4 기반 코드 작성" },
+          { "service": "Gemini", "price": 80, "description": "코드 리뷰, 아키텍처 설계" },
+          { "service": "Perplexity", "price": 50, "description": "실시간 검색, 최신 정보" }
+        ]
+      }
+    }
+  },
+
+  "3_sample_data_verification": {
+    "status": "⚠️ 확인 필요",
+    "summary": "샘플 데이터 SQL 파일은 존재하나, 실제 Supabase 적용 여부는 직접 확인 필요",
+    "details": {
+      "users_sample_data": {
+        "file": "14_users_sample_data.sql",
+        "status": "✅ 파일 존재",
+        "sample_users": [
+          {
+            "user_id": "ADMIN001",
+            "email": "admin@ssalworks.com",
+            "nickname": "관리자",
+            "role": "admin",
+            "installation_fee_paid": true,
+            "credit_balance": 100000
+          },
+          {
+            "user_id": "A1B2C3D4",
+            "email": "user1@example.com",
+            "nickname": "철수씨",
+            "installation_fee_paid": true,
+            "credit_balance": 15000
+          },
+          {
+            "user_id": "E5F6G7H8",
+            "email": "user2@example.com",
+            "nickname": "영희님",
+            "installation_fee_paid": false,
+            "credit_balance": 0
+          }
+        ],
+        "total_users": "13명 (관리자 1명 + 일반 사용자 12명)",
+        "notes": "다양한 subscription_status (free/active/paused/suspended)"
+      },
+      "payment_methods_sample_data": {
+        "file": "22_sample_billing.sql",
+        "status": "✅ 파일 존재",
+        "sample_test_users": ["TEST0001", "TEST0002"],
+        "test0001_methods": [
+          { "type": "card", "company": "신한카드", "last4": "1234", "is_default": true },
+          { "type": "bank", "bank": "하나은행", "last4": "5678", "is_default": false }
+        ],
+        "test0002_methods": [
+          { "type": "card", "company": "삼성카드", "last4": "9012", "is_default": true }
+        ],
+        "notes": "TEST0001, TEST0002 사용자용 샘플 데이터"
+      },
+      "billing_history_sample_data": {
+        "file": "22_sample_billing.sql",
+        "status": "✅ 파일 존재",
+        "test0001_history": [
+          { "type": "platform_fee", "amount": 50000, "status": "paid", "date": "3개월 전" },
+          { "type": "platform_fee", "amount": 50000, "status": "paid", "date": "2개월 전" },
+          { "type": "platform_fee", "amount": 50000, "status": "paid", "date": "1개월 전" },
+          { "type": "platform_fee", "amount": 50000, "status": "failed", "date": "3일 전" },
+          { "type": "credit_purchase", "amount": 10000, "status": "paid", "date": "15일 전" }
+        ],
+        "test0002_history": [
+          { "type": "platform_fee", "amount": 50000, "status": "paid", "date": "2개월 전" },
+          { "type": "platform_fee", "amount": 50000, "status": "refunded", "date": "1개월 전" }
+        ],
+        "notes": "TEST0001, TEST0002 사용자용 샘플 데이터"
+      },
+      "credit_transactions_sample_data": {
+        "file": "26_sample_credit_data.sql",
+        "status": "✅ 파일 존재",
+        "test0001_transactions": [
+          { "type": "charge", "amount": 50000, "description": "첫 충전 - 카드 결제" },
+          { "type": "spend", "amount": -100, "service": "ChatGPT" },
+          { "type": "spend", "amount": -80, "service": "Gemini" },
+          { "type": "charge", "amount": 10000, "description": "추가 충전" },
+          { "type": "bonus", "amount": 5000, "description": "이벤트 당첨" }
+        ],
+        "test0001_final_balance": 64540,
+        "test0002_final_balance": 34750,
+        "notes": "TEST0001, TEST0002 사용자용 샘플 데이터"
+      },
+      "ai_usage_log_sample_data": {
+        "file": "26_sample_credit_data.sql",
+        "status": "✅ 파일 존재",
+        "test0001_logs": [
+          { "service": "ChatGPT", "cost": 100, "prompt": "React 컴포넌트 작성 방법" },
+          { "service": "Gemini", "cost": 80, "prompt": "코드 리뷰" },
+          { "service": "Perplexity", "cost": 50, "prompt": "JavaScript 트렌드" }
+        ],
+        "total_logs": "9개 (TEST0001 6개, TEST0002 3개)",
+        "notes": "TEST0001, TEST0002 사용자용 샘플 데이터"
+      },
+      "supabase_verification": {
+        "status": "❌ 실패",
+        "method": "curl 명령어로 REST API 직접 조회",
+        "error": "Invalid API key 오류",
+        "possible_causes": [
+          "RLS 정책으로 인해 anon key로 직접 조회 불가",
+          "curl 명령어에서 헤더 형식 문제",
+          "인증 없이는 데이터 접근 제한"
+        ],
+        "recommendation": "브라우저에서 로그인 후 My Page 접속하여 실제 데이터 표시 확인 필요"
+      }
+    }
+  },
+
+  "4_data_gap_analysis": {
+    "status": "⚠️ 주의 필요",
+    "summary": "일부 테이블에서 샘플 데이터 사용자 ID 불일치",
+    "details": {
+      "users_table": {
+        "status": "✅ 양호",
+        "available_user_ids": [
+          "ADMIN001",
+          "A1B2C3D4",
+          "E5F6G7H8",
+          "SUN12345",
+          "MOON6789",
+          "STAR1234",
+          "등 13개"
+        ],
+        "notes": "다양한 구독 상태 및 크레딧 잔액 포함"
+      },
+      "payment_methods_billing_data": {
+        "status": "⚠️ 사용자 ID 불일치",
+        "issue": "샘플 데이터는 TEST0001, TEST0002 사용자용으로 작성됨",
+        "users_table_ids": ["ADMIN001", "A1B2C3D4", "E5F6G7H8", "등"],
+        "payment_billing_ids": ["TEST0001", "TEST0002"],
+        "impact": "users 테이블의 실제 사용자들은 payment_methods, billing_history 데이터가 없음",
+        "recommendation": [
+          "Option 1: users 테이블에 TEST0001, TEST0002 사용자 추가",
+          "Option 2: payment_methods, billing_history 샘플 데이터를 ADMIN001, A1B2C3D4 등으로 변경",
+          "Option 3: My Page 테스트 시 TEST0001 계정으로 로그인"
+        ]
+      },
+      "credit_data": {
+        "status": "⚠️ 사용자 ID 불일치",
+        "issue": "크레딧 샘플 데이터도 TEST0001, TEST0002 사용자용",
+        "impact": "users 테이블의 실제 사용자들은 credit_transactions, ai_usage_log 데이터가 없음",
+        "recommendation": "payment_methods와 동일한 조치 필요"
+      },
+      "projects_data": {
+        "status": "⚠️ 샘플 데이터 없음",
+        "issue": "projects 테이블용 샘플 데이터 SQL 파일이 없음",
+        "impact": "My Page의 '내 프로젝트' 섹션에서 빈 목록 표시될 가능성",
+        "recommendation": "프로젝트 샘플 데이터 생성 필요 (예: TEST0001-P001, ADMIN001-P001)"
+      }
+    }
+  },
+
+  "5_functional_test_plan": {
+    "summary": "브라우저에서 실제 테스트 필요",
+    "test_cases": [
+      {
+        "test_id": "TC-01",
+        "section": "프로필 정보",
+        "steps": [
+          "1. 로그인 (admin@ssalworks.com 또는 user1@example.com)",
+          "2. My Page 접속",
+          "3. 프로필 섹션에서 이름, 이메일, 닉네임 표시 확인",
+          "4. '수정하기' 버튼 클릭하여 편집 모드 진입",
+          "5. 닉네임 변경 후 저장",
+          "6. 변경 사항이 즉시 반영되는지 확인"
+        ],
+        "expected_result": "프로필 정보가 정상 표시되고 수정 가능해야 함",
+        "priority": "높음"
+      },
+      {
+        "test_id": "TC-02",
+        "section": "내 프로젝트",
+        "steps": [
+          "1. My Page > 내 프로젝트 섹션 클릭",
+          "2. 프로젝트 통계 확인 (전체/진행 중/완료)",
+          "3. 설치비 미납 시 안내 메시지 표시 확인",
+          "4. 설치비 납부 후 프로젝트 목록 표시 확인",
+          "5. 프로젝트 카드에서 진행률, Phase 정보 확인"
+        ],
+        "expected_result": "프로젝트 목록 또는 설치비 안내 메시지 표시",
+        "data_requirement": "projects 테이블에 샘플 데이터 필요",
+        "priority": "높음"
+      },
+      {
+        "test_id": "TC-03",
+        "section": "구독 정보",
+        "steps": [
+          "1. My Page > 구독 정보 섹션 클릭",
+          "2. 구독 상태 통계 확인 (무료/활성/설치비 등)",
+          "3. 결제 수단 표시 확인",
+          "4. 최근 결제 내역 표시 확인",
+          "5. 결제 내역에서 상태별 색상 구분 확인 (성공/실패/환불)"
+        ],
+        "expected_result": "구독 정보와 결제 수단, 결제 내역 정상 표시",
+        "data_requirement": "payment_methods, billing_history 테이블에 사용자 데이터 필요",
+        "priority": "높음"
+      },
+      {
+        "test_id": "TC-04",
+        "section": "크레딧 관리",
+        "steps": [
+          "1. My Page > 크레딧 관리 섹션 클릭",
+          "2. 크레딧 잔액, 이번 달 사용액, 총 충전액 확인",
+          "3. AI 서비스 가격표 표시 확인 (ChatGPT/Gemini/Perplexity)",
+          "4. 최근 크레딧 거래 내역 표시 확인",
+          "5. 최근 AI 사용 기록 표시 확인",
+          "6. 거래 유형별 색상 구분 확인 (충전/사용/환불/보너스)"
+        ],
+        "expected_result": "크레딧 관련 모든 정보 정상 표시",
+        "data_requirement": "credit_transactions, ai_usage_log 테이블에 사용자 데이터 필요",
+        "priority": "높음"
+      },
+      {
+        "test_id": "TC-05",
+        "section": "보안 설정",
+        "steps": [
+          "1. My Page > 보안 설정 섹션 클릭",
+          "2. 비밀번호 변경 폼 표시 확인",
+          "3. 잘못된 비밀번호 입력 시 오류 메시지 확인",
+          "4. 비밀번호 규칙 검증 확인 (8자 이상, 영문/숫자/특수문자)",
+          "5. 마지막 로그인 시간 표시 확인"
+        ],
+        "expected_result": "보안 설정 폼 정상 작동",
+        "priority": "중간"
+      }
+    ]
+  },
+
+  "6_missing_data_identification": {
+    "summary": "테스트에 필요한 누락 데이터 목록",
+    "missing_items": [
+      {
+        "table": "payment_methods",
+        "issue": "users 테이블의 실제 사용자(ADMIN001, A1B2C3D4 등)에 대한 결제 수단 데이터 없음",
+        "current_data": "TEST0001, TEST0002만 존재",
+        "required_data": {
+          "user_id": "ADMIN001",
+          "payment_type": "card",
+          "card_company": "신한카드",
+          "card_last4": "1234",
+          "is_default": true
+        },
+        "priority": "높음",
+        "sql_example": "INSERT INTO payment_methods (user_id, payment_type, card_company, card_last4, is_default) VALUES ('ADMIN001', 'card', '신한카드', '1234', true);"
+      },
+      {
+        "table": "billing_history",
+        "issue": "users 테이블의 실제 사용자에 대한 결제 내역 데이터 없음",
+        "current_data": "TEST0001, TEST0002만 존재",
+        "required_data": {
+          "user_id": "ADMIN001",
+          "billing_type": "platform_fee",
+          "amount": 50000,
+          "status": "paid",
+          "payment_method": "신한카드 ****-1234"
+        },
+        "priority": "높음",
+        "sql_example": "INSERT INTO billing_history (user_id, billing_type, amount, status, billing_date, payment_method) VALUES ('ADMIN001', 'platform_fee', 50000, 'paid', NOW() - INTERVAL '1 month', '신한카드 ****-1234');"
+      },
+      {
+        "table": "credit_transactions",
+        "issue": "users 테이블의 실제 사용자에 대한 크레딧 거래 내역 없음",
+        "current_data": "TEST0001, TEST0002만 존재",
+        "required_data": {
+          "user_id": "ADMIN001",
+          "type": "charge",
+          "amount": 100000,
+          "balance_after": 100000,
+          "description": "초기 크레딧 충전"
+        },
+        "priority": "높음"
+      },
+      {
+        "table": "ai_usage_log",
+        "issue": "users 테이블의 실제 사용자에 대한 AI 사용 로그 없음",
+        "current_data": "TEST0001, TEST0002만 존재",
+        "required_data": {
+          "user_id": "ADMIN001",
+          "service_name": "ChatGPT",
+          "prompt": "샘플 질문",
+          "response": "샘플 응답",
+          "tokens_used": 500,
+          "cost": 100
+        },
+        "priority": "중간"
+      },
+      {
+        "table": "projects",
+        "issue": "프로젝트 샘플 데이터가 아예 없음",
+        "current_data": "없음",
+        "required_data": {
+          "user_id": "ADMIN001",
+          "project_id": "ADMIN001-P001",
+          "project_name": "샘플 프로젝트",
+          "status": "in_progress",
+          "progress": 45,
+          "current_stage": 2,
+          "total_stages": 5
+        },
+        "priority": "높음",
+        "sql_example": "INSERT INTO projects (user_id, project_id, project_name, status, progress, current_stage, total_stages) VALUES ('ADMIN001', 'ADMIN001-P001', '샘플 프로젝트', 'in_progress', 45, 2, 5);"
+      }
+    ]
+  },
+
+  "7_recommended_sample_data_sql": {
+    "summary": "My Page 테스트를 위한 통합 샘플 데이터 SQL",
+    "file_suggestion": "27_mypage_integration_sample_data.sql",
+    "sql_content": "-- 실제 users 테이블 사용자들을 위한 통합 샘플 데이터\n\n-- ADMIN001용 데이터\nINSERT INTO payment_methods (user_id, payment_type, card_company, card_last4, is_default)\nVALUES ('ADMIN001', 'card', 'KB국민카드', '5678', true);\n\nINSERT INTO billing_history (user_id, billing_type, amount, status, billing_date, payment_method)\nVALUES \n  ('ADMIN001', 'platform_fee', 50000, 'paid', NOW() - INTERVAL '3 months', 'KB국민카드 ****-5678'),\n  ('ADMIN001', 'platform_fee', 50000, 'paid', NOW() - INTERVAL '2 months', 'KB국민카드 ****-5678'),\n  ('ADMIN001', 'credit_purchase', 50000, 'paid', NOW() - INTERVAL '1 month', 'KB국민카드 ****-5678');\n\nINSERT INTO credit_transactions (user_id, type, amount, balance_after, description)\nVALUES \n  ('ADMIN001', 'charge', 100000, 100000, '초기 크레딧 충전'),\n  ('ADMIN001', 'spend', -100, 99900, 'ChatGPT 사용', 'ChatGPT'),\n  ('ADMIN001', 'bonus', 10000, 109900, '관리자 보너스');\n\nUPDATE users SET credit_balance = 109900 WHERE user_id = 'ADMIN001';\n\nINSERT INTO ai_usage_log (user_id, service_name, prompt, response, tokens_used, cost)\nVALUES ('ADMIN001', 'ChatGPT', '테스트 질문', '테스트 응답', 500, 100);\n\nINSERT INTO projects (user_id, project_id, project_name, status, progress, current_stage, total_stages)\nVALUES ('ADMIN001', 'ADMIN001-P001', '관리자 프로젝트', 'in_progress', 60, 3, 5);\n\n-- A1B2C3D4용 데이터 (동일 패턴)\n..."
+  },
+
+  "8_final_recommendations": {
+    "immediate_actions": [
+      {
+        "priority": "P0 (긴급)",
+        "action": "샘플 데이터 SQL 파일 생성 및 실행",
+        "details": "27_mypage_integration_sample_data.sql 파일 생성하여 ADMIN001, A1B2C3D4 등 실제 사용자를 위한 payment_methods, billing_history, credit_transactions, ai_usage_log, projects 데이터 삽입",
+        "estimated_time": "30분"
+      },
+      {
+        "priority": "P0 (긴급)",
+        "action": "Supabase SQL Editor에서 샘플 데이터 적용 확인",
+        "details": "Supabase 대시보드 > SQL Editor에서 직접 데이터 조회하여 모든 테이블에 샘플 데이터가 정상 삽입되었는지 확인",
+        "sql_queries": [
+          "SELECT COUNT(*) FROM users;",
+          "SELECT COUNT(*) FROM payment_methods;",
+          "SELECT COUNT(*) FROM billing_history;",
+          "SELECT COUNT(*) FROM credit_transactions;",
+          "SELECT COUNT(*) FROM ai_usage_log;",
+          "SELECT COUNT(*) FROM projects;"
+        ]
+      },
+      {
+        "priority": "P1 (높음)",
+        "action": "브라우저에서 My Page 실제 테스트",
+        "details": "admin@ssalworks.com 또는 user1@example.com 계정으로 로그인 후 My Page 5개 섹션 모두 테스트",
+        "test_sections": ["프로필 정보", "내 프로젝트", "구독 정보", "크레딧 관리", "보안 설정"]
+      }
+    ],
+    "optional_improvements": [
+      {
+        "priority": "P2 (중간)",
+        "action": "에러 처리 강화",
+        "details": "네트워크 오류 시 재시도 로직 추가, 더 친절한 오류 메시지 표시"
+      },
+      {
+        "priority": "P3 (낮음)",
+        "action": "성능 최적화",
+        "details": "여러 테이블 조회를 단일 쿼리로 통합 (JOIN 활용), 로딩 시간 단축"
+      }
+    ]
+  },
+
+  "9_test_result_summary": {
+    "passed": [
+      "✅ HTML 코드 구조 및 품질 검증",
+      "✅ Supabase 클라이언트 초기화 확인",
+      "✅ 보안 기능 (XSS 방지, sanitization) 확인",
+      "✅ UI/UX 요소 (반응형, 로딩, 토스트) 확인",
+      "✅ 데이터베이스 스키마 정의 확인 (7개 테이블)",
+      "✅ AI 서비스 가격 초기 데이터 확인"
+    ],
+    "partial_pass": [
+      "⚠️ 샘플 데이터 파일 존재 확인 (SQL 파일은 있으나 Supabase 적용 여부 미확인)",
+      "⚠️ 사용자 ID 일치성 (users vs payment/credit 데이터)"
+    ],
+    "failed": [
+      "❌ Supabase REST API 직접 조회 (Invalid API key 오류)",
+      "❌ 실제 데이터 존재 확인 (브라우저 테스트 필요)"
+    ],
+    "blocked": [
+      "🚫 브라우저 기반 통합 테스트 (데이터 삽입 후 가능)"
+    ]
+  },
+
+  "10_next_steps": {
+    "step_1": {
+      "title": "샘플 데이터 통합 SQL 파일 생성",
+      "action": "27_mypage_integration_sample_data.sql 파일 작성",
+      "content": "ADMIN001, A1B2C3D4, E5F6G7H8 등 실제 사용자를 위한 payment_methods, billing_history, credit_transactions, ai_usage_log, projects 샘플 데이터",
+      "owner": "개발자",
+      "eta": "30분"
+    },
+    "step_2": {
+      "title": "Supabase에 샘플 데이터 적용",
+      "action": "Supabase SQL Editor에서 27_mypage_integration_sample_data.sql 실행",
+      "verification": "각 테이블별 SELECT COUNT(*) 쿼리로 데이터 삽입 확인",
+      "owner": "개발자",
+      "eta": "10분"
+    },
+    "step_3": {
+      "title": "브라우저 통합 테스트",
+      "action": "실제 브라우저에서 로그인 후 My Page 5개 섹션 모두 테스트",
+      "test_accounts": ["admin@ssalworks.com", "user1@example.com"],
+      "checklist": [
+        "프로필 정보 표시 및 수정",
+        "프로젝트 목록 표시",
+        "구독 정보 및 결제 수단 표시",
+        "크레딧 잔액 및 거래 내역 표시",
+        "AI 사용 로그 표시",
+        "보안 설정 (비밀번호 변경)"
+      ],
+      "owner": "QA 또는 개발자",
+      "eta": "1시간"
+    },
+    "step_4": {
+      "title": "테스트 결과 최종 보고",
+      "action": "브라우저 테스트 결과를 JSON 형식으로 정리하여 outbox에 저장",
+      "file": "agenda8_mypage_final_test_result.json",
+      "owner": "QA",
+      "eta": "30분"
+    }
+  },
+
+  "conclusion": {
+    "overall_assessment": "My Page의 코드 품질은 우수하며, 데이터베이스 스키마도 완전히 정의되어 있음. 그러나 실제 테스트를 위해서는 샘플 데이터 정비가 필수적임.",
+    "critical_blockers": [
+      "payment_methods, billing_history 테이블에 실제 사용자(ADMIN001, A1B2C3D4 등) 데이터 부재",
+      "projects 테이블 샘플 데이터 부재",
+      "브라우저 기반 실제 테스트 미수행"
+    ],
+    "ready_for_production": false,
+    "ready_for_testing": "샘플 데이터 삽입 후 가능",
+    "estimated_completion": "샘플 데이터 작성 및 적용 후 2시간 내 테스트 완료 가능"
+  }
+}

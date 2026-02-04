@@ -1,0 +1,87 @@
+{
+  "report_name": "PoliticianFinder 로딩 속도 최적화",
+  "date": "2025-12-29",
+  "project": "PoliticianFinder",
+  "production_url": "https://www.politicianfinder.ai.kr/",
+  "status": "completed",
+  "summary": "홈페이지 로딩 속도 개선을 위한 3가지 최적화 작업 완료",
+
+  "optimizations": [
+    {
+      "task": "게시글 API 병렬화 (Promise.all)",
+      "before": "두 API 순차 호출 (총 대기시간 = A + B)",
+      "after": "병렬 호출 (총 대기시간 = max(A, B))",
+      "effect": "API 응답 대기시간 약 50% 감소",
+      "commit": "6db51dd"
+    },
+    {
+      "task": "AI 로고 로컬 SVG로 변경",
+      "before": "외부 CDN 4개 (brandfetch.io, simpleicons.org)",
+      "after": "로컬 /icons/*.svg 파일 4개",
+      "effect": "HTTP 요청 4개 감소, DNS 조회/TLS 핸드셰이크 제거",
+      "commit": "c102fac",
+      "created_files": [
+        "public/icons/claude.svg",
+        "public/icons/chatgpt.svg",
+        "public/icons/gemini.svg",
+        "public/icons/grok.svg"
+      ]
+    },
+    {
+      "task": "API 캐싱 활성화",
+      "before": "cache: 'no-store' (매번 새로 요청)",
+      "after": "next: { revalidate: N } (캐싱)",
+      "details": {
+        "politicians_api": "5분 캐싱 (revalidate: 300)",
+        "sidebar_stats_api": "1분 캐싱 (revalidate: 60)"
+      },
+      "effect": "반복 방문 시 서버 부하 감소, 응답 속도 대폭 개선",
+      "commit": "0035374"
+    }
+  ],
+
+  "modified_files": [
+    {
+      "file": "1_Frontend/src/app/page.tsx",
+      "changes": [
+        "Promise.all로 posts API 병렬화",
+        "aiLogos 외부 CDN → 로컬 SVG 경로로 변경",
+        "politicians API cache: 'no-store' → next: { revalidate: 300 }",
+        "sidebar stats API에 next: { revalidate: 60 } 추가"
+      ]
+    },
+    {
+      "file": "1_Frontend/src/app/politicians/[id]/page.tsx",
+      "changes": [
+        "Gemini, Grok 로고 외부 CDN → 로컬 SVG 경로로 변경"
+      ]
+    }
+  ],
+
+  "commits": [
+    {
+      "hash": "6db51dd",
+      "message": "perf: 게시글 API 호출 병렬화 (Promise.all)"
+    },
+    {
+      "hash": "c102fac",
+      "message": "perf: AI 로고 외부 CDN → 로컬 SVG로 변경 (HTTP 요청 4개 감소)"
+    },
+    {
+      "hash": "0035374",
+      "message": "perf: API 캐싱 활성화 (정치인 5분, 통계 1분)"
+    }
+  ],
+
+  "deployment": {
+    "method": "Vercel Git Integration",
+    "auto_deploy": true,
+    "pushed_to": "main branch"
+  },
+
+  "expected_improvements": {
+    "initial_load": "API 병렬화로 50% 빠른 응답",
+    "external_requests": "4개 CDN 요청 제거",
+    "repeat_visits": "캐싱으로 즉시 응답"
+  }
+}

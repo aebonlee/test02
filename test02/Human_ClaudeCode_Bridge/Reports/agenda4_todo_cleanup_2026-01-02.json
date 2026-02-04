@@ -1,0 +1,119 @@
+{
+  "report_name": "플랫폼 개선 아젠다 #4: 미구현 기능 정리 (TODO)",
+  "date": "2026-01-02",
+  "status": "completed",
+  "summary": "TODO 주석 전수 조사 및 처리 완료 - 7개 TODO 모두 처리",
+  "todos_found": {
+    "total": 7,
+    "processed": 7,
+    "remaining": 0
+  },
+  "processed_todos": [
+    {
+      "location": "index.html:4439",
+      "description": "Perplexity API 연동 (주석 처리된 코드)",
+      "action": "삭제",
+      "reason": "사용하지 않는 주석 코드 정리"
+    },
+    {
+      "location": "index.html:4644",
+      "description": "Supabase Realtime 구독",
+      "action": "구현",
+      "details": {
+        "sunny_inquiries": "써니에게 질문하기 답변 실시간 알림",
+        "inquiries": "고객센터 답변 실시간 알림",
+        "features": [
+          "로그인 시 자동 구독 시작",
+          "답변 도착 시 텍스트 에디터에 표시",
+          "상태 메시지로 알림",
+          "로그아웃 시 채널 해제"
+        ]
+      }
+    },
+    {
+      "location": "pages/admin-dashboard.html:3127",
+      "description": "답변 전송 API 연결",
+      "action": "확인 + 알림 추가",
+      "details": {
+        "working_functions": ["submitSunnyAnswer()", "submitInquiryAnswer()"],
+        "dead_code_removed": "saveInquiryAnswer() - 호출되지 않는 함수 삭제",
+        "notification_added": "답변 시 user_notifications 테이블에 알림 생성"
+      }
+    },
+    {
+      "location": "index.html:4750",
+      "description": "2D/3D 뷰 전환",
+      "action": "구현",
+      "details": {
+        "library": "Three.js r128",
+        "features": [
+          "2D 테이블 뷰 ↔ 3D 블록 뷰 전환",
+          "마우스 드래그로 회전",
+          "마우스 휠로 줌",
+          "자동 회전 토글",
+          "카메라 초기화",
+          "Stage별 색상 구분",
+          "Task 상태별 높이/투명도"
+        ]
+      }
+    },
+    {
+      "location": "index.html:5580",
+      "description": "사용자별 Manual PDF",
+      "action": "TODO 삭제",
+      "reason": "매뉴얼은 방법론 문서이므로 공통이 맞음. 사용자별 차이 불필요"
+    },
+    {
+      "location": "api/Backend_APIs/auth/signup.js:216",
+      "description": "환영 이메일 → 환영 알림으로 변경",
+      "action": "구현",
+      "details": {
+        "notification_type": "welcome",
+        "icon": "🎉",
+        "title": "SSAL Works에 오신 것을 환영합니다!",
+        "message": "SSAL Works에 오신 것을 환영합니다!"
+      }
+    },
+    {
+      "location": "api/Backend_APIs/auth/verify-email.js:146",
+      "description": "이메일 인증 완료 축하 이메일",
+      "action": "TODO 삭제",
+      "reason": "이메일 인증은 Supabase Auth가 처리. 추가 알림 불필요"
+    }
+  ],
+  "notification_system_updates": {
+    "new_notification_types": [
+      { "type": "welcome", "icon": "🎉", "trigger": "회원가입 완료" },
+      { "type": "sunny_answer", "icon": "☀️", "trigger": "써니 답변 완료" },
+      { "type": "inquiry_answer", "icon": "📞", "trigger": "고객센터 답변 완료" }
+    ],
+    "existing_types": [
+      { "type": "credit_low", "icon": "⚠️" },
+      { "type": "credit_charged", "icon": "💰" },
+      { "type": "deposit_confirmed", "icon": "✅" },
+      { "type": "free_period_ending", "icon": "📅" },
+      { "type": "system", "icon": "📢" }
+    ]
+  },
+  "code_changes": {
+    "index.html": [
+      "Perplexity API 주석 코드 삭제",
+      "Realtime 구독 (써니 + 고객센터) 구현",
+      "로그아웃 시 채널 해제 코드 추가",
+      "Three.js 3D 뷰 전환 구현",
+      "알림 아이콘 매핑에 welcome, sunny_answer, inquiry_answer 추가",
+      "openMyManual() TODO 주석 삭제"
+    ],
+    "pages/admin-dashboard.html": [
+      "saveInquiryAnswer() 데드 코드 삭제",
+      "submitSunnyAnswer()에 알림 생성 코드 추가",
+      "submitInquiryAnswer()에 알림 생성 코드 추가"
+    ],
+    "api/Backend_APIs/auth/signup.js": [
+      "환영 이메일 → 환영 알림으로 변경 (user_notifications INSERT)"
+    ],
+    "api/Backend_APIs/auth/verify-email.js": [
+      "불필요한 TODO 및 주석 코드 삭제"
+    ]
+  }
+}

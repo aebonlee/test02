@@ -1,0 +1,144 @@
+{
+  "task_id": "Production-API-Restructure",
+  "task_name": "Production 폴더 API 구조 Area 기반 재설계",
+  "status": "완료",
+  "progress": 100,
+  "completed_at": "2025-12-18T21:30:00+09:00",
+
+  "execution_summary": {
+    "description": "Production/api 폴더를 SSAL Grid Area 기반으로 재구성하고, 기존 API 경로와의 호환성을 vercel.json rewrites로 유지",
+    "generator": "Claude Code (Opus 4.5)",
+    "total_steps": 5,
+    "completed_steps": 5
+  },
+
+  "steps_completed": [
+    {
+      "step": 1,
+      "name": "파일 명명 규칙 문서화",
+      "description": "5개 문서에 파일 명명 규칙 추가",
+      "files_updated": [
+        "CLAUDE.md",
+        "P0_작업_디렉토리_구조_생성/Project_Directory_Structure.md",
+        "S0_Project-SSAL-Grid_생성/manual/PROJECT_SSAL_GRID_MANUAL.md",
+        "S1_개발_준비/Documentation/File_Naming_Rules.md",
+        "Production/Documentation/File_Naming_Rules.md"
+      ]
+    },
+    {
+      "step": 2,
+      "name": "기존 파일 명칭 확인",
+      "description": "Production/api 폴더 내 기존 파일 구조 분석",
+      "status": "완료"
+    },
+    {
+      "step": 3,
+      "name": "Production api/ 폴더 Area별 재구성",
+      "description": "Area 기반 폴더 구조로 전체 재구성",
+      "actions": [
+        "기존 폴더 구조 삭제 (auth/, email/, subscription/, ai/, lib/)",
+        "새 Area 기반 폴더 유지 (Backend_APIs/, Security/, Backend_Infrastructure/, External/)",
+        "5개 파일의 require 경로 수정",
+        "AI 모듈 Backend_Infrastructure/ai/로 복사"
+      ]
+    },
+    {
+      "step": 4,
+      "name": "프론트엔드 코드 API 경로 업데이트",
+      "description": "vercel.json rewrites로 처리하여 프론트엔드 코드 수정 불필요",
+      "status": "완료"
+    },
+    {
+      "step": 5,
+      "name": "Vercel 설정 변경",
+      "description": "vercel.json에 13개 rewrites 추가",
+      "status": "완료"
+    }
+  ],
+
+  "final_structure": {
+    "Production/api/Backend_APIs/": {
+      "description": "BA Area - 이메일 및 구독 API",
+      "files": [
+        "email-password-reset.js",
+        "email-send.js",
+        "email-welcome.js",
+        "subscription-cancel.js",
+        "subscription-create.js",
+        "subscription-status.js"
+      ]
+    },
+    "Production/api/Backend_Infrastructure/": {
+      "description": "BI Area - 공유 인프라 모듈",
+      "subfolders": {
+        "ai/": ["anthropic-client.js", "errors.js", "index.js", "usage-limiter.js"],
+        "email/": ["index.js", "resend.js", "templates/"]
+      }
+    },
+    "Production/api/External/": {
+      "description": "E Area - 외부 AI 연동 API",
+      "files": [
+        "ai-faq-suggest.js",
+        "ai-index.js",
+        "ai-qa.js",
+        "ai-usage.js"
+      ]
+    },
+    "Production/api/Security/": {
+      "description": "S Area - 인증/인가 API",
+      "files": [
+        "google-login.js",
+        "logout.js",
+        "google/callback.js",
+        "subscription/check.js"
+      ],
+      "subfolders": {
+        "lib/auth/": ["errors.js", "middleware.js", "withAuth.js"],
+        "lib/subscription/": ["check-permission.js", "index.js", "withSubscription.js"]
+      }
+    }
+  },
+
+  "vercel_rewrites": {
+    "description": "기존 API 경로 → 새 Area 기반 경로 매핑",
+    "total_rewrites": 13,
+    "mappings": [
+      "/api/email/send → /api/Backend_APIs/email-send",
+      "/api/email/welcome → /api/Backend_APIs/email-welcome",
+      "/api/email/password-reset → /api/Backend_APIs/email-password-reset",
+      "/api/subscription/status → /api/Backend_APIs/subscription-status",
+      "/api/subscription/create → /api/Backend_APIs/subscription-create",
+      "/api/subscription/cancel → /api/Backend_APIs/subscription-cancel",
+      "/api/auth/google → /api/Security/google-login",
+      "/api/auth/google/callback → /api/Security/google/callback",
+      "/api/auth/logout → /api/Security/logout",
+      "/api/subscription/check → /api/Security/subscription/check",
+      "/api/ai/qa → /api/External/ai-qa",
+      "/api/ai/usage → /api/External/ai-usage",
+      "/api/ai/faq-suggest → /api/External/ai-faq-suggest"
+    ]
+  },
+
+  "files_modified": {
+    "require_path_fixes": [
+      "Production/api/Backend_APIs/email-password-reset.js",
+      "Production/api/Backend_APIs/email-send.js",
+      "Production/api/Backend_APIs/email-welcome.js",
+      "Production/api/External/ai-qa.js",
+      "Production/api/External/ai-usage.js"
+    ],
+    "config_updated": [
+      "Production/vercel.json"
+    ]
+  },
+
+  "benefits": [
+    "단일 폴더 구조로 관리 단순화 (이중 구조 제거)",
+    "SSAL Grid Area 분류와 일관성 유지",
+    "기존 API 경로 완벽 호환 (vercel.json rewrites)",
+    "1 파일 = 1 Task 원칙 준수",
+    "직관적인 파일 명명 규칙 적용"
+  ],
+
+  "validation_result": "✅ 통과"
+}

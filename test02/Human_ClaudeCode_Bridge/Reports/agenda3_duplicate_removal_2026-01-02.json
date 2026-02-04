@@ -1,0 +1,63 @@
+{
+  "report_name": "플랫폼 개선 아젠다 #3: 공통 로직 중복 제거",
+  "date": "2026-01-02",
+  "status": "completed",
+  "summary": "여러 파일에 분산된 중복 유틸리티 함수를 4개의 외부 모듈로 분리",
+  "duplicate_analysis": {
+    "supabase_init": {
+      "count": "11+ 파일",
+      "pattern": "동일한 초기화 패턴 반복"
+    },
+    "showToast": {
+      "count": "10 파일",
+      "pattern": "완전 동일 코드"
+    },
+    "date_formatting": {
+      "count": "8+ 파일",
+      "functions": ["formatDate", "formatDateTime", "formatTimeAgo"]
+    }
+  },
+  "created_modules": [
+    {
+      "file": "assets/js/utils/api-client.js",
+      "size": "4583 bytes",
+      "exports": ["apiGet", "apiPost", "apiPatch", "apiDelete", "supabaseRest", "supabaseSelect", "supabaseInsert", "supabaseUpdate", "supabaseDeleteRow"]
+    },
+    {
+      "file": "assets/js/utils/date-utils.js",
+      "size": "4937 bytes",
+      "exports": ["formatDate", "formatDateTime", "formatTimeAgo", "formatDateKorean", "formatDateShort", "toISOString", "parseDate", "isToday", "formatDateRange"]
+    },
+    {
+      "file": "assets/js/components/loading.js",
+      "size": "5098 bytes",
+      "exports": ["showLoading", "hideLoading", "forceHideLoading", "withLoading", "createSpinner"]
+    },
+    {
+      "file": "assets/js/components/toast.js",
+      "size": "5275 bytes",
+      "exports": ["showToast", "hideAllToasts"]
+    }
+  ],
+  "refactored_files": [
+    {
+      "file": "pages/mypage/index.html",
+      "changes": [
+        "Added external module references (4 scripts)",
+        "Removed duplicate formatDate function",
+        "Removed duplicate formatDateTime function",
+        "Removed duplicate showToast function",
+        "Changed supabaseClient → window.supabaseClient"
+      ]
+    }
+  ],
+  "design_patterns": {
+    "script_loading": "defer attribute for dependency ordering",
+    "global_exposure": "window object for global access",
+    "api_compatibility": "Same function signatures as before"
+  },
+  "next_steps": [
+    "Refactor remaining 10+ files with same pattern",
+    "Consider additional utility modules as needed"
+  ]
+}

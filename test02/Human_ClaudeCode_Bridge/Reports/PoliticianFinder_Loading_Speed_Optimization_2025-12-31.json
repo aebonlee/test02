@@ -1,0 +1,73 @@
+{
+  "report_title": "PoliticianFinder 로딩 속도 개선 리포트",
+  "report_date": "2025-12-31",
+  "project": "PoliticianFinder",
+  "status": "completed",
+
+  "summary": {
+    "issue": "커뮤니티 페이지 로딩 속도가 홈/정치인 페이지보다 현저히 느림",
+    "root_cause": "게시글 API(/api/posts)에 캐시 헤더 미적용",
+    "solution": "Cache-Control 헤더 추가로 CDN 캐싱 활성화",
+    "result": "커뮤니티 페이지 로딩 속도 대폭 개선"
+  },
+
+  "analysis": {
+    "fast_pages": {
+      "pages": ["홈페이지", "정치인 목록"],
+      "api": "/api/politicians",
+      "cache_header": "Cache-Control: public, s-maxage=300, stale-while-revalidate=600",
+      "cache_duration": "5분",
+      "reason": "CDN에서 캐시된 응답 반환"
+    },
+    "slow_page": {
+      "page": "커뮤니티",
+      "api": "/api/posts",
+      "cache_header_before": "없음",
+      "reason": "매번 Supabase DB 직접 조회 + 3개 테이블 JOIN (posts, politicians, users)"
+    }
+  },
+
+  "solution_applied": {
+    "file_modified": "src/app/api/posts/route.ts",
+    "code_added": "response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');",
+    "cache_strategy": {
+      "s-maxage": "60초 (1분간 CDN 캐싱)",
+      "stale-while-revalidate": "120초 (2분간 stale 응답 허용하며 백그라운드 갱신)"
+    },
+    "rationale": "게시글은 정치인 데이터보다 자주 갱신되므로 짧은 캐시 시간 적용"
+  },
+
+  "cache_comparison": {
+    "politicians_api": {
+      "endpoint": "/api/politicians",
+      "cache_time": "5분",
+      "stale_time": "10분",
+      "use_case": "정치인 데이터 (자주 변경 안됨)"
+    },
+    "posts_api": {
+      "endpoint": "/api/posts",
+      "cache_time": "1분",
+      "stale_time": "2분",
+      "use_case": "게시글 목록 (자주 갱신됨)"
+    }
+  },
+
+  "expected_performance": {
+    "first_visit": "DB 직접 조회 (기존과 동일)",
+    "within_1min": "CDN 캐시 응답 - 즉시 로딩",
+    "1_to_2min": "캐시 응답 반환 + 백그라운드 갱신"
+  },
+
+  "commits": [
+    {
+      "hash": "6b65a42",
+      "message": "perf: 커뮤니티 페이지 속도 개선 - 게시글 API 캐시 헤더 추가",
+      "date": "2025-12-31"
+    }
+  ],
+
+  "verification": {
+    "ci_cd_pipeline": "success",
+    "user_feedback": "로딩 속도 빨라짐 확인"
+  }
+}

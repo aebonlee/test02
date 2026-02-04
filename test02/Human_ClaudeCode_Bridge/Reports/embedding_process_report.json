@@ -1,0 +1,123 @@
+{
+  "report_type": "embedding_process",
+  "created_at": "2026-01-05T00:00:00.000Z",
+  "title": "AI Tutor 콘텐츠 임베딩 프로세스",
+  "summary": "AI Tutor RAG 시스템을 위한 콘텐츠 임베딩 프로세스 문서화",
+
+  "script": {
+    "location": "scripts/generate-embeddings.js",
+    "execution": "node scripts/generate-embeddings.js"
+  },
+
+  "process_flow": [
+    "1. MD 파일 읽기 (각 콘텐츠 폴더에서)",
+    "2. 프론트매터 제거 + 제목 추출",
+    "3. 텍스트 청킹 (1000자, 200자 오버랩)",
+    "4. Gemini API로 임베딩 생성 (768차원 벡터)",
+    "5. Supabase content_embeddings 테이블에 저장"
+  ],
+
+  "chunking_settings": {
+    "chunk_size": 1000,
+    "chunk_overlap": 200,
+    "delay_ms": 150
+  },
+
+  "current_content_paths": {
+    "tips": {
+      "path": "부수적_고유기능/콘텐츠/실전_Tips",
+      "files": 67,
+      "status": "embedded"
+    },
+    "books": {
+      "path": "부수적_고유기능/콘텐츠/학습용_Books_New",
+      "files": 87,
+      "status": "embedded"
+    },
+    "guides": {
+      "path": "부수적_고유기능/콘텐츠/외부_연동_설정_Guide",
+      "files": 6,
+      "status": "embedded"
+    },
+    "briefings": {
+      "path": "Briefings_OrderSheets/Briefings",
+      "files": 34,
+      "status": "embedded"
+    },
+    "ordersheets": {
+      "path": "Briefings_OrderSheets/OrderSheet_Templates",
+      "files": 30,
+      "status": "not_embedded"
+    },
+    "manuals": {
+      "path": "S0_Project-SAL-Grid_생성/manual",
+      "files": 1,
+      "status": "embedded"
+    }
+  },
+
+  "pending_content_paths": {
+    "service_intro": {
+      "path": "P2_프로젝트_기획/Service_Introduction",
+      "files": 10,
+      "status": "pending"
+    },
+    "tech_stack": {
+      "path": "P2_프로젝트_기획/Tech_Stack",
+      "files": 1,
+      "status": "pending"
+    },
+    "compliance": {
+      "path": ".claude/compliance",
+      "files": 1,
+      "status": "pending"
+    },
+    "rules": {
+      "path": ".claude/rules",
+      "files": 7,
+      "status": "pending"
+    },
+    "methods": {
+      "path": ".claude/methods",
+      "files": 3,
+      "status": "pending"
+    }
+  },
+
+  "total_pending_files": 52,
+
+  "database": {
+    "table": "content_embeddings",
+    "current_chunks": 1324,
+    "embedding_model": "Gemini embedding-001",
+    "vector_dimension": 768
+  },
+
+  "environment_variables": {
+    "file": "P3_프로토타입_제작/Database/.env",
+    "required": [
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "GEMINI_API_KEY"
+    ]
+  },
+
+  "cost": {
+    "gemini_embedding": "무료",
+    "supabase_storage": "무료 티어 내"
+  },
+
+  "related_files": [
+    "scripts/generate-embeddings.js",
+    "scripts/EMBEDDING_PROCESS.md",
+    "api/Backend_Infra/rag/index.js",
+    "api/Backend_Infra/rag/embeddings.js",
+    "api/External/ai-tutor-chat.js"
+  ],
+
+  "next_steps": [
+    "스크립트에 5개 새 경로 추가",
+    "임베딩 스크립트 실행",
+    "총 52개 파일 임베딩 추가"
+  ]
+}

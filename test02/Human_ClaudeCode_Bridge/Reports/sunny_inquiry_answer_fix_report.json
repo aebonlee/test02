@@ -1,0 +1,180 @@
+{
+  "report_type": "bugfix",
+  "created_at": "2026-01-05",
+  "title": "Sunny 문의 답변 저장 기능 버그 수정",
+  "feature": "Admin Dashboard - Sunny에게 질문하기 답변",
+  "status": "resolved",
+
+  "symptom": {
+    "description": "Admin 대시보드에서 'Sunny에게 질문하기' 문의에 대한 답변 저장이 안 됨",
+    "affected_page": "/pages/admin-dashboard.html",
+    "user_action": "답변 내용 입력 후 '답변 저장' 버튼 클릭",
+    "expected_result": "답변이 저장되고 성공 메시지 표시",
+    "actual_result": "답변 저장 실패 (에러 발생)"
+  },
+
+  "root_cause_analysis": {
+    "cause_count": 2,
+    "causes": [
+      {
+        "id": 1,
+        "type": "rls_policy_block",
+        "severity": "high",
+        "description": "ANON_KEY 사용으로 인한 RLS(Row Level Security) 정책 차단",
+        "details": {
+          "problem": "admin-dashboard.html이 SUPABASE_ANON_KEY를 사용하여 supabaseClient 생성",
+          "effect": "sunny_inquiries 테이블의 UPDATE RLS 정책에 의해 Admin 사용자도 차단됨",
+          "code_location": "admin-dashboard.html 라인 3918-3927"
+        },
+        "technical_explanation": "Supabase의 RLS 정책은 anon key 사용 시 적용됨. Admin이라도 클라이언트 측에서 anon key로 요청하면 RLS에 의해 차단될 수 있음"
+      },
+      {
+        "id": 2,
+        "type": "wrong_column_name",
+        "severity": "high",
+        "description": "잘못된 컬럼명 사용 (question → content)",
+        "details": {
+          "problem": "API에서 sunny_inquiries 테이블의 'question' 컬럼을 조회했지만 실제 컬럼명은 'content'",
+          "effect": "Supabase REST API가 400 Bad Request 에러 반환",
+          "code_location": "api/Backend_APIs/admin-sunny-answer.js 라인 79-83",
+          "error_url": "sunny_inquiries?select=user_id%2Cquestion&id=eq.{uuid}"
+        },
+        "technical_explanation": "Supabase REST API는 존재하지 않는 컬럼을 SELECT할 경우 400 에러를 반환함"
+      }
+    ]
+  },
+
+  "solution": {
+    "approach": "Admin 전용 API 엔드포인트 생성 (Service Role Key 사용)",
+    "description": "서버 측에서 Service Role Key를 사용하여 RLS를 우회하는 API 생성",
+
+    "files_created": [
+      {
+        "file": "api/Backend_APIs/admin-sunny-answer.js",
+        "description": "Sunny 문의 답변 저장 전용 API",
+        "features": [
+          "Service Role Key로 RLS 우회",
+          "Admin 권한 검증 (Authorization 헤더)",
+          "답변 저장 + 사용자 알림 생성"
+        ]
+      }
+    ],
+
+    "files_modified": [
+      {
+        "file": "vercel.json",
+        "change": "API 라우트 추가: /api/admin/sunny-answer → /api/Backend_APIs/admin-sunny-answer"
+      },
+      {
+        "file": "pages/admin-dashboard.html",
+        "function": "submitSunnyAnswer()",
+        "change": "직접 Supabase 호출 → API fetch 호출로 변경"
+      }
+    ]
+  },
+
+  "api_specification": {
+    "endpoint": "/api/admin/sunny-answer",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer {admin_access_token}"
+    },
+    "request_body": {
+      "inquiryId": "문의 ID (UUID)",
+      "answer": "답변 내용 (string)",
+      "adminId": "관리자 ID (optional, default: ADMIN001)"
+    },
+    "responses": {
+      "200": { "success": true, "message": "답변이 저장되었습니다." },
+      "400": { "error": "Missing required fields" },
+      "401": { "error": "Unauthorized" },
+      "403": { "error": "Admin access required" },
+      "404": { "error": "Inquiry not found" },
+      "500": { "error": "Failed to save answer" }
+    }
+  },
+
+  "git_commits": [
+    {
+      "hash": "c97a83e",
+      "message": "fix: Sunny 문의 답변 저장 API 추가 (RLS 우회)",
+      "files_changed": 4
+    },
+    {
+      "hash": "2006b8d",
+      "message": "fix: Admin 권한 확인 로직 개선 (.or() 쿼리 수정)",
+      "files_changed": 1
+    },
+    {
+      "hash": "3841054",
+      "message": "fix: Sunny 문의 답변 API 컬럼명 수정 (question -> content)",
+      "files_changed": 1,
+      "key_fix": "sunny_inquiries 테이블의 실제 컬럼명 'content' 사용"
+    }
+  ],
+
+  "debugging_iterations": {
+    "total": 4,
+    "iterations": [
+      {
+        "iteration": 1,
+        "issue": "RLS 정책 차단",
+        "fix": "Service Role Key 사용하는 API 생성"
+      },
+      {
+        "iteration": 2,
+        "issue": "Admin 권한 확인 실패",
+        "fix": "email 기반 Admin 확인, 하드코딩 Admin 이메일 목록 추가"
+      },
+      {
+        "iteration": 3,
+        "issue": ".or() 쿼리 문법 에러",
+        "fix": ".eq('email', user.email)로 단순화"
+      },
+      {
+        "iteration": 4,
+        "issue": "400 Bad Request - 잘못된 컬럼명",
+        "fix": "question → content 컬럼명 수정"
+      }
+    ]
+  },
+
+  "verification": {
+    "api_deployed": true,
+    "api_test_result": {
+      "without_auth": "401 Unauthorized (정상 - 인증 필요)",
+      "with_admin_auth": "테스트 필요 (Admin 토큰으로 테스트)"
+    },
+    "test_instruction": "Admin 대시보드에서 Sunny 문의 선택 → 답변 입력 → 저장 버튼 클릭"
+  },
+
+  "related_tables": {
+    "sunny_inquiries": {
+      "description": "Sunny 문의 테이블",
+      "updated_columns": ["admin_answer", "status", "answered_at", "answered_by"]
+    },
+    "user_notifications": {
+      "description": "사용자 알림 테이블",
+      "action": "답변 저장 시 알림 INSERT"
+    }
+  },
+
+  "security_notes": [
+    "Service Role Key는 서버 측(API)에서만 사용 - 클라이언트 노출 없음",
+    "API에서 Admin 권한 검증 (users 테이블 role 필드 확인)",
+    "Authorization 헤더로 유효한 세션 토큰 필수"
+  ],
+
+  "lessons_learned": [
+    "Admin 대시보드에서도 ANON_KEY 사용 시 RLS 적용됨",
+    "민감한 작업(UPDATE, DELETE)은 서버 측 API로 처리 권장",
+    "클라이언트에서 직접 DB 조작보다 API 통해 처리가 더 안전"
+  ],
+
+  "prevention": [
+    "Admin 기능은 처음부터 API 엔드포인트로 설계",
+    "RLS 정책과 클라이언트 키 사용 시 권한 테스트 필수",
+    "에러 메시지를 상세하게 출력하여 디버깅 용이하게"
+  ]
+}

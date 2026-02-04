@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항 테스트</title>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>공지사항 로드 테스트</h1>
+    <div id="status" style="padding: 20px; margin: 20px; border: 1px solid #ccc;">
+        테스트 중...
+    </div>
+    <div id="notices" style="padding: 20px; margin: 20px; border: 1px solid #ccc;">
+
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://zwjmfewyshhwpgwdtrus.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3am1mZXd5c2hod3Bnd2R0cnVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5NDI1MTMsImV4cCI6MjA0ODUxODUxM30.ibeW8lMxCqixNowDPCVIeM30iHo3k-_Zti1nObqMnXU';
+
+        const statusDiv = document.getElementById('status');
+        const noticesDiv = document.getElementById('notices');
+
+        async function testNotices() {
+            try {
+                statusDiv.innerHTML = '⏳ Step 1: Supabase 라이브러리 확인 중...';
+                console.log('Step 1: Supabase 라이브러리 확인');
+
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Supabase 라이브러리가 로드되지 않았습니다!');
+                }
+                console.log('✅ Supabase 라이브러리 로드 완료');
+
+                statusDiv.innerHTML = '⏳ Step 2: Supabase 클라이언트 생성 중...';
+                console.log('Step 2: Supabase 클라이언트 생성');
+
+                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase 클라이언트 생성 완료:', supabaseClient);
+
+                statusDiv.innerHTML = '⏳ Step 3: 공지사항 조회 중...';
+                console.log('Step 3: 공지사항 조회 시작');
+                console.log('  - URL:', SUPABASE_URL);
+                console.log('  - ANON_KEY:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
+
+                const { data, error } = await supabaseClient
+                    .from('notices')
+                    .select('*')
+                    .order('important', { ascending: false })
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                console.log('Step 4: 응답 확인');
+                console.log('  - data:', data);
+                console.log('  - error:', error);
+
+                if (error) {
+                    console.error('❌ 오류 발생:');
+                    console.error('  - code:', error.code);
+                    console.error('  - message:', error.message);
+                    console.error('  - details:', error.details);
+                    console.error('  - hint:', error.hint);
+                    throw error;
+                }
+
+                statusDiv.innerHTML = `✅ 성공! 공지사항 ${data.length}개 로드됨`;
+                console.log('✅ 공지사항 로드 성공:', data.length, '개');
+
+                noticesDiv.innerHTML = '<h2>공지사항 목록</h2>';
+
+                if (data.length === 0) {
+                    noticesDiv.innerHTML += '<p>공지사항이 없습니다.</p>';
+                } else {
+                    data.forEach((notice, index) => {
+                        const mark = notice.important ? '🔴' : '📌';
+                        noticesDiv.innerHTML += `
+                            <div style="padding: 10px; margin: 10px 0; background: #f8f9fa; border-left: 3px solid ${notice.important ? '#dc3545' : '#6c757d'};">
+                                <div><strong>${mark} ${notice.title}</strong></div>
+                                <div style="font-size: 12px; color: #6c757d; margin-top: 5px;">
+                                    ${new Date(notice.created_at).toLocaleDateString('ko-KR')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+            } catch (error) {
+                console.error('❌ 테스트 실패:', error);
+                statusDiv.innerHTML = `❌ 실패: ${error.message}`;
+                statusDiv.style.background = '#ffe0e0';
+                statusDiv.style.color = '#dc3545';
+
+                noticesDiv.innerHTML = `
+                    <h2>오류 상세</h2>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        }
+
+        // 페이지 로드 후 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', testNotices);
+        } else {
+            testNotices();
+        }
+    </script>
+</body>
+</html>

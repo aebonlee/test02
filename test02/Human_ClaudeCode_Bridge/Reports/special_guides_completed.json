@@ -1,0 +1,66 @@
+{
+  "report_type": "work_completion",
+  "task_name": "특별 안내문 생성 및 Welcome.html 업데이트",
+  "generated_at": "2025-12-19T15:30:00Z",
+  "status": "completed",
+
+  "summary": {
+    "description": "상황별 특별 안내문 5개 신규 생성 및 Welcome.html에 Claude Code 설치 안내 추가",
+    "total_files_created": 5,
+    "total_files_modified": 1
+  },
+
+  "created_files": [
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/BeforeSignup.html",
+      "purpose": "회원가입 전 (비로그인 상태) 안내"
+    },
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/Project_Completed.html",
+      "purpose": "완료된 프로젝트 클릭 시 안내"
+    },
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/Project_First.html",
+      "purpose": "프로젝트 첫 등록 시 안내"
+    },
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/Project_Add.html",
+      "purpose": "프로젝트 추가 등록 시 안내"
+    },
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/Default.html",
+      "purpose": "평소 로그인 상태 안내 (워크스페이스에만 표시)"
+    }
+  ],
+
+  "modified_files": [
+    {
+      "path": "P2_프로젝트_기획/User_Flows/상황별_안내문/Welcome.html",
+      "changes": [
+        "Claude Code 설치 안내 추가 (Node.js, npm install 명령어)",
+        "Step 1/Step 2 구조로 재구성",
+        "학습 콘텐츠 Tips 안내 링크 추가"
+      ]
+    }
+  ],
+
+  "special_guides_summary": {
+    "total": 8,
+    "list": [
+      {"situation": "회원가입 전", "file": "BeforeSignup.html", "status": "신규"},
+      {"situation": "회원가입 완료 시", "file": "Welcome.html", "status": "수정"},
+      {"situation": "예시 프로젝트 클릭 시", "file": "Project_Example.html", "status": "기존"},
+      {"situation": "진행 중인 프로젝트 클릭 시", "file": "Project_Work.html", "status": "기존"},
+      {"situation": "완료된 프로젝트 클릭 시", "file": "Project_Completed.html", "status": "신규"},
+      {"situation": "프로젝트 첫 등록 시", "file": "Project_First.html", "status": "신규"},
+      {"situation": "프로젝트 추가 등록 시", "file": "Project_Add.html", "status": "신규"},
+      {"situation": "평소 로그인 상태", "file": "Default.html", "status": "신규"}
+    ]
+  },
+
+  "notes": [
+    "Default.html은 팝업이 아닌 워크스페이스에만 표시",
+    "모든 파일은 초안 상태 - 추후 내용 수정 예정",
+    "Claude Code 설치 상세 가이드는 학습 콘텐츠 Tips/설치_실행/ 참조"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "task_id": "P3BA5_POLITICIAN_COMMENT_CRUD",
+  "task_name": "정치인 댓글 작성/수정/삭제 API 기능 추가",
+  "date": "2025-12-29",
+  "status": "completed",
+  "summary": "정치인 세션 토큰을 사용한 댓글 CRUD API 기능 구현 및 배포 테스트 완료.",
+  "completed_tasks": [
+    {
+      "task": "댓글 수정/삭제 API 구현",
+      "file": "src/app/api/comments/[id]/route.ts",
+      "changes": [
+        "validatePoliticianSession import 추가",
+        "politicianUpdateSchema 스키마 추가 (content, politician_id, session_token)",
+        "politicianDeleteSchema 스키마 추가 (politician_id, session_token)",
+        "PATCH: 정치인 세션 토큰 인증 로직 추가",
+        "DELETE: soft delete (is_deleted, deleted_at) 지원"
+      ]
+    },
+    {
+      "task": "댓글 작성 API 버그 수정",
+      "file": "src/app/api/comments/route.ts",
+      "changes": [
+        "컬럼명 수정: parent_id → parent_comment_id"
+      ]
+    },
+    {
+      "task": "DB 스키마 수정",
+      "changes": [
+        "trigger_comment_notification 트리거 삭제",
+        "notifications.content NOT NULL 제약 해제",
+        "comments.deleted_at 컬럼 추가"
+      ]
+    },
+    {
+      "task": "빌드 검증",
+      "result": "성공"
+    },
+    {
+      "task": "Git 커밋 & 푸시",
+      "commits": [
+        {"hash": "53fa0ea", "message": "feat: add politician session token support for comment edit/delete"},
+        {"hash": "6d61bf0", "message": "fix: correct column name parent_id to parent_comment_id"}
+      ]
+    },
+    {
+      "task": "배포 환경 테스트",
+      "result": "성공",
+      "details": [
+        "정치인 댓글 작성 (POST): 성공",
+        "정치인 댓글 수정 (PATCH): 성공",
+        "정치인 댓글 삭제 (DELETE): 성공"
+      ],
+      "tested_at": "2025-12-29T05:30:00Z"
+    }
+  ],
+  "api_usage": {
+    "post_endpoint": "POST /api/comments",
+    "post_body": {
+      "post_id": "게시글 UUID",
+      "politician_id": "8자리 정치인 ID",
+      "session_token": "64자리 세션 토큰",
+      "content": "댓글 내용",
+      "author_type": "politician"
+    },
+    "patch_endpoint": "PATCH /api/comments/[id]",
+    "patch_body": {
+      "politician_id": "8자리 정치인 ID",
+      "session_token": "64자리 세션 토큰",
+      "content": "수정할 내용"
+    },
+    "delete_endpoint": "DELETE /api/comments/[id]",
+    "delete_body": {
+      "politician_id": "8자리 정치인 ID",
+      "session_token": "64자리 세션 토큰"
+    }
+  },
+  "test_data": {
+    "politician": {
+      "id": "9dc9f3b4",
+      "name": "안태준"
+    },
+    "test_comment_id": "836d77fb-d39a-494b-b00b-b76027e6eb1a",
+    "test_post_id": "c692165b-db4d-4631-947d-e17f8586ef5b"
+  },
+  "files_modified": [
+    "1_Frontend/src/app/api/comments/[id]/route.ts",
+    "1_Frontend/src/app/api/comments/route.ts"
+  ],
+  "db_changes": [
+    "DROP TRIGGER trigger_comment_notification ON comments",
+    "ALTER TABLE notifications ALTER COLUMN content DROP NOT NULL",
+    "ALTER TABLE comments ADD COLUMN deleted_at TIMESTAMPTZ"
+  ]
+}

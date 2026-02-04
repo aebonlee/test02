@@ -1,0 +1,171 @@
+{
+  "date": "2025-11-19",
+  "session_summary": "디렉토리 구조 정리 및 사이드바 업데이트, 오더시트 템플릿 준비",
+  "work_completed": [
+    {
+      "category": "1. 디렉토리 구조 재정리",
+      "tasks": [
+        {
+          "task": "1_기획 폴더 구조 재조정",
+          "details": [
+            "1-1_Directory_Structure (디렉토리 구조) - 최우선 배치",
+            "1-2_Project_Plan (프로젝트 계획)",
+            "1-3_UI_UX_Design (UI/UX 디자인)",
+            "1-4_Database_Design (데이터베이스 설계)"
+          ],
+          "changes": "폴더 번호 재배치 (1-1 ↔ 1-2 스왑)"
+        },
+        {
+          "task": "PROJECT_DIRECTORY_STRUCTURE.md 심볼릭 링크 생성",
+          "details": [
+            "원본: 1_기획/1-1_Directory_Structure/PROJECT_DIRECTORY_STRUCTURE.md",
+            "링크: 루트/PROJECT_DIRECTORY_STRUCTURE.md",
+            "목적: 루트에서도 접근 가능하되 1-1에서 편집"
+          ]
+        },
+        {
+          "task": "프로젝트 계획 하위 파일 정리",
+          "details": [
+            "requirements/ 폴더로 functional_requirements.md 이동",
+            "workflows/ 폴더로 workflow 파일들 이동",
+            "user_flows/ 폴더 구조 정리"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "2. 사이드바 시스템 업데이트",
+      "tasks": [
+        {
+          "task": "사이드바 생성 파이프라인 수정",
+          "files_modified": [
+            "Sidebar_Process_Tools/sidebar_generation/generate_sidebar_json.js",
+            "Sidebar_Process_Tools/sidebar_generation/generate_from_actual_directories.js",
+            "Sidebar_Process_Tools/sidebar_generation/update_dashboard.js"
+          ],
+          "changes": [
+            "한글명 없는 항목도 처리 가능하도록 파서 수정",
+            "숫자 정렬 로직 개선 (3-1, 3-2, 3-10 순서 오류 수정)",
+            "Backend_Infrastructure → Backend_Infra 이름 단축",
+            "불릿 포인트 제거 (카테고리명 앞 ▸ 삭제)"
+          ]
+        },
+        {
+          "task": "Dashboard Mockup HTML 업데이트",
+          "file": "1_기획/1-3_UI_UX_Design/Mockup/dashboard-mockup.html",
+          "changes": [
+            "좌측 사이드바 너비: 180px → 198px (+10%)",
+            "우측 사이드바 너비: 280px → 266px (-5%)",
+            "크레딧 표시 개선: '/ ₩10,000' 제거, '충전하기' 버튼 추가",
+            "버튼 텍스트 통일: '충전' → '충전하기', '제출' → '제출하기'",
+            "rechargeCredit() 함수 추가"
+          ]
+        },
+        {
+          "task": "sidebar_structure.json 생성",
+          "file": "Sidebar_Process_Tools/sidebar_generation/sidebar_structure.json",
+          "content": "실제 디렉토리 구조 기반 57개 항목 JSON 생성"
+        }
+      ]
+    },
+    {
+      "category": "3. Google Translate API 연동",
+      "tasks": [
+        {
+          "task": "Google Cloud Translation API 설정",
+          "details": [
+            "API 키 확인: Web_ClaudeCode_Bridge/.env",
+            "GOOGLE_TRANSLATE_API_KEY 환경변수 설정"
+          ]
+        },
+        {
+          "task": "/translate 엔드포인트 추가",
+          "file": "Web_ClaudeCode_Bridge/inbox_server.js",
+          "location": "Line 404-436",
+          "functionality": "한글 → 영어 자동 번역 (Order 생성 시 사용)",
+          "test_result": "✅ 정상 작동 확인"
+        }
+      ]
+    },
+    {
+      "category": "4. 오더시트 템플릿 시스템 준비",
+      "tasks": [
+        {
+          "task": "기존 템플릿 구조 분석",
+          "file": "Web_ClaudeCode_Bridge/ordersheet_templates.json",
+          "findings": {
+            "existing_templates": 24,
+            "matched_templates": 11,
+            "outdated_templates": 13,
+            "required_total": 57
+          }
+        },
+        {
+          "task": "템플릿 구조 재구성",
+          "script": "Web_ClaudeCode_Bridge/rebuild_templates.js",
+          "actions": [
+            "매칭되는 11개 템플릿 유지",
+            "매칭 안 되는 13개 템플릿 삭제",
+            "46개 새 항목 추가 (제목만, template: 'TODO')",
+            "총 57개 항목으로 재구성"
+          ]
+        },
+        {
+          "task": "템플릿 생성 규칙 정립",
+          "rules": [
+            "소분류(items)가 있으면 → 소분류 각각에 대해 템플릿 생성",
+            "소분류가 없으면 → 중분류 자체에 대해 템플릿 생성",
+            "소분류 항목은 parent 필드 포함"
+          ]
+        }
+      ]
+    }
+  ],
+  "files_created": [
+    "Web_ClaudeCode_Bridge/rebuild_templates.js",
+    "1_기획/1-1_Directory_Structure/PROJECT_DIRECTORY_STRUCTURE.md (심볼릭 링크)"
+  ],
+  "files_modified": [
+    "Sidebar_Process_Tools/sidebar_generation/generate_sidebar_json.js",
+    "Sidebar_Process_Tools/sidebar_generation/generate_from_actual_directories.js",
+    "Sidebar_Process_Tools/sidebar_generation/update_dashboard.js",
+    "Sidebar_Process_Tools/sidebar_generation/sidebar_structure.json",
+    "1_기획/1-3_UI_UX_Design/Mockup/dashboard-mockup.html",
+    "Web_ClaudeCode_Bridge/inbox_server.js",
+    "Web_ClaudeCode_Bridge/.env",
+    "Web_ClaudeCode_Bridge/ordersheet_templates.json",
+    "PROJECT_STATUS.md"
+  ],
+  "key_achievements": [
+    "✅ 디렉토리 구조 최적화 완료 (Directory_Structure를 1-1로 우선 배치)",
+    "✅ 사이드바 자동 생성 시스템 안정화 (숫자 정렬, 한글명 없는 항목 처리)",
+    "✅ Dashboard UI 개선 (레이아웃 조정, 크레딧 충전 버튼 추가)",
+    "✅ Google Translate API 연동 완료 (Order 생성 시 한→영 번역)",
+    "✅ 오더시트 템플릿 시스템 기반 구축 (57개 항목 구조 정립)"
+  ],
+  "pending_tasks": [
+    {
+      "task": "오더시트 템플릿 내용 작성",
+      "details": "46개 항목의 template 내용 채우기 (현재 'TODO' 상태)",
+      "priority": "high"
+    },
+    {
+      "task": "크레딧 충전 프로세스 구현",
+      "details": "프로토타입 단계에서 결제 시스템 연동",
+      "priority": "medium"
+    }
+  ],
+  "next_steps": [
+    "오더시트 템플릿 내용 작성 시작 (57개 항목)",
+    "각 항목별 작업 목적, 범위, 고려사항, 산출물 정의",
+    "템플릿 검증 및 Dashboard 연동 테스트"
+  ],
+  "statistics": {
+    "total_files_modified": 10,
+    "total_files_created": 2,
+    "sidebar_items_count": 57,
+    "ordersheet_templates_prepared": 57,
+    "templates_with_content": 11,
+    "templates_pending": 46
+  }
+}

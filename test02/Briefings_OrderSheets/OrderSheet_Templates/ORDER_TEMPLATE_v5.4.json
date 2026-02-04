@@ -1,0 +1,274 @@
+{
+  "═══════════════════════════════════════════════════════════════════════════════": "",
+  "║                    ORDER SHEET v5.4 - AI 작업 지시서                         ║": "",
+  "═══════════════════════════════════════════════════════════════════════════════": "",
+
+  "ORDER_SHEET": {
+    "order_id": "(자동 생성)",
+    "created_at": "(자동 생성)",
+    "version": "5.4",
+    "stage": "S{N}",
+    "stage_name": "{개발 준비 | 개발 1차 | 개발 2차 | 개발 3차 | 개발 마무리}",
+    "purpose": "{stage_name} 전체 Task 실행 및 검증"
+  },
+
+  "╔═══════════════════════════════════════════════════════════════════════════════╗": "",
+  "║                              PART A: 표준 내용                                ║": "",
+  "╚═══════════════════════════════════════════════════════════════════════════════╝": "",
+
+  "PART_A_STANDARD": {
+
+    "A1_AI_COMPLIANCE": {
+      "_title": "A1. AI 준수 사항",
+      "_description": "AI가 반드시 지켜야 할 사항",
+
+      "rules": [
+        "1. 이 Order Sheet를 100% 이해할 때까지 작업 시작 금지",
+        "2. 4개 소스(Order Sheet / Task Instruction / Task Plan / SAL Grid) 일치 확인 전 작업 금지",
+        "3. 규칙 파일(.claude/rules/) 확인 전 파일 생성/저장 금지",
+        "4. 불명확한 점은 추측 금지, 반드시 질문",
+        "5. 7단계 작업 순서 (A2 참조) 건너뛰거나 변경 금지",
+        "6. 거짓 기록 절대 금지"
+      ]
+    },
+
+    "A2_WORKFLOW": {
+      "_title": "A2. AI 작업 순서 (7단계)",
+      "_description": "Order Sheet 처리 시 이 순서대로 진행",
+
+      "STEP_1": {
+        "단계": "1단계",
+        "제목": "Order Sheet 완전 이해",
+        "목적": "Order Sheet의 모든 내용을 100% 파악",
+        "체크리스트": [
+          "□ 1-1. ORDER_SHEET 확인 → Stage, 목적 파악",
+          "□ 1-2. PART_B 특별 지시사항 확인",
+          "□ 1-3. PART_B 참고사항 확인"
+        ],
+        "출력": "'Order Sheet 확인 완료. Stage: S{N}, Task: {N}개'",
+        "다음단계_조건": "체크리스트 완료"
+      },
+
+      "STEP_2": {
+        "단계": "2단계",
+        "제목": "4개 소스 일관성 검증",
+        "목적": "Order Sheet, Task Instruction, Task Plan, SAL Grid 일치 확인",
+        "4개_소스": {
+          "소스1": "Order Sheet (이 파일)",
+          "소스2": "Task Instruction (A5 참조)",
+          "소스3": "Task Plan (A5 참조)",
+          "소스4": "SAL Grid (A5 참조)"
+        },
+        "체크리스트": [
+          "□ 2-1. Task 개수 일치?",
+          "□ 2-2. Task ID 일치?",
+          "□ 2-3. Task Name 일치?",
+          "□ 2-4. Dependencies 일치?",
+          "□ 2-5. Instruction 파일 존재?"
+        ],
+        "불일치_시": "PO에게 보고 후 수정 지시 대기",
+        "출력": "'일관성 검증 완료. 불일치: {0/N}개'",
+        "다음단계_조건": "불일치 0개"
+      },
+
+      "STEP_3": {
+        "단계": "3단계",
+        "제목": "작업 규칙 확인",
+        "목적": "작업 수행 전 규칙 파일 확인",
+        "규칙_파일_위치": ".claude/rules/",
+        "7개_규칙": {
+          "01_file-naming.md": "파일 생성 시",
+          "02_save-location.md": "⭐ 파일 저장 시 (필독!)",
+          "03_area-stage.md": "폴더 선택 시",
+          "04_grid-writing-supabase.md": "Grid 업데이트 시",
+          "05_execution-process.md": "Task 실행 시",
+          "06_verification.md": "검증 시",
+          "07_task-crud.md": "Task 추가/삭제/수정 시"
+        },
+        "필수_확인": ["02_save-location.md", "05_execution-process.md"],
+        "출력": "'규칙 확인 완료'",
+        "다음단계_조건": "필수 규칙 이해 완료"
+      },
+
+      "STEP_4": {
+        "단계": "4단계",
+        "제목": "문의사항 질문",
+        "목적": "불명확한 점 해소",
+        "질문할_상황": [
+          "Task Instruction이 불명확할 때",
+          "여러 해석이 가능할 때",
+          "기술적 결정이 필요할 때",
+          "파일 저장 위치가 불분명할 때"
+        ],
+        "질문_형식": "[{Task ID}] 질문: {내용}\n옵션 A: {옵션1}\n옵션 B: {옵션2}",
+        "금지_사항": ["추측 진행", "임의 결정", "애매하면 일단 진행"],
+        "출력": "질문 목록 또는 '질문 없음'",
+        "다음단계_조건": "모든 의문 해소"
+      },
+
+      "STEP_5": {
+        "단계": "5단계",
+        "제목": "실행",
+        "목적": "Task 순서대로 실행 및 검증",
+        "실행_순서": [
+          "5-1. Dependencies 기반 Task 순서 결정 (SAL Grid 참조)",
+          "5-2. 각 Task: 작업 → 검증 → SAL Grid에 기록 → 파일 저장"
+        ],
+        "Task별_체크리스트": [
+          "□ Task Instruction (A5 참조) 읽기",
+          "□ task_status → In Progress 변경",
+          "□ 작업 수행",
+          "□ task_status → Executed 변경",
+          "□ 검증 수행 (Verification Instruction, A5 참조)",
+          "□ verification_status → Verified, task_status → Completed 변경",
+          "□ SAL Grid에 기록 (A3 참조)",
+          "□ 파일 저장 (A4 참조)"
+        ],
+        "출력": "각 Task SAL Grid에 기록",
+        "다음단계_조건": "모든 Task verification_status = Verified"
+      },
+
+      "STEP_6": {
+        "단계": "6단계",
+        "제목": "Stage Gate 검증",
+        "목적": "Stage 전체 완료 여부 최종 확인",
+        "검증_항목": [
+          "Stage 내 모든 Task verification_status = Verified",
+          "전체 빌드 통과",
+          "전체 테스트 통과",
+          "미해결 Blocker 없음"
+        ],
+        "리포트_저장_위치": "S0_Project-SAL-Grid_생성/sal-grid/stage-gates/S{N}GATE_verification_report.md",
+        "출력": "Stage Gate 검증 리포트 + PO 테스트 가이드",
+        "다음단계_조건": "검증 항목 모두 통과"
+      },
+
+      "STEP_7": {
+        "단계": "7단계",
+        "제목": "PO 승인 대기",
+        "목적": "PO가 테스트 후 최종 승인",
+        "PO_수행_항목": [
+          "AI 검증 리포트 검토",
+          "테스트 가이드 따라 직접 테스트",
+          "기능 정상 작동 확인"
+        ],
+        "출력": "승인 → 다음 Stage 진행 / 거부 → 수정 후 재검증",
+        "다음단계_조건": "PO 승인"
+      }
+    },
+
+    "A3_SAL_GRID_RULES": {
+      "_title": "A3. SAL Grid 기록 규칙",
+      "_description": "Task 상태별 기록 필드",
+
+      "초기_상태": {
+        "_설명": "Task 생성 시 기본 상태",
+        "task_status": "Pending",
+        "verification_status": "Not Verified",
+        "task_progress": "0"
+      },
+
+      "작업_시작_시": {
+        "_설명": "Task 작업 시작할 때",
+        "task_status": "In Progress",
+        "task_progress": "진행률 (0~99)"
+      },
+
+      "작업_완료_시": {
+        "_설명": "Task 작업이 끝났을 때 (검증 전)",
+        "task_status": "Executed",
+        "task_progress": "100",
+        "generated_files": "[파일 경로 목록]"
+      },
+
+      "검증_완료_시": {
+        "_설명": "Verification Agent 검증 통과 후",
+        "verification_status": "Verified",
+        "task_status": "Completed",
+        "test_result": "{unit_test, integration_test}",
+        "build_verification": "{lint, compile}",
+        "integration_verification": "{data_flow, cross_task_connection}",
+        "blockers": "{status: 'No Blockers ✅'}",
+        "comprehensive_verification": "종합 결과"
+      },
+
+      "상태_전이": "Executed + Verified → Completed"
+    },
+
+    "A4_FILE_SAVE_RULES": {
+      "_title": "A4. 파일 저장 규칙",
+      "_description": "파일 저장 시 반드시 준수",
+
+      "규칙1_Stage_Area_폴더": "S{N}_{Stage명}/{Area}/ 폴더에 저장",
+      "규칙2_Production_이중저장": {
+        "_설명": "F, BA, S, BI, E 코드는 두 곳에 저장",
+        "Production": "배포용",
+        "Stage_폴더": "개발작업 기록용",
+        "예시": "Production/Frontend/admin-dashboard.html (배포용) + S4_개발-3차/Frontend/admin-dashboard.html (개발작업 기록용)"
+      },
+      "규칙3_규칙_파일_확인": "저장 전 02_save-location.md 반드시 확인",
+
+      "Area_매핑": {
+        "M": "Documentation",
+        "U": "Design",
+        "F": "Frontend",
+        "BI": "Backend_Infra",
+        "BA": "Backend_APIs",
+        "D": "Database",
+        "S": "Security",
+        "T": "Testing",
+        "O": "DevOps",
+        "E": "External",
+        "C": "Content"
+      }
+    },
+
+    "A5_REFERENCES": {
+      "_title": "A5. 참조 문서",
+      "규칙_파일": ".claude/rules/",
+      "Task_Plan": "S0_Project-SAL-Grid_생성/sal-grid/SSALWORKS_TASK_PLAN.md",
+      "Task_Instruction": "S0_Project-SAL-Grid_생성/sal-grid/task-instructions/",
+      "Verification_Instruction": "S0_Project-SAL-Grid_생성/sal-grid/verification-instructions/",
+      "Grid_Manual": "S0_Project-SAL-Grid_생성/manual/PROJECT_SAL_GRID_MANUAL.md",
+      "SAL_Grid": "Supabase project_sal_grid 테이블"
+    }
+  },
+
+  "╔═══════════════════════════════════════════════════════════════════════════════╗": " ",
+  "║                           PART B: 프로젝트별 추가 내용                         ║": " ",
+  "╚═══════════════════════════════════════════════════════════════════════════════╝": " ",
+
+  "PART_B_PROJECT_SPECIFIC": {
+    "_instruction": "프로젝트별로 추가할 내용을 아래에 기재하여 주세요. Task 목록은 ORDER_SHEET의 stage에 해당하는 SAL Grid 전체 Task입니다.",
+
+    "special_instructions": {
+      "_title": "B1. 특별 지시사항",
+      "_instruction": "이번 Order에만 적용되는 특별한 지시 (없으면 빈 배열)",
+
+      "items": [],
+
+      "_examples": [
+        "예시: 'S2F1 작업 시 기존 login.html 수정 말고 새로 작성'",
+        "예시: 'S3BA1 완료 후 반드시 API 문서 업데이트'",
+        "예시: 'S4T1 테스트는 Chrome, Safari 두 브라우저에서 수행'"
+      ]
+    },
+
+    "references": {
+      "_title": "B2. 참고사항",
+      "_instruction": "AI가 작업과 관련하여 알아야 할 배경 정보 등 참고사항 (없으면 빈 배열)",
+
+      "items": [],
+
+      "_examples": [
+        "예시: '이전 세션에서 S2BA1 API 응답 형식 변경함'",
+        "예시: 'Supabase RLS가 개발 모드'",
+        "예시: '토스페이먼츠 테스트 키가 .env에 설정됨'"
+      ]
+    }
+  },
+
+  "═══════════════════════════════════════════════════════════════════════════════": " ",
+
+  "status": "template"
+}

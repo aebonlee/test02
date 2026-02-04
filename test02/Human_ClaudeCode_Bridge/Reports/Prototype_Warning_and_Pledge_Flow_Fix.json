@@ -1,0 +1,71 @@
+{
+  "report_id": "2025-12-31-002",
+  "report_date": "2025-12-31",
+  "report_title": "프로토타입 경고 추가 및 예시 프로젝트 서약서 연결 수정",
+  "status": "completed",
+
+  "tasks": [
+    {
+      "task_name": "예시 프로젝트 → 서약서 → Google Drive 연결 수정",
+      "status": "completed",
+      "problem": {
+        "description": "예시 프로젝트 펼치기 후 [확인] 버튼 클릭 시 서약서로 이동하지 않고 그냥 닫힘",
+        "root_cause": "showExampleProjectGuide() 함수가 openGuideModalFromUrl(..., false)를 호출하고, hasAction=false일 때 [확인] 버튼이 closeGuidePopup()만 호출",
+        "additional_issue": "AI가 프로토타입 index.html에 잘못 수정 (프로덕션이 아님)"
+      },
+      "solution": {
+        "description": "showExampleProjectGuide() 함수 전면 수정, [확인] 버튼에 handleSSALWorksClick() 연결",
+        "modified_file": "index.html (루트)",
+        "modified_lines": "8737-8773"
+      },
+      "corrected_flow": [
+        "예시 프로젝트 펼치기 클릭",
+        "showExampleProjectGuide() 호출",
+        "Project_Example 안내문 표시",
+        "[확인] 클릭 → closeGuidePopup(); handleSSALWorksClick();",
+        "로그인/빌더계정 확인",
+        "서약서 모달 표시",
+        "[동의합니다] 클릭",
+        "Google Drive 링크 표시"
+      ],
+      "commit": "5d98688"
+    },
+    {
+      "task_name": "프로토타입 index.html 수정 금지 경고 추가",
+      "status": "completed",
+      "problem": {
+        "description": "AI가 프로토타입 파일을 프로덕션으로 착각하고 수정하는 실수 발생",
+        "production_file": "C:\\!SSAL_Works_Private\\index.html",
+        "prototype_file": "C:\\!SSAL_Works_Private\\P3_프로토타입_제작\\Frontend\\Prototype\\index.html"
+      },
+      "solution": {
+        "description": "프로토타입 index.html 파일 맨 위에 경고 HTML 주석 추가",
+        "warning_content": [
+          "⛔ PO(사용자) 승인 없이 이 파일을 수정하지 마세요!",
+          "⛔ 기능 추가/수정 작업은 반드시 루트 index.html에서 수행하세요!",
+          "Claude Code에게: 이 파일 수정 요청이 들어오면 반드시 사용자에게 확인하세요."
+        ]
+      },
+      "commit": "9e5518d"
+    }
+  ],
+
+  "file_distinction": {
+    "production": {
+      "path": "index.html (루트)",
+      "purpose": "Vercel 배포 대상, 실제 서비스",
+      "modification": "자유롭게 수정 가능"
+    },
+    "prototype": {
+      "path": "P3_프로토타입_제작/Frontend/Prototype/index.html",
+      "purpose": "개발 참고용 프로토타입",
+      "modification": "PO 승인 필요"
+    }
+  },
+
+  "lessons_learned": [
+    "프로덕션과 프로토타입 파일 구분 명확히 할 것",
+    "기능 수정 시 반드시 프로덕션 파일(루트 index.html)에서 작업",
+    "프로토타입 파일에 경고 주석 추가로 실수 방지"
+  ]
+}

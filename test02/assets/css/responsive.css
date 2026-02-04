@@ -1,0 +1,676 @@
+/**
+ * @task S5U2
+ * @description 반응형 디자인 CSS - 모바일 UX 최적화
+ * @author frontend-developer (AI Agent)
+ * @date 2025-12-23
+ * @reference prototype_responsive_final.html
+ */
+
+/* ============================================
+   기본 반응형 설정
+   ============================================ */
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ============================================
+   모바일 메뉴 버튼 (기본 숨김)
+   ============================================ */
+
+.mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    color: #374151;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   사이드바 닫기 버튼 (기본 숨김)
+   ============================================ */
+
+.sidebar-close-btn {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #6b7280;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.sidebar-close-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ============================================
+   오버레이 (사이드바 열릴 때 배경)
+   ============================================ */
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ============================================
+   모바일 전용 배너 (데스크톱 권장 안내)
+   ============================================ */
+
+.mobile-notice {
+    display: none;
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid #F59E0B;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.mobile-notice-icon {
+    margin-right: 8px;
+}
+
+.mobile-notice-link {
+    color: #B45309;
+    text-decoration: underline;
+}
+
+/* ============================================
+   태블릿 가로 (769px ~ 1023px)
+   - 오른쪽 사이드바: 슬라이드 패널
+   ============================================ */
+
+@media (max-width: 1023px) and (min-width: 769px) {
+    /* 2열 그리드 */
+    .layout-container {
+        grid-template-columns: 220px 1fr !important;
+    }
+
+    /* 왼쪽 사이드바 축소 */
+    .left-sidebar,
+    .sidebar.left {
+        width: 220px !important;
+        padding: 12px 10px !important;
+    }
+
+    /* 오른쪽 사이드바 → 슬라이드 패널 */
+    .right-sidebar,
+    .sidebar.right {
+        position: fixed !important;
+        right: -320px !important;
+        top: 0;
+        bottom: 0;
+        width: 300px !important;
+        z-index: 1001;
+        background: #f8f9fa !important;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+        transition: right 0.3s ease;
+        overflow-y: auto;
+        padding-top: 20px !important;
+    }
+
+    .right-sidebar.open,
+    .sidebar.right.open {
+        right: 0 !important;
+    }
+
+    .right-sidebar .sidebar-close-btn {
+        display: flex;
+    }
+
+    /* 헤더 조정 */
+    .header-inner {
+        padding: 0 16px !important;
+    }
+
+    .header-tagline {
+        font-size: 12px !important;
+    }
+
+    .logo h1 {
+        font-size: 20px !important;
+    }
+
+    /* 폰트 크기 조정 */
+    h1 { font-size: 1.75rem !important; }
+    h2 { font-size: 1.5rem !important; }
+    h3 { font-size: 1.25rem !important; }
+}
+
+/* ============================================
+   모바일 (768px 이하)
+   - 양쪽 사이드바: 슬라이드 패널
+   - 햄버거 메뉴 표시
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* 모바일 배너 표시 */
+    .mobile-notice {
+        display: block !important;
+    }
+
+    /* 모바일 메뉴 버튼 표시 */
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+
+    /* 1열 레이아웃 */
+    .layout-container {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: 1fr !important;
+    }
+
+    /* 헤더 조정 */
+    .header-inner {
+        height: 60px !important;
+        padding: 0 12px !important;
+    }
+
+    .header-center {
+        display: none !important;
+    }
+
+    .header-right {
+        display: none !important;
+    }
+
+    .logo h1 {
+        font-size: 20px !important;
+    }
+
+    /* 왼쪽 사이드바 → 슬라이드 패널 */
+    .left-sidebar,
+    .sidebar.left,
+    .sidebar:not(.right):not(.left),
+    .nav-sidebar {
+        position: fixed !important;
+        left: -320px !important;
+        top: 0;
+        bottom: 0;
+        width: 300px !important;
+        z-index: 1001;
+        background: #f8f9fa !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        padding-top: 60px !important;
+        -webkit-overflow-scrolling: touch;
+        grid-column: unset !important;
+        grid-row: unset !important;
+    }
+
+    .left-sidebar.open,
+    .sidebar.left.open,
+    .sidebar:not(.right):not(.left).open,
+    .nav-sidebar.open {
+        left: 0 !important;
+    }
+
+    .left-sidebar .sidebar-close-btn {
+        display: flex;
+        top: 16px;
+    }
+
+    /* 오른쪽 사이드바 → 슬라이드 패널 */
+    .right-sidebar,
+    .sidebar.right {
+        position: fixed !important;
+        right: -320px !important;
+        top: 0;
+        bottom: 0;
+        width: 300px !important;
+        z-index: 1001;
+        background: #f8f9fa !important;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+        transition: right 0.3s ease;
+        overflow-y: auto;
+        padding-top: 60px !important;
+        -webkit-overflow-scrolling: touch;
+        grid-column: unset !important;
+        grid-row: unset !important;
+    }
+
+    .right-sidebar.open,
+    .sidebar.right.open {
+        right: 0 !important;
+    }
+
+    .right-sidebar .sidebar-close-btn {
+        display: flex;
+        top: 16px;
+    }
+
+    /* 메인 콘텐츠 전체 너비 */
+    .main-content,
+    .content-area,
+    .main-area,
+    .center-workspace,
+    .container {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px !important;
+    }
+
+    /* 그리드 1열 레이아웃 */
+    .grid-container,
+    .grid-3col,
+    .dashboard-grid,
+    .card-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    /* 테이블 스크롤 가능 */
+    .table-container,
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* 카드 전체 너비 */
+    .card,
+    .panel,
+    .widget {
+        width: 100% !important;
+        margin: 8px 0 !important;
+    }
+
+    /* 버튼 터치 타겟 확대 */
+    button,
+    .btn,
+    input[type="submit"],
+    input[type="button"],
+    a.button,
+    .action-btn {
+        min-height: 44px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important;
+    }
+
+    /* 입력 필드 터치 타겟 */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    select,
+    textarea {
+        min-height: 44px !important;
+        padding: 10px 12px !important;
+        font-size: 16px !important;
+    }
+
+    /* 폰트 크기 - 가독성 */
+    body {
+        font-size: 16px !important;
+        line-height: 1.5 !important;
+    }
+
+    p, span, li, td, th {
+        font-size: 14px !important;
+    }
+
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.25rem !important; }
+    h3 { font-size: 1.125rem !important; }
+
+    /* 푸터 조정 */
+    .footer,
+    footer {
+        padding: 16px 12px !important;
+    }
+
+    .footer-inner {
+        flex-direction: column !important;
+        gap: 12px !important;
+        text-align: center;
+    }
+
+    /* Flex 아이템 스택 */
+    .flex-row,
+    .d-flex {
+        flex-direction: column !important;
+    }
+
+    /* 모달 전체 화면 */
+    .modal,
+    .dialog {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    /* 네비게이션 */
+    .nav-menu,
+    .navigation {
+        flex-direction: column !important;
+    }
+
+    .nav-item {
+        width: 100% !important;
+        padding: 12px !important;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* 워크스페이스 */
+    .workspace-header {
+        padding: 12px 16px !important;
+    }
+
+    .workspace-title {
+        font-size: 18px !important;
+    }
+
+    .workspace-actions {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+}
+
+/* ============================================
+   소형 모바일 (480px 이하)
+   ============================================ */
+
+@media (max-width: 480px) {
+    /* 헤더 더 작게 */
+    .header-inner {
+        padding: 0 10px !important;
+        height: 56px !important;
+    }
+
+    .logo {
+        gap: 8px !important;
+    }
+
+    .logo h1 {
+        font-size: 18px !important;
+    }
+
+    .mobile-menu-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 18px !important;
+    }
+
+    /* 사이드바 더 좁게 */
+    .left-sidebar,
+    .right-sidebar,
+    .sidebar.left,
+    .sidebar.right {
+        width: 280px !important;
+    }
+
+    .left-sidebar,
+    .sidebar.left {
+        left: -290px !important;
+    }
+
+    .right-sidebar,
+    .sidebar.right {
+        right: -290px !important;
+    }
+
+    /* 사이드바 내부 요소 */
+    .sidebar-title,
+    .sidebar-section h3 {
+        font-size: 13px !important;
+    }
+
+    .process-major,
+    .process-prep,
+    .process-special {
+        padding: 10px 12px !important;
+        min-height: 44px !important;
+    }
+
+    .process-name,
+    .process-prep-name,
+    .process-special-name {
+        font-size: 12px !important;
+    }
+
+    /* 메인 콘텐츠 */
+    .main-content,
+    .content-area {
+        padding: 8px !important;
+    }
+
+    /* 워크스페이스 */
+    .workspace-header {
+        padding: 10px !important;
+    }
+
+    .workspace-title {
+        font-size: 16px !important;
+    }
+
+    .workspace-actions {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    .action-btn {
+        padding: 8px 6px !important;
+        font-size: 11px !important;
+        min-height: 44px !important;
+    }
+
+    .workspace-content {
+        padding: 8px !important;
+    }
+
+    .text-editor {
+        min-height: 150px !important;
+        padding: 10px !important;
+        font-size: 13px !important;
+    }
+
+    /* 푸터 */
+    .footer-inner {
+        padding: 10px !important;
+    }
+
+    .footer-btn {
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+        min-height: 44px !important;
+    }
+
+    /* 버튼 전체 너비 */
+    button:not(.mobile-menu-btn):not(.sidebar-close-btn),
+    .btn {
+        width: 100% !important;
+    }
+
+    /* 폼 그룹 */
+    .form-group {
+        margin-bottom: 16px !important;
+    }
+
+    label {
+        display: block !important;
+        margin-bottom: 4px !important;
+    }
+}
+
+/* ============================================
+   데스크톱 (769px 이상) - 모바일 요소 숨김
+   ============================================ */
+
+@media (min-width: 769px) {
+    .mobile-notice {
+        display: none !important;
+    }
+
+    .mobile-menu-btn {
+        display: none !important;
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   터치 디바이스 최적화
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+    /* 모든 인터랙티브 요소 최소 44px */
+    .process-major,
+    .process-small,
+    .process-tiny,
+    .process-prep,
+    .process-special,
+    .knowledge-major,
+    .knowledge-medium,
+    .knowledge-small,
+    .quick-link-btn,
+    .project-menu-item,
+    .project-list-item,
+    .nav-item,
+    .menu-item {
+        min-height: 44px !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .action-btn,
+    .header-btn,
+    .footer-btn,
+    .mobile-menu-btn,
+    .sidebar-close-btn,
+    .fab-btn {
+        min-height: 44px !important;
+    }
+
+    /* 터치 스크롤 최적화 */
+    .left-sidebar,
+    .right-sidebar,
+    .workspace-content,
+    .scrollable {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ============================================
+   텍스트 오버플로우 처리
+   ============================================ */
+
+.process-name,
+.process-prep-name,
+.process-special-name,
+.knowledge-name,
+.project-name,
+.notice-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* ============================================
+   인쇄 스타일
+   ============================================ */
+
+@media print {
+    .header,
+    .footer,
+    .left-sidebar,
+    .right-sidebar,
+    .fab-container,
+    .sidebar-overlay,
+    .mobile-menu-btn,
+    .mobile-notice,
+    .no-print {
+        display: none !important;
+    }
+
+    .layout-container {
+        display: block !important;
+    }
+
+    .center-workspace,
+    .main-content {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}
+
+/* ============================================
+   접근성 개선
+   ============================================ */
+
+:focus {
+    outline: 2px solid var(--primary, #10B981) !important;
+    outline-offset: 2px;
+}
+
+@media (prefers-contrast: high) {
+    * {
+        border-color: #000 !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    .left-sidebar,
+    .right-sidebar,
+    .sidebar-overlay {
+        animation: none !important;
+        transition: none !important;
+    }
+}
